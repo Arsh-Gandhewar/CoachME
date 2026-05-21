@@ -1,9 +1,9 @@
-export const API_BASE_URL = 'http://localhost:5000/api';
-export const SOCKET_URL = 'http://localhost:5000';
-export const APP_NAME = 'TrainersApp';
+export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000/api';
+export const SOCKET_URL = process.env.EXPO_PUBLIC_SOCKET_URL || 'http://localhost:5000';
+export const APP_NAME = 'CoachME';
 export const APP_VERSION = '1.0.0';
 
-export const RAZORPAY_KEY = 'rzp_test_placeholder';
+export const RAZORPAY_KEY = process.env.EXPO_PUBLIC_RAZORPAY_KEY || 'rzp_test_placeholder';
 
 export const PAGINATION = {
   DEFAULT_PAGE: 1,
