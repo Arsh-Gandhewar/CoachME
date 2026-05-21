@@ -1,0 +1,58 @@
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert } from 'react-native';
+import { useAuthStore } from '../../../store/authStore';
+
+export default function TrainerProfileScreen() {
+  const { user, logout } = useAuthStore();
+  const trainer = user as any;
+  const initials = (trainer?.fullName || 'T').split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
+
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.avatar}><Text style={styles.avatarText}>{initials}</Text></View>
+        <Text style={styles.name}>{trainer?.fullName || 'Trainer'}</Text>
+        <Text style={styles.email}>{trainer?.email || ''}</Text>
+        <View style={styles.statRow}>
+          <View style={styles.stat}><Text style={styles.statVal}>⭐ {trainer?.rating || 0}</Text><Text style={styles.statLbl}>Rating</Text></View>
+          <View style={styles.stat}><Text style={styles.statVal}>{trainer?.experience || 0}yr</Text><Text style={styles.statLbl}>Exp</Text></View>
+          <View style={styles.stat}><Text style={styles.statVal}>₹{trainer?.pricing || 0}</Text><Text style={styles.statLbl}>Price</Text></View>
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Specializations</Text>
+        <View style={styles.tags}>
+          {trainer?.specializations?.map((s: string, i: number) => (
+            <View key={i} style={styles.tag}><Text style={styles.tagText}>{s}</Text></View>
+          ))}
+        </View>
+      </View>
+
+      <TouchableOpacity style={styles.logoutBtn} onPress={() => Alert.alert('Logout', 'Are you sure?', [{ text: 'Cancel' }, { text: 'Logout', style: 'destructive', onPress: logout }])}>
+        <Text style={styles.logoutText}>🚪 Logout</Text>
+      </TouchableOpacity>
+
+      <View style={{ height: 100 }} />
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#0f0f0f' },
+  header: { alignItems: 'center', paddingTop: 70, paddingBottom: 20 },
+  avatar: { width: 80, height: 80, borderRadius: 24, backgroundColor: '#7C4DFF', justifyContent: 'center', alignItems: 'center', marginBottom: 12 },
+  avatarText: { color: '#fff', fontSize: 28, fontWeight: '700' },
+  name: { fontSize: 22, fontWeight: '700', color: '#fff' },
+  email: { fontSize: 14, color: '#9E9E9E', marginTop: 4 },
+  statRow: { flexDirection: 'row', marginTop: 20, gap: 20 },
+  stat: { alignItems: 'center' },
+  statVal: { fontSize: 16, fontWeight: '700', color: '#fff' },
+  statLbl: { fontSize: 12, color: '#9E9E9E', marginTop: 2 },
+  section: { paddingHorizontal: 20, marginTop: 24 },
+  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#fff', marginBottom: 12 },
+  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  tag: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20, backgroundColor: '#242424' },
+  tagText: { color: '#fff', fontSize: 13 },
+  logoutBtn: { marginHorizontal: 20, marginTop: 30, backgroundColor: '#1a1a1a', borderRadius: 16, padding: 16, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(255,87,34,0.2)' },
+  logoutText: { color: '#F44336', fontSize: 15, fontWeight: '600' },
+});

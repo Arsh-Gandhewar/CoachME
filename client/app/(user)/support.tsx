@@ -1,0 +1,95 @@
+import { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, TextInput } from 'react-native';
+import { useRouter } from 'expo-router';
+import { HelpCircle, MessageCircle, Mail } from 'lucide-react-native';
+
+export default function SupportScreen() {
+  const router = useRouter();
+
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+          <Text style={styles.backText}>{'<'} Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.title}>Help & Support</Text>
+        <View style={{ width: 60 }} />
+      </View>
+
+      <View style={styles.content}>
+        <View style={styles.searchBar}>
+          <Text style={styles.searchIcon}>🔍</Text>
+          <TextInput 
+            style={styles.searchInput} 
+            placeholder="How can we help you?" 
+            placeholderTextColor="#666" 
+          />
+        </View>
+
+        <Text style={styles.sectionTitle}>Contact Us</Text>
+        <View style={styles.card}>
+          <TouchableOpacity style={styles.itemRow}>
+            <View style={styles.itemLeft}>
+              <MessageCircle color="#FF5722" size={24} />
+              <View style={styles.itemText}>
+                <Text style={styles.itemLabel}>Live Chat</Text>
+                <Text style={styles.itemDesc}>Usually replies in 5 minutes</Text>
+              </View>
+            </View>
+            <Text style={styles.chevron}>›</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.itemRow, { borderBottomWidth: 0 }]}>
+            <View style={styles.itemLeft}>
+              <Mail color="#FF5722" size={24} />
+              <View style={styles.itemText}>
+                <Text style={styles.itemLabel}>Email Support</Text>
+                <Text style={styles.itemDesc}>support@trainersapp.com</Text>
+              </View>
+            </View>
+            <Text style={styles.chevron}>›</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.sectionTitle}>FAQ</Text>
+        <View style={styles.card}>
+          <TouchableOpacity style={styles.itemRow}>
+            <Text style={styles.itemLabel}>How do I cancel a booking?</Text>
+            <Text style={styles.chevron}>›</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.itemRow}>
+            <Text style={styles.itemLabel}>How do payments work?</Text>
+            <Text style={styles.chevron}>›</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.itemRow, { borderBottomWidth: 0 }]}>
+            <Text style={styles.itemLabel}>Refund policy</Text>
+            <Text style={styles.chevron}>›</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#141414' },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
+  backBtn: { width: 60 },
+  backText: { color: '#9E9E9E', fontSize: 16 },
+  title: { color: '#fff', fontSize: 20, fontWeight: '700' },
+  
+  content: { padding: 20 },
+  
+  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#1a1a1a', borderRadius: 12, paddingHorizontal: 16, marginBottom: 32, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  searchIcon: { fontSize: 16, marginRight: 12 },
+  searchInput: { flex: 1, paddingVertical: 14, color: '#fff', fontSize: 16, ...Platform.select({ web: { outlineStyle: 'none' as any }, default: {} }) },
+
+  sectionTitle: { color: '#9E9E9E', fontSize: 13, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12, paddingLeft: 4 },
+  
+  card: { backgroundColor: '#1a1a1a', borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', marginBottom: 32 },
+  itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
+  itemLeft: { flexDirection: 'row', alignItems: 'center' },
+  itemText: { marginLeft: 16 },
+  itemLabel: { color: '#fff', fontSize: 16, marginBottom: 4 },
+  itemDesc: { color: '#777', fontSize: 13 },
+  chevron: { color: '#666', fontSize: 22, marginTop: -2 },
+});

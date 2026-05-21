@@ -1,0 +1,157 @@
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Platform, Image } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useAuthStore } from '../../../store/authStore';
+import { Heart, CreditCard, Bell, Settings, HelpCircle, Info, LogOut, User, Edit2 } from 'lucide-react-native';
+
+const isWeb = Platform.OS === 'web';
+
+export default function ProfileScreen() {
+  const { user, logout } = useAuthStore();
+  const router = useRouter();
+
+  const userName = (user as any)?.name || (user as any)?.fullName || 'User';
+  const profileImage = (user as any)?.profileImage || (user as any)?.profilePhoto || null;
+  const initials = userName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
+
+  const handleLogout = () => {
+    if (isWeb) {
+      if (window.confirm('Are you sure you want to log out?')) {
+        logout();
+        router.replace('/(auth)/login');
+      }
+    } else {
+      logout();
+      router.replace('/(auth)/login');
+    }
+  };
+
+  const menuItems = [
+    { icon: <User color="#9E9E9E" size={20} />, label: 'Edit Profile', action: () => router.push('/(user)/edit-profile') },
+    { icon: <Heart color="#9E9E9E" size={20} />, label: 'Favorites', action: () => router.push('/(user)/favorites') },
+    { icon: <CreditCard color="#9E9E9E" size={20} />, label: 'Payment Methods', action: () => router.push('/(user)/payment') },
+    { icon: <Bell color="#9E9E9E" size={20} />, label: 'Notifications', action: () => router.push('/(user)/notifications') },
+    { icon: <Settings color="#9E9E9E" size={20} />, label: 'Settings', action: () => router.push('/(user)/settings') },
+    { icon: <HelpCircle color="#9E9E9E" size={20} />, label: 'Help & Support', action: () => router.push('/(user)/support') },
+    { icon: <Info color="#9E9E9E" size={20} />, label: 'About', action: () => router.push('/(user)/about') },
+  ];
+
+  return (
+    <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
+      <View style={styles.contentWrapper}>
+        <Text style={styles.pageTitle}>Profile</Text>
+
+        <View style={styles.header}>
+          <View style={styles.avatarLarge}>
+            {profileImage ? (
+              <Image source={{ uri: profileImage }} style={styles.profileImage} />
+            ) : (
+              <Text style={styles.avatarIcon}>👤</Text>
+            )}
+          </View>
+          <Text style={styles.name}>{userName.toUpperCase()}</Text>
+          <View style={styles.statsRow}>
+            <View style={styles.stat}>
+              <Text style={styles.statValue}>12</Text>
+              <Text style={styles.statLabel}>Sessions</Text>
+            </View>
+            <View style={styles.stat}>
+              <Text style={styles.statValue}>5</Text>
+              <Text style={styles.statLabel}>Favorites</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.menu}>
+          {menuItems.map((item, i) => (
+            <TouchableOpacity key={i} style={styles.menuItem} onPress={item.action}>
+              <View style={styles.menuIcon}>{item.icon}</View>
+              <Text style={styles.menuLabel}>{item.label}</Text>
+            </TouchableOpacity>
+          ))}
+          
+          <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+            <View style={styles.menuIcon}>
+              <LogOut color="#F44336" size={20} />
+            </View>
+            <Text style={[styles.menuLabel, { color: '#F44336' }]}>Log Out</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#141414' },
+  scrollContent: { paddingBottom: 100, alignItems: isWeb ? 'center' : 'stretch' },
+  contentWrapper: { width: '100%', maxWidth: 800, paddingHorizontal: 20 },
+  
+  pageTitle: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginTop: 40,
+    marginBottom: 40,
+  },
+
+  header: { alignItems: 'center', marginBottom: 40 },
+  avatarLarge: { 
+    width: 80, 
+    height: 80, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    marginBottom: 16,
+    borderRadius: 40,
+    overflow: 'hidden',
+    backgroundColor: '#1E1E1E',
+  },
+  profileImage: {
+    width: '100%',
+    height: '100%',
+  },
+  avatarIcon: { fontSize: 48 },
+  name: { fontSize: 18, fontWeight: '700', color: '#fff', letterSpacing: 1 },
+  
+  statsRow: {
+    flexDirection: 'row',
+    marginTop: 20,
+    gap: 40,
+  },
+  stat: {
+    alignItems: 'center',
+  },
+  statValue: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  statLabel: {
+    color: '#9E9E9E',
+    fontSize: 12,
+    marginTop: 4,
+  },
+
+  menu: { 
+    width: '100%',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.05)',
+  },
+  menuItem: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    paddingVertical: 20, 
+    borderBottomWidth: 1, 
+    borderBottomColor: 'rgba(255,255,255,0.05)',
+  },
+  menuIcon: { 
+    width: 24,
+    alignItems: 'center',
+    marginRight: 16 
+  },
+  menuLabel: { 
+    fontSize: 16, 
+    color: '#E0E0E0', 
+    fontWeight: '400' 
+  },
+});
