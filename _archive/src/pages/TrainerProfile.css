@@ -1,0 +1,202 @@
+.trainer-profile {
+  padding-bottom: calc(var(--bottom-nav-height) + var(--space-20)); /* Space for sticky footer */
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+}
+
+.trainer-profile__hero {
+  height: 200px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: var(--space-8);
+  margin-top: -64px; /* offset header height */
+  padding-top: 64px;
+}
+
+.trainer-profile__avatar-container {
+  position: absolute;
+  bottom: -40px;
+  left: var(--space-4);
+  background: var(--bg-primary);
+  border-radius: var(--radius-full);
+  padding: 4px;
+}
+
+.avatar.avatar--xl {
+  width: 96px;
+  height: 96px;
+  font-size: var(--text-3xl);
+}
+
+.trainer-profile__content {
+  padding: var(--space-12) var(--space-4) var(--space-4);
+}
+
+.trainer-profile__header-info {
+  margin-bottom: var(--space-4);
+}
+
+.trainer-profile__name {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.trainer-profile__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.trainer-profile__stats-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.trainer-profile__stats-row::-webkit-scrollbar {
+  display: none;
+}
+
+.trainer-profile__stat-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.trainer-profile__section {
+  margin-bottom: var(--space-8);
+}
+
+.trainer-profile__section-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+}
+
+.trainer-profile__bio {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.trainer-profile__bio--expanded {
+  -webkit-line-clamp: unset;
+}
+
+.trainer-profile__read-more {
+  background: none;
+  border: none;
+  color: var(--accent-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  padding: var(--space-1) 0;
+  cursor: pointer;
+  margin-top: var(--space-2);
+}
+
+.tags-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.trainer-profile__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.trainer-profile__list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.trainer-profile__list-icon {
+  color: var(--accent-secondary);
+  flex-shrink: 0;
+}
+
+.trainer-profile__section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.trainer-profile__review-count {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.trainer-profile__reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.trainer-profile__footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-subtle);
+  padding: var(--space-4);
+  padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: var(--z-sticky);
+  backdrop-filter: blur(10px);
+}
+
+.trainer-profile__price-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.trainer-profile__price {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+}
+
+.trainer-profile__price-unit {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.trainer-profile__footer-actions {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.trainer-profile__book-btn {
+  padding-left: var(--space-8);
+  padding-right: var(--space-8);
+}

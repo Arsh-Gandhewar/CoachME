@@ -1,0 +1,126 @@
+/* ============================================
+   TrainersApp Design System — CSS Variables
+   Premium Dark Theme
+   ============================================ */
+
+:root {
+  /* ── Colors ─────────────────────────────── */
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #1a1a1a;
+  --bg-card: #242424;
+  --bg-elevated: #2d2d2d;
+  --bg-hover: #333333;
+  --bg-overlay: rgba(0, 0, 0, 0.7);
+
+  --accent-primary: #FF5722;
+  --accent-primary-hover: #FF7043;
+  --accent-primary-light: rgba(255, 87, 34, 0.15);
+  --accent-primary-glow: rgba(255, 87, 34, 0.4);
+  --accent-secondary: #7C4DFF;
+  --accent-secondary-hover: #9E7CFF;
+  --accent-secondary-light: rgba(124, 77, 255, 0.15);
+
+  --text-primary: #FAFAFA;
+  --text-secondary: #9E9E9E;
+  --text-muted: #616161;
+  --text-inverse: #121212;
+
+  --success: #4CAF50;
+  --success-light: rgba(76, 175, 80, 0.15);
+  --warning: #FFC107;
+  --warning-light: rgba(255, 193, 7, 0.15);
+  --error: #F44336;
+  --error-light: rgba(244, 67, 54, 0.15);
+  --info: #2196F3;
+  --info-light: rgba(33, 150, 243, 0.15);
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-light: rgba(255, 255, 255, 0.1);
+  --border-medium: rgba(255, 255, 255, 0.15);
+
+  /* ── Typography ─────────────────────────── */
+  --font-heading: 'Montserrat', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 2rem;
+  --text-4xl: 2.5rem;
+  --text-5xl: 3.5rem;
+
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+
+  --leading-tight: 1.2;
+  --leading-snug: 1.35;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.02em;
+  --tracking-wider: 0.05em;
+
+  /* ── Spacing (4px base unit) ────────────── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* ── Border Radius ──────────────────────── */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ────────────────────────────── */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 16px 50px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 20px var(--accent-primary-glow);
+  --shadow-glow-purple: 0 0 20px rgba(124, 77, 255, 0.3);
+  --shadow-inset: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+
+  /* ── Transitions ────────────────────────── */
+  --ease-out: cubic-bezier(0.0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+
+  /* ── Layout ─────────────────────────────── */
+  --nav-height: 64px;
+  --bottom-nav-height: 72px;
+  --sidebar-width: 280px;
+  --max-width: 1200px;
+  --content-padding: var(--space-4);
+
+  /* ── Z-index scale ──────────────────────── */
+  --z-base: 1;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+}
