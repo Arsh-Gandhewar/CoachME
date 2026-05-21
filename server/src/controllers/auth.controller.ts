@@ -22,7 +22,7 @@ const getCityCoordinates = async (city: string): Promise<[number, number]> => {
     const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`, {
       headers: { 'User-Agent': 'CoachME-App (contact@coachme.com)' }
     });
-    const data = await response.json();
+    const data = (await response.json()) as any[];
     if (data && data.length > 0) {
       return [parseFloat(data[0].lon), parseFloat(data[0].lat)];
     }
