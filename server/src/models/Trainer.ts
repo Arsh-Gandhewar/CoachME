@@ -35,6 +35,7 @@ export interface ITrainer extends Document {
   refreshToken?: string;
   resetPasswordToken?: string;
   resetPasswordExpire?: Date;
+  razorpayCustomerId?: string;
   notificationPreferences?: {
     pushEnabled: boolean;
     emailEnabled: boolean;
@@ -43,6 +44,9 @@ export interface ITrainer extends Document {
     newMessages: boolean;
     promotions: boolean;
   };
+  subscriptionStatus: 'active' | 'inactive' | 'past_due' | 'canceled';
+  subscriptionExpiryDate?: Date;
+  razorpaySubscriptionId?: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -84,6 +88,7 @@ const TrainerSchema = new Schema<ITrainer>(
     refreshToken: { type: String, select: false },
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpire: { type: Date, select: false },
+    razorpayCustomerId: { type: String },
     notificationPreferences: {
       pushEnabled: { type: Boolean, default: true },
       emailEnabled: { type: Boolean, default: true },
@@ -92,6 +97,9 @@ const TrainerSchema = new Schema<ITrainer>(
       newMessages: { type: Boolean, default: true },
       promotions: { type: Boolean, default: false }
     },
+    subscriptionStatus: { type: String, enum: ['active', 'inactive', 'past_due', 'canceled'], default: 'inactive' },
+    subscriptionExpiryDate: { type: Date },
+    razorpaySubscriptionId: { type: String }
   },
   {
     timestamps: true,

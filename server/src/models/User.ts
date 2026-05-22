@@ -18,6 +18,7 @@ export interface IUser extends Document {
   refreshToken?: string;
   resetPasswordToken?: string;
   resetPasswordExpire?: Date;
+  razorpayCustomerId?: string;
   notificationPreferences?: {
     pushEnabled: boolean;
     emailEnabled: boolean;
@@ -50,6 +51,7 @@ const UserSchema = new Schema<IUser>(
     refreshToken: { type: String, select: false },
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpire: { type: Date, select: false },
+    razorpayCustomerId: { type: String },
     notificationPreferences: {
       pushEnabled: { type: Boolean, default: true },
       emailEnabled: { type: Boolean, default: true },

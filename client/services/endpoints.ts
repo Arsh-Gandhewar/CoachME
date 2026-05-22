@@ -58,9 +58,18 @@ export const notificationAPI = {
 
 // Payment APIs
 export const paymentAPI = {
-  createOrder: (bookingId: string, amount: number) => api.post('/payments/create-order', { bookingId, amount }),
+  createOrder: (data: { bookingId: string, amount: number }) => api.post('/payments/create-order', data),
   verify: (data: any) => api.post('/payments/verify', data),
   getHistory: () => api.get('/payments/history'),
+  setupCard: () => api.post('/payments/setup-card'),
+  getMethods: () => api.get('/payments/methods'),
+  deleteMethod: (tokenId: string) => api.delete(`/payments/methods/${tokenId}`)
+};
+
+// Subscription APIs
+export const subscriptionAPI = {
+  createTrainerSubscription: () => api.post('/subscriptions/create'),
+  verifyTrainerSubscription: (data: any) => api.post('/subscriptions/verify', data)
 };
 
 // Content APIs

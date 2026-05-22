@@ -11,7 +11,7 @@ import { AuthRequest } from '../middleware/auth';
 export const getTrainers = asyncHandler(async (req: AuthRequest, res: Response) => {
   const { query, category, city, minPrice, maxPrice, minRating, sessionType, sort, page = '1', limit = '20', lat, lng } = req.query;
 
-  const filter: any = { verificationStatus: 'verified' };
+  const filter: any = { verificationStatus: 'verified', subscriptionStatus: 'active' };
   if (query) {
     filter.$or = [
       { fullName: { $regex: query, $options: 'i' } },
@@ -138,18 +138,18 @@ export const getCategories = asyncHandler(async (_req: AuthRequest, res: Respons
 });
 
 export const getFeaturedTrainers = asyncHandler(async (_req: AuthRequest, res: Response) => {
-  const trainers = await Trainer.find({ isPremium: true, verificationStatus: 'verified' }).sort({ rating: -1 }).limit(10);
+  const trainers = await Trainer.find({ isPremium: true, verificationStatus: 'verified', subscriptionStatus: 'active' }).sort({ rating: -1 }).limit(10);
   return ApiResponse.success(res, trainers, 'Featured trainers');
 });
 
 export const getTopRatedTrainers = asyncHandler(async (_req: AuthRequest, res: Response) => {
-  const trainers = await Trainer.find({ verificationStatus: 'verified' }).sort({ rating: -1 }).limit(10);
+  const trainers = await Trainer.find({ verificationStatus: 'verified', subscriptionStatus: 'active' }).sort({ rating: -1 }).limit(10);
   return ApiResponse.success(res, trainers, 'Top rated trainers');
 });
 
 export const getPlatformStats = asyncHandler(async (_req: AuthRequest, res: Response) => {
   const [trainersCount, bookingsCount, categoriesCount] = await Promise.all([
-    Trainer.countDocuments({ verificationStatus: 'verified' }),
+    Trainer.countDocuments({ verificationStatus: 'verified', subscriptionStatus: 'active' }),
     Booking.countDocuments(),
     Category.countDocuments({ isActive: true })
   ]);

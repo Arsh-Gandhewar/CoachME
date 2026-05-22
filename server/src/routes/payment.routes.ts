@@ -11,4 +11,8 @@ router.post('/create-order', validate([body('bookingId').notEmpty(), body('amoun
 router.post('/verify', validate([body('razorpayOrderId').notEmpty()]), paymentController.verifyPayment);
 router.get('/history', paymentController.getPaymentHistory);
 
+router.post('/setup-card', paymentController.setupCard);
+router.get('/methods', paymentController.getSavedMethods);
+router.delete('/methods/:tokenId', paymentController.deleteSavedMethod);
+
 export default router;
