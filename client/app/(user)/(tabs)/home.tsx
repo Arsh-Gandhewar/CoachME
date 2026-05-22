@@ -6,6 +6,7 @@ import { trainerAPI, contentAPI } from '../../../services/endpoints';
 import { Trainer, Category } from '../../../types';
 import { Shield, Zap, TrendingUp } from 'lucide-react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
 const isWeb = Platform.OS === 'web';
@@ -81,25 +82,25 @@ export default function HomeScreen() {
   const userName = (user as any)?.name || (user as any)?.fullName || 'User';
 
   const catIcons: any = {
-    gym: <MaterialIcons name="fitness-center" color="#fff" size={32} />,
-    yoga: <MaterialIcons name="self-improvement" color="#fff" size={32} />,
-    swimming: <MaterialIcons name="pool" color="#fff" size={32} />,
-    badminton: <MaterialIcons name="sports-tennis" color="#fff" size={32} />, // Racket
-    'martial-arts': <MaterialIcons name="sports-martial-arts" color="#fff" size={32} />, // No swords
-    dance: <MaterialIcons name="audiotrack" color="#fff" size={32} />,
-    cricket: <MaterialIcons name="sports-cricket" color="#fff" size={32} />, // Bat and ball
-    football: <MaterialIcons name="sports-soccer" color="#fff" size={32} />, // Football
+    gym: <MaterialIcons name="fitness-center" color="#fff" size={44} />,
+    yoga: <MaterialIcons name="self-improvement" color="#fff" size={44} />,
+    swimming: <MaterialIcons name="pool" color="#fff" size={44} />,
+    badminton: <MaterialIcons name="sports-tennis" color="#fff" size={44} />,
+    'martial-arts': <MaterialIcons name="sports-martial-arts" color="#fff" size={44} />,
+    dance: <MaterialIcons name="audiotrack" color="#fff" size={44} />,
+    cricket: <MaterialIcons name="sports-cricket" color="#fff" size={44} />,
+    football: <MaterialIcons name="sports-soccer" color="#fff" size={44} />,
   };
 
-  const catColors: any = {
-    gym: '#FF5722',
-    yoga: '#7C4DFF',
-    swimming: '#00BCD4',
-    badminton: '#4CAF50',
-    'martial-arts': '#F44336',
-    dance: '#E91E63',
-    cricket: '#FF9800',
-    football: '#2196F3',
+  const catGradients: any = {
+    gym: ['#FF8A65', '#FF5722'],
+    yoga: ['#B388FF', '#7C4DFF'],
+    swimming: ['#4DD0E1', '#00BCD4'],
+    badminton: ['#81C784', '#4CAF50'],
+    'martial-arts': ['#E57373', '#F44336'],
+    dance: ['#F06292', '#E91E63'],
+    cricket: ['#FFB74D', '#FF9800'],
+    football: ['#64B5F6', '#2196F3'],
   };
   
   const trainerBgColors = ['#F44336', '#7C4DFF', '#00BCD4', '#4CAF50', '#2196F3', '#FF9800'];
@@ -170,14 +171,20 @@ export default function HomeScreen() {
           {categories.map((cat: any) => (
             <TouchableOpacity 
               key={cat._id} 
-              style={[styles.categoryBox, { backgroundColor: catColors[cat.slug] || '#FF7043' }]}
-              onPress={() => router.push({ pathname: '/(user)/(tabs)/search', params: { category: cat.slug } })}
               activeOpacity={0.8}
+              onPress={() => router.push({ pathname: '/(user)/(tabs)/search', params: { category: cat.slug } })}
             >
-              <View style={styles.categoryIconWrapper}>
-                {catIcons[cat.slug] || <MaterialIcons name="sports" color="#fff" size={32} />}
-              </View>
-              <Text style={styles.categoryName}>{cat.name}</Text>
+              <LinearGradient
+                colors={catGradients[cat.slug] || ['#FF8A65', '#FF5722']}
+                style={styles.categoryBox}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              >
+                <View style={styles.categoryIconCircle}>
+                  {catIcons[cat.slug] || <MaterialIcons name="sports" color="#fff" size={44} />}
+                </View>
+                <Text style={styles.categoryName}>{cat.name}</Text>
+              </LinearGradient>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -311,18 +318,29 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   categoryBox: {
-    width: 140,
-    height: 140,
-    borderRadius: 24,
+    width: 150,
+    height: 160,
+    borderRadius: 28,
     padding: 16,
     marginRight: 16,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 8,
   },
-  categoryIconWrapper: {
+  categoryIconCircle: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 16,
   },
-  categoryName: { color: '#fff', fontSize: 15, fontWeight: '700', textAlign: 'center' },
+  categoryName: { color: '#fff', fontSize: 16, fontWeight: '800', textAlign: 'center', letterSpacing: 0.5 },
 
   featuredContainer: {
     flexDirection: 'row',
