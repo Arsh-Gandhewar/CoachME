@@ -109,7 +109,7 @@ export default function EditProfileScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 60 }}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+        <TouchableOpacity style={styles.backBtn} onPress={() => router.canGoBack() ? router.back() : router.push('/(user)/(tabs)/profile')}>
           <Text style={styles.backText}>{'<'} Back</Text>
         </TouchableOpacity>
         <Text style={styles.title}>Edit Profile</Text>

@@ -116,7 +116,7 @@ export default function BookingFlowScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => step > 1 ? setStep(step - 1) : router.back()}>
+        <TouchableOpacity onPress={() => step > 1 ? setStep(step - 1) : (router.canGoBack() ? router.back() : router.push('/(user)/(tabs)/bookings'))}>
           <Text style={styles.backText}>← {step > 1 ? 'Back' : 'Close'}</Text>
         </TouchableOpacity>
         <Text style={styles.title}>Book Session</Text>

@@ -18,7 +18,7 @@ export default function ForgotPasswordScreen() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => router.back()} style={styles.back}>
+      <TouchableOpacity onPress={() => router.canGoBack() ? router.back() : router.push('/(auth)/login')} style={styles.back}>
         <Text style={styles.backText}>← Back</Text>
       </TouchableOpacity>
       <Text style={styles.title}>Forgot Password</Text>
@@ -34,7 +34,7 @@ export default function ForgotPasswordScreen() {
         <View style={styles.success}>
           <Text style={styles.successIcon}>✉️</Text>
           <Text style={styles.successText}>Reset link sent! Check your email (or server console in dev mode).</Text>
-          <TouchableOpacity style={styles.btn} onPress={() => router.back()}>
+          <TouchableOpacity style={styles.btn} onPress={() => router.canGoBack() ? router.back() : router.push('/(auth)/login')}>
             <Text style={styles.btnText}>Back to Login</Text>
           </TouchableOpacity>
         </View>

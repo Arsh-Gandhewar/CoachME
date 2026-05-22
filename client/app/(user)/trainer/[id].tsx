@@ -60,7 +60,7 @@ export default function TrainerDetailScreen() {
       <ScrollView>
         {/* Header */}
         <View style={[styles.hero, { backgroundColor: bgColor + '20' }]}>
-          <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+          <TouchableOpacity style={styles.backBtn} onPress={() => router.canGoBack() ? router.back() : router.push('/(user)/(tabs)/home')}>
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.favBtn} onPress={toggleFavorite}>
