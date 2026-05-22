@@ -4,7 +4,8 @@ import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../../store/authStore';
 import { trainerAPI, contentAPI } from '../../../services/endpoints';
 import { Trainer, Category } from '../../../types';
-import { Dumbbell, Heart, Waves, Target, Swords, Music, Trophy, CircleDot, Shield, Zap, TrendingUp } from 'lucide-react-native';
+import { Shield, Zap, TrendingUp } from 'lucide-react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 const isWeb = Platform.OS === 'web';
@@ -70,14 +71,14 @@ export default function HomeScreen() {
   const userName = (user as any)?.name || (user as any)?.fullName || 'User';
 
   const catIcons: any = {
-    gym: <Dumbbell color="#fff" size={32} />,
-    yoga: <Heart color="#fff" size={32} />,
-    swimming: <Waves color="#fff" size={32} />,
-    badminton: <Target color="#fff" size={32} />,
-    'martial-arts': <Swords color="#fff" size={32} />,
-    dance: <Music color="#fff" size={32} />,
-    cricket: <Trophy color="#fff" size={32} />,
-    football: <CircleDot color="#fff" size={32} />,
+    gym: <MaterialIcons name="fitness-center" color="#fff" size={32} />,
+    yoga: <MaterialIcons name="self-improvement" color="#fff" size={32} />,
+    swimming: <MaterialIcons name="pool" color="#fff" size={32} />,
+    badminton: <MaterialIcons name="sports-tennis" color="#fff" size={32} />, // Racket
+    'martial-arts': <MaterialIcons name="sports-martial-arts" color="#fff" size={32} />, // No swords
+    dance: <MaterialIcons name="audiotrack" color="#fff" size={32} />,
+    cricket: <MaterialIcons name="sports-cricket" color="#fff" size={32} />, // Bat and ball
+    football: <MaterialIcons name="sports-soccer" color="#fff" size={32} />, // Football
   };
 
   const catColors: any = {
@@ -164,7 +165,7 @@ export default function HomeScreen() {
               activeOpacity={0.8}
             >
               <View style={styles.categoryIconWrapper}>
-                {catIcons[cat.slug] || <CircleDot color="#fff" size={32} />}
+                {catIcons[cat.slug] || <MaterialIcons name="sports" color="#fff" size={32} />}
               </View>
               <Text style={styles.categoryName}>{cat.name}</Text>
             </TouchableOpacity>
