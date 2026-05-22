@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { trainerAPI, bookingAPI } from '../../../services/endpoints';
+import { trainerAPI, bookingAPI, paymentAPI } from '../../../services/endpoints';
 import { Trainer } from '../../../types';
+import { Platform } from 'react-native';
+import { loadRazorpayScript } from '../../../utils/razorpay';
+import { RAZORPAY_KEY, APP_NAME } from '../../../constants/config';
+import { useAuthStore } from '../../../store/authStore';
 
 export default function BookingFlowScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -22,19 +26,73 @@ export default function BookingFlowScreen() {
     })();
   }, [id]);
 
+  const user = useAuthStore(s => s.user);
+
   const handleBook = async () => {
     if (!trainer) return;
     setBooking(true);
     try {
-      await bookingAPI.create({
+      // 1. Create booking in DB
+      const bookingRes = await bookingAPI.create({
         trainerId: trainer._id,
         bookingDate: selectedDate,
         timeSlot: selectedSlot,
         sessionType,
       });
-      Alert.alert('Success! 🎉', 'Your booking has been created. The trainer will confirm shortly.', [
-        { text: 'View Bookings', onPress: () => router.replace('/(user)/(tabs)/bookings') },
-      ]);
+      const bookingId = bookingRes.data.data._id;
+
+      // 2. Create Payment Order
+      const orderRes = await paymentAPI.createOrder(bookingId, trainer.pricing);
+      const { orderId, amount, currency } = orderRes.data.data;
+
+      // 3. Open Razorpay Checkout (Web)
+      if (Platform.OS === 'web') {
+        const isLoaded = await loadRazorpayScript();
+        if (!isLoaded) {
+          Alert.alert('Error', 'Razorpay SDK failed to load. Are you online?');
+          setBooking(false);
+          return;
+        }
+
+        const options = {
+          key: RAZORPAY_KEY,
+          amount: amount.toString(),
+          currency: currency,
+          name: APP_NAME,
+          description: `Booking with ${trainer.fullName}`,
+          order_id: orderId,
+          handler: async function (response: any) {
+            try {
+              await paymentAPI.verify({
+                razorpayOrderId: response.razorpay_order_id,
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpaySignature: response.razorpay_signature,
+              });
+              Alert.alert('Success! 🎉', 'Payment successful. Your booking is confirmed.', [
+                { text: 'View Bookings', onPress: () => router.replace('/(user)/(tabs)/bookings') },
+              ]);
+            } catch (err: any) {
+              Alert.alert('Payment Verification Failed', err.message);
+            }
+          },
+          prefill: {
+            name: user?.name || user?.fullName,
+            email: user?.email,
+            contact: user?.mobile || '',
+          },
+          theme: {
+            color: '#FF5722',
+          },
+        };
+
+        const paymentObject = new (window as any).Razorpay(options);
+        paymentObject.open();
+      } else {
+        // Mobile fallback (since we don't have native Razorpay SDK installed in Expo Go)
+        Alert.alert('Success! 🎉', 'Booking created! (Payment skipped on mobile in dev mode)', [
+          { text: 'View Bookings', onPress: () => router.replace('/(user)/(tabs)/bookings') },
+        ]);
+      }
     } catch (error: any) {
       Alert.alert('Error', error.response?.data?.message || 'Failed to create booking');
     }

@@ -3,7 +3,7 @@ export const SOCKET_URL = process.env.EXPO_PUBLIC_SOCKET_URL || 'http://localhos
 export const APP_NAME = 'CoachME';
 export const APP_VERSION = '1.0.0';
 
-export const RAZORPAY_KEY = process.env.EXPO_PUBLIC_RAZORPAY_KEY || 'rzp_test_placeholder';
+export const RAZORPAY_KEY = process.env.EXPO_PUBLIC_RAZORPAY_KEY || 'rzp_test_SsFnemBCyZjsKV';
 
 export const PAGINATION = {
   DEFAULT_PAGE: 1,

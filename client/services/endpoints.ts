@@ -65,4 +65,7 @@ export const paymentAPI = {
 // Content APIs
 export const contentAPI = {
   getDailyQuote: () => api.get('/quotes/daily'),
+  uploadImage: (formData: FormData) => api.post('/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }),
 };

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Platfo
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuthStore } from '../../store/authStore';
-import { userAPI } from '../../services/endpoints';
+import { userAPI, contentAPI } from '../../services/endpoints';
 
 export default function EditProfileScreen() {
   const router = useRouter();
@@ -19,6 +19,7 @@ export default function EditProfileScreen() {
   const [sessionTypes, setSessionTypes] = useState((user as any)?.sessionTypes?.join(', ') || '');
   const [languages, setLanguages] = useState((user as any)?.languages?.join(', ') || '');
   const [loading, setLoading] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -26,11 +27,40 @@ export default function EditProfileScreen() {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.5,
-      base64: true,
     });
 
     if (!result.canceled && result.assets[0]) {
-      setPhoto(`data:image/jpeg;base64,${result.assets[0].base64}`);
+      const asset = result.assets[0];
+      setPhoto(asset.uri);
+      
+      setUploadingPhoto(true);
+      try {
+        let formData = new FormData();
+        
+        if (Platform.OS === 'web') {
+           const res = await fetch(asset.uri);
+           const blob = await res.blob();
+           formData.append('image', blob as any, 'profile.jpg');
+        } else {
+           const localUri = asset.uri;
+           const filename = localUri.split('/').pop() || 'profile.jpg';
+           const match = /\.(\w+)$/.exec(filename);
+           const type = match ? `image/${match[1]}` : `image`;
+           formData.append('image', { uri: localUri, name: filename, type } as any);
+        }
+
+        const uploadRes = await contentAPI.uploadImage(formData);
+        if (uploadRes.data?.data?.url) {
+          setPhoto(uploadRes.data.data.url); // Set secure Cloudinary URL
+        }
+      } catch (err) {
+        console.error("Upload failed", err);
+        if (Platform.OS === 'web') {
+          window.alert('Could not upload image to cloud.');
+        }
+      } finally {
+        setUploadingPhoto(false);
+      }
     }
   };
 
@@ -92,8 +122,14 @@ export default function EditProfileScreen() {
             <Image source={{ uri: photo }} style={styles.photoPreview} />
           ) : (
             <View style={styles.photoPlaceholder}>
-              <Text style={styles.photoIcon}>📷</Text>
-              <Text style={styles.photoText}>Change Photo</Text>
+              {uploadingPhoto ? (
+                <Text style={styles.photoText}>Uploading...</Text>
+              ) : (
+                <>
+                  <Text style={styles.photoIcon}>📷</Text>
+                  <Text style={styles.photoText}>Change Photo</Text>
+                </>
+              )}
             </View>
           )}
         </TouchableOpacity>

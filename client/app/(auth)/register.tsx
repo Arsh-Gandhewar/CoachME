@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView,
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuthStore } from '../../store/authStore';
-import { trainerAPI } from '../../services/endpoints';
+import { trainerAPI, contentAPI } from '../../services/endpoints';
 
 export default function RegisterScreen() {
   const [role, setRole] = useState<'user' | 'trainer'>('user');
@@ -25,6 +25,7 @@ export default function RegisterScreen() {
   
   // File uploads
   const [photo, setPhoto] = useState<string | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   const [categories, setCategories] = useState<{slug: string, name: string}[]>([]);
 
@@ -46,11 +47,40 @@ export default function RegisterScreen() {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.5,
-      base64: true,
     });
 
     if (!result.canceled && result.assets[0]) {
-      setPhoto(`data:image/jpeg;base64,${result.assets[0].base64}`);
+      const asset = result.assets[0];
+      setPhoto(asset.uri); // Temporary preview
+      
+      setUploadingPhoto(true);
+      try {
+        let formData = new FormData();
+        
+        if (Platform.OS === 'web') {
+           // For Web, fetch the blob and append
+           const res = await fetch(asset.uri);
+           const blob = await res.blob();
+           formData.append('image', blob as any, 'profile.jpg');
+        } else {
+           // For Mobile, append the object directly
+           const localUri = asset.uri;
+           const filename = localUri.split('/').pop() || 'profile.jpg';
+           const match = /\.(\w+)$/.exec(filename);
+           const type = match ? `image/${match[1]}` : `image`;
+           formData.append('image', { uri: localUri, name: filename, type } as any);
+        }
+
+        const uploadRes = await contentAPI.uploadImage(formData);
+        if (uploadRes.data?.data?.url) {
+          setPhoto(uploadRes.data.data.url); // Replace with secure Cloudinary URL
+        }
+      } catch (err) {
+        console.error("Upload failed", err);
+        Alert.alert('Upload Failed', 'Could not upload image to cloud.');
+      } finally {
+        setUploadingPhoto(false);
+      }
     }
   };
 
@@ -128,8 +158,14 @@ export default function RegisterScreen() {
               <Image source={{ uri: photo }} style={styles.photoPreview} />
             ) : (
               <View style={styles.photoPlaceholder}>
-                <Text style={styles.photoIcon}>📷</Text>
-                <Text style={styles.photoText}>Upload Photo</Text>
+                {uploadingPhoto ? (
+                  <Text style={styles.photoText}>Uploading...</Text>
+                ) : (
+                  <>
+                    <Text style={styles.photoIcon}>📷</Text>
+                    <Text style={styles.photoText}>Upload Photo</Text>
+                  </>
+                )}
               </View>
             )}
           </TouchableOpacity>

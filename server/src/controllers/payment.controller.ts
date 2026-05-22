@@ -1,32 +1,44 @@
 import { Response } from 'express';
+import Razorpay from 'razorpay';
+import crypto from 'crypto';
 import { asyncHandler } from '../utils/asyncHandler';
 import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
 import { AuthRequest } from '../middleware/auth';
 import Booking from '../models/Booking';
 import Payment from '../models/Payment';
+import { env } from '../config/env';
 
-// Mock Razorpay (replace with real Razorpay SDK when API keys provided)
+const razorpay = new Razorpay({
+  key_id: env.RAZORPAY_KEY_ID,
+  key_secret: env.RAZORPAY_KEY_SECRET,
+});
+
 export const createOrder = asyncHandler(async (req: AuthRequest, res: Response) => {
   const { bookingId, amount } = req.body;
 
   const booking = await Booking.findById(bookingId);
   if (!booking) throw ApiError.notFound('Booking not found');
 
-  // Mock Razorpay order creation
-  const mockOrderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const options = {
+    amount: amount * 100, // amount in the smallest currency unit
+    currency: 'INR',
+    receipt: `receipt_${bookingId}`,
+  };
+
+  const order = await razorpay.orders.create(options);
 
   const payment = await Payment.create({
     bookingId,
     userId: req.user._id,
     trainerId: booking.trainerId,
     amount,
-    razorpayOrderId: mockOrderId,
+    razorpayOrderId: order.id,
     paymentStatus: 'created',
   });
 
   return ApiResponse.created(res, {
-    orderId: mockOrderId,
+    orderId: order.id,
     amount,
     currency: 'INR',
     paymentId: payment._id,
@@ -39,8 +51,16 @@ export const verifyPayment = asyncHandler(async (req: AuthRequest, res: Response
   const payment = await Payment.findOne({ razorpayOrderId });
   if (!payment) throw ApiError.notFound('Payment not found');
 
-  // In production, verify signature with Razorpay SDK
-  // For now, mock verification
+  const body = razorpayOrderId + "|" + razorpayPaymentId;
+  const expectedSignature = crypto
+    .createHmac("sha256", env.RAZORPAY_KEY_SECRET)
+    .update(body.toString())
+    .digest("hex");
+
+  if (expectedSignature !== razorpaySignature) {
+    throw ApiError.badRequest('Invalid signature passed');
+  }
+
   payment.razorpayPaymentId = razorpayPaymentId;
   payment.razorpaySignature = razorpaySignature;
   payment.paymentStatus = 'captured';
