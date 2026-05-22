@@ -90,6 +90,12 @@ export default function HomeScreen() {
     dance: <MaterialIcons name="audiotrack" color="#fff" size={44} />,
     cricket: <MaterialIcons name="sports-cricket" color="#fff" size={44} />,
     football: <MaterialIcons name="sports-soccer" color="#fff" size={44} />,
+    tennis: <MaterialIcons name="sports-tennis" color="#fff" size={44} />,
+    basketball: <MaterialIcons name="sports-basketball" color="#fff" size={44} />,
+    running: <MaterialIcons name="directions-run" color="#fff" size={44} />,
+    cycling: <MaterialIcons name="directions-bike" color="#fff" size={44} />,
+    golf: <MaterialIcons name="sports-golf" color="#fff" size={44} />,
+    nutrition: <MaterialIcons name="restaurant" color="#fff" size={44} />,
   };
 
   const catGradients: any = {
@@ -101,6 +107,12 @@ export default function HomeScreen() {
     dance: ['#F06292', '#E91E63'],
     cricket: ['#FFB74D', '#FF9800'],
     football: ['#64B5F6', '#2196F3'],
+    tennis: ['#AED581', '#8BC34A'],
+    basketball: ['#FF8A65', '#FF5722'],
+    running: ['#4DB6AC', '#009688'],
+    cycling: ['#BA68C8', '#9C27B0'],
+    golf: ['#81C784', '#4CAF50'],
+    nutrition: ['#FFF176', '#FFEB3B'],
   };
   
   const trainerBgColors = ['#F44336', '#7C4DFF', '#00BCD4', '#4CAF50', '#2196F3', '#FF9800'];

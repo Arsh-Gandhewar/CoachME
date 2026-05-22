@@ -40,20 +40,30 @@ app.get('/api/health', (_req, res) => {
 });
 
 // Daily Quote API
-app.get('/api/quotes/daily', async (req, res) => {
-  try {
-    const Quote = require('./models/Quote').default;
-    const count = await Quote.countDocuments({ active: true });
-    if (count === 0) {
-      return res.json({ success: true, data: { text: "The only bad workout is the one that didn't happen.", author: "Unknown" } });
-    }
-    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
-    const index = dayOfYear % count;
-    const quote = await Quote.findOne({ active: true }).skip(index);
-    res.json({ success: true, data: quote });
-  } catch (err) {
-    res.json({ success: true, data: { text: "Sweat is just fat crying.", author: "Unknown" } });
-  }
+app.get('/api/quotes/daily', (req, res) => {
+  const quotes = [
+    { text: "The only bad workout is the one that didn't happen.", author: "Unknown" },
+    { text: "Sweat is just fat crying.", author: "Unknown" },
+    { text: "What seems impossible today will one day become your warm-up.", author: "Unknown" },
+    { text: "Motivation is what gets you started. Habit is what keeps you going.", author: "Jim Ryun" },
+    { text: "A one hour workout is 4% of your day. No excuses.", author: "Unknown" },
+    { text: "The hardest lift of all is lifting your butt off the couch.", author: "Unknown" },
+    { text: "It never gets easier, you just get stronger.", author: "Unknown" },
+    { text: "Success starts with self-discipline.", author: "Unknown" },
+    { text: "Don't stop when you're tired. Stop when you're done.", author: "David Goggins" },
+    { text: "The body achieves what the mind believes.", author: "Unknown" },
+    { text: "You don't have to be extreme, just consistent.", author: "Unknown" },
+    { text: "Excuses don't burn calories.", author: "Unknown" }
+  ];
+  
+  // Calculate day of the year to rotate quote at exactly 12:00 AM daily
+  const start = new Date(new Date().getFullYear(), 0, 0);
+  const diff = (new Date().getTime() - start.getTime()) + (start.getTimezoneOffset() - new Date().getTimezoneOffset()) * 60000;
+  const dayOfYear = Math.floor(diff / 86400000);
+  
+  const selectedQuote = quotes[dayOfYear % quotes.length];
+  
+  res.json({ success: true, data: selectedQuote });
 });
 
 // API Routes
