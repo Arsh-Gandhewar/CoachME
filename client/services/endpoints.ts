@@ -21,6 +21,7 @@ export const trainerAPI = {
   getCategories: () => api.get<ApiResponse<Category[]>>('/trainers/categories'),
   getReviews: (id: string) => api.get<ApiResponse<Review[]>>(`/trainers/${id}/reviews`),
   getAvailability: (id: string) => api.get(`/trainers/${id}/availability`),
+  getPlatformStats: () => api.get<ApiResponse<{trainersCount: number, bookingsCount: number, categoriesCount: number}>>('/trainers/stats/platform'),
 };
 
 // Booking APIs

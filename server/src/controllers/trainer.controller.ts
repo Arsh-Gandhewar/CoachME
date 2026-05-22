@@ -2,6 +2,7 @@ import { Response } from 'express';
 import Trainer from '../models/Trainer';
 import Review from '../models/Review';
 import Category from '../models/Category';
+import Booking from '../models/Booking';
 import { asyncHandler } from '../utils/asyncHandler';
 import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
@@ -144,4 +145,13 @@ export const getFeaturedTrainers = asyncHandler(async (_req: AuthRequest, res: R
 export const getTopRatedTrainers = asyncHandler(async (_req: AuthRequest, res: Response) => {
   const trainers = await Trainer.find({ verificationStatus: 'verified' }).sort({ rating: -1 }).limit(10);
   return ApiResponse.success(res, trainers, 'Top rated trainers');
+});
+
+export const getPlatformStats = asyncHandler(async (_req: AuthRequest, res: Response) => {
+  const [trainersCount, bookingsCount, categoriesCount] = await Promise.all([
+    Trainer.countDocuments({ verificationStatus: 'verified' }),
+    Booking.countDocuments(),
+    Category.countDocuments({ isActive: true })
+  ]);
+  return ApiResponse.success(res, { trainersCount, bookingsCount, categoriesCount }, 'Platform stats fetched');
 });

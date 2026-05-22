@@ -5,6 +5,7 @@ import * as trainerController from '../controllers/trainer.controller';
 const router = Router();
 
 router.get('/', trainerController.getTrainers);
+router.get('/stats/platform', trainerController.getPlatformStats);
 router.get('/featured', trainerController.getFeaturedTrainers);
 router.get('/top-rated', trainerController.getTopRatedTrainers);
 router.get('/categories', trainerController.getCategories);

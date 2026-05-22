@@ -15,27 +15,30 @@ export default function HomeScreen() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [featured, setFeatured] = useState<Trainer[]>([]);
   const [todayQuote, setTodayQuote] = useState("The only bad workout is the one that didn't happen.");
+  const [platformStats, setPlatformStats] = useState({ trainersCount: 0, categoriesCount: 0, bookingsCount: 0 });
   
   const [refreshing, setRefreshing] = useState(false);
   const [activeStatIndex, setActiveStatIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
 
   const stats = [
-    { icon: <Shield color="#2196F3" size={24} style={{ marginRight: 12 }} />, number: '500+', label: 'Verified Trainers' },
-    { icon: <Zap color="#FF9800" size={24} style={{ marginRight: 12 }} />, number: '20+', label: 'Activities' },
-    { icon: <TrendingUp color="#9E7CFF" size={24} style={{ marginRight: 12 }} />, number: '50K+', label: 'Sessions Booked' },
+    { icon: <Shield color="#2196F3" size={24} style={{ marginRight: 12 }} />, number: platformStats.trainersCount > 0 ? platformStats.trainersCount.toString() : '...', label: 'Verified Trainers' },
+    { icon: <Zap color="#FF9800" size={24} style={{ marginRight: 12 }} />, number: platformStats.categoriesCount > 0 ? platformStats.categoriesCount.toString() : '...', label: 'Activities' },
+    { icon: <TrendingUp color="#9E7CFF" size={24} style={{ marginRight: 12 }} />, number: platformStats.bookingsCount > 0 ? platformStats.bookingsCount.toString() : '...', label: 'Sessions Booked' },
   ];
 
   const fetchData = async () => {
     try {
-      const [catRes, featRes, quoteRes] = await Promise.all([
+      const [catRes, featRes, quoteRes, statsRes] = await Promise.all([
         trainerAPI.getCategories(),
         trainerAPI.getFeatured(),
-        contentAPI.getDailyQuote().catch(() => ({ data: { data: { text: "The only bad workout is the one that didn't happen." } } }))
+        contentAPI.getDailyQuote().catch(() => ({ data: { data: { text: "The only bad workout is the one that didn't happen." } } })),
+        trainerAPI.getPlatformStats().catch(() => null)
       ]);
       if (catRes.data.data) setCategories(catRes.data.data);
       if (featRes.data.data) setFeatured(featRes.data.data);
       if (quoteRes.data?.data?.text) setTodayQuote(quoteRes.data.data.text);
+      if (statsRes?.data?.data) setPlatformStats(statsRes.data.data);
     } catch (err) {
       console.log('Error fetching data:', err);
     }
