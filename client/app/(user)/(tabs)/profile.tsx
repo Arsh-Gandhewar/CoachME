@@ -1,6 +1,8 @@
+import { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Platform, Image } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { useAuthStore } from '../../../store/authStore';
+import { bookingAPI, userAPI } from '../../../services/endpoints';
 import { Heart, CreditCard, Bell, Settings, HelpCircle, Info, LogOut, User, Edit2 } from 'lucide-react-native';
 
 const isWeb = Platform.OS === 'web';
@@ -12,6 +14,21 @@ export default function ProfileScreen() {
   const userName = (user as any)?.name || (user as any)?.fullName || 'User';
   const profileImage = (user as any)?.profileImage || (user as any)?.profilePhoto || null;
   const initials = userName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
+
+  const [sessionsCount, setSessionsCount] = useState<number | string>('...');
+  const [favoritesCount, setFavoritesCount] = useState<number | string>('...');
+
+  useFocusEffect(
+    useCallback(() => {
+      bookingAPI.getUserBookings().then(res => {
+        if (res.data?.data) setSessionsCount(res.data.data.length);
+      }).catch(() => setSessionsCount(0));
+
+      userAPI.getFavorites().then(res => {
+        if (res.data?.data) setFavoritesCount(res.data.data.length);
+      }).catch(() => setFavoritesCount(0));
+    }, [])
+  );
 
   const handleLogout = () => {
     if (isWeb) {
@@ -51,11 +68,11 @@ export default function ProfileScreen() {
           <Text style={styles.name}>{userName.toUpperCase()}</Text>
           <View style={styles.statsRow}>
             <View style={styles.stat}>
-              <Text style={styles.statValue}>12</Text>
+              <Text style={styles.statValue}>{sessionsCount}</Text>
               <Text style={styles.statLabel}>Sessions</Text>
             </View>
             <View style={styles.stat}>
-              <Text style={styles.statValue}>5</Text>
+              <Text style={styles.statValue}>{favoritesCount}</Text>
               <Text style={styles.statLabel}>Favorites</Text>
             </View>
           </View>

@@ -1,18 +1,44 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, Switch } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../store/authStore';
+import { userAPI } from '../../services/endpoints';
 
 export default function NotificationsScreen() {
   const router = useRouter();
+  const { user, setUser } = useAuthStore();
+  const prefs = (user as any)?.notificationPreferences || {};
   
-  const [pushEnabled, setPushEnabled] = useState(true);
-  const [emailEnabled, setEmailEnabled] = useState(true);
-  const [smsEnabled, setSmsEnabled] = useState(false);
+  const [pushEnabled, setPushEnabled] = useState(prefs.pushEnabled !== false);
+  const [emailEnabled, setEmailEnabled] = useState(prefs.emailEnabled !== false);
+  const [smsEnabled, setSmsEnabled] = useState(prefs.smsEnabled === true);
   
-  const [bookingUpdates, setBookingUpdates] = useState(true);
-  const [newMessages, setNewMessages] = useState(true);
-  const [promotions, setPromotions] = useState(false);
+  const [bookingUpdates, setBookingUpdates] = useState(prefs.bookingUpdates !== false);
+  const [newMessages, setNewMessages] = useState(prefs.newMessages !== false);
+  const [promotions, setPromotions] = useState(prefs.promotions === true);
+
+  const handleToggle = async (key: string, value: boolean, setter: any) => {
+    setter(value);
+    const updatedPrefs = {
+      pushEnabled,
+      emailEnabled,
+      smsEnabled,
+      bookingUpdates,
+      newMessages,
+      promotions,
+      [key]: value
+    };
+    
+    try {
+      const res = await userAPI.updateProfile({ notificationPreferences: updatedPrefs });
+      if (res.data?.data) {
+        setUser(res.data.data);
+      }
+    } catch (error) {
+      console.log('Failed to save notification preference', error);
+      // Optional: revert state on failure
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -32,7 +58,7 @@ export default function NotificationsScreen() {
               <Text style={styles.itemLabel}>Push Notifications</Text>
               <Switch 
                 value={pushEnabled} 
-                onValueChange={setPushEnabled}
+                onValueChange={(val) => handleToggle('pushEnabled', val, setPushEnabled)}
                 trackColor={{ false: '#333', true: '#FF5722' }}
               />
             </View>
@@ -40,7 +66,7 @@ export default function NotificationsScreen() {
               <Text style={styles.itemLabel}>Email Notifications</Text>
               <Switch 
                 value={emailEnabled} 
-                onValueChange={setEmailEnabled}
+                onValueChange={(val) => handleToggle('emailEnabled', val, setEmailEnabled)}
                 trackColor={{ false: '#333', true: '#FF5722' }}
               />
             </View>
@@ -48,7 +74,7 @@ export default function NotificationsScreen() {
               <Text style={styles.itemLabel}>SMS Notifications</Text>
               <Switch 
                 value={smsEnabled} 
-                onValueChange={setSmsEnabled}
+                onValueChange={(val) => handleToggle('smsEnabled', val, setSmsEnabled)}
                 trackColor={{ false: '#333', true: '#FF5722' }}
               />
             </View>
@@ -65,7 +91,7 @@ export default function NotificationsScreen() {
               </View>
               <Switch 
                 value={bookingUpdates} 
-                onValueChange={setBookingUpdates}
+                onValueChange={(val) => handleToggle('bookingUpdates', val, setBookingUpdates)}
                 trackColor={{ false: '#333', true: '#FF5722' }}
               />
             </View>
@@ -76,7 +102,7 @@ export default function NotificationsScreen() {
               </View>
               <Switch 
                 value={newMessages} 
-                onValueChange={setNewMessages}
+                onValueChange={(val) => handleToggle('newMessages', val, setNewMessages)}
                 trackColor={{ false: '#333', true: '#FF5722' }}
               />
             </View>
@@ -87,7 +113,7 @@ export default function NotificationsScreen() {
               </View>
               <Switch 
                 value={promotions} 
-                onValueChange={setPromotions}
+                onValueChange={(val) => handleToggle('promotions', val, setPromotions)}
                 trackColor={{ false: '#333', true: '#FF5722' }}
               />
             </View>

@@ -35,6 +35,14 @@ export interface ITrainer extends Document {
   refreshToken?: string;
   resetPasswordToken?: string;
   resetPasswordExpire?: Date;
+  notificationPreferences?: {
+    pushEnabled: boolean;
+    emailEnabled: boolean;
+    smsEnabled: boolean;
+    bookingUpdates: boolean;
+    newMessages: boolean;
+    promotions: boolean;
+  };
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -76,6 +84,14 @@ const TrainerSchema = new Schema<ITrainer>(
     refreshToken: { type: String, select: false },
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpire: { type: Date, select: false },
+    notificationPreferences: {
+      pushEnabled: { type: Boolean, default: true },
+      emailEnabled: { type: Boolean, default: true },
+      smsEnabled: { type: Boolean, default: false },
+      bookingUpdates: { type: Boolean, default: true },
+      newMessages: { type: Boolean, default: true },
+      promotions: { type: Boolean, default: false }
+    },
   },
   {
     timestamps: true,

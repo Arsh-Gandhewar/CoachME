@@ -21,7 +21,7 @@ const newCategories = [
 
 async function seed() {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/coachme');
+    await mongoose.connect('mongodb://127.0.0.1:27017/trainersapp');
     console.log('Connected to DB');
     
     for (const cat of newCategories) {
