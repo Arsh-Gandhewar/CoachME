@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, Switch } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, Switch, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../store/authStore';
 import { userAPI } from '../../services/endpoints';
+import { registerForPushNotificationsAsync } from '../../utils/pushNotifications';
 
 export default function NotificationsScreen() {
   const router = useRouter();
@@ -19,6 +20,23 @@ export default function NotificationsScreen() {
 
   const handleToggle = async (key: string, value: boolean, setter: any) => {
     setter(value);
+    
+    let fcmToken = (user as any)?.fcmToken;
+
+    if (key === 'pushEnabled' && value === true) {
+      const token = await registerForPushNotificationsAsync();
+      if (!token) {
+        if (Platform.OS === 'web') {
+          window.alert('Failed to get push token. Ensure you are on a physical device and permissions are granted.');
+        } else {
+          Alert.alert('Permission Required', 'You need to enable push notifications in your device settings.');
+        }
+        setter(false); // revert
+        return;
+      }
+      fcmToken = token;
+    }
+
     const updatedPrefs = {
       pushEnabled,
       emailEnabled,
@@ -30,13 +48,16 @@ export default function NotificationsScreen() {
     };
     
     try {
-      const res = await userAPI.updateProfile({ notificationPreferences: updatedPrefs });
+      const payload: any = { notificationPreferences: updatedPrefs };
+      if (fcmToken) payload.fcmToken = fcmToken;
+      
+      const res = await userAPI.updateProfile(payload);
       if (res.data?.data) {
         setUser(res.data.data);
       }
     } catch (error) {
       console.log('Failed to save notification preference', error);
-      // Optional: revert state on failure
+      setter(!value); // revert on error
     }
   };
 

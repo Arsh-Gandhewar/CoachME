@@ -12,8 +12,8 @@ export const getProfile = asyncHandler(async (req: AuthRequest, res: Response) =
 });
 
 export const updateProfile = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const allowedUser = ['name', 'mobile', 'profileImage', 'gender', 'age', 'city', 'notificationPreferences'];
-  const allowedTrainer = ['fullName', 'mobile', 'profilePhoto', 'bio', 'resume', 'experience', 'certifications', 'achievements', 'pricing', 'categories', 'category', 'languages', 'city', 'availability', 'sessionTypes', 'specializations', 'exactLocation', 'isExactLocationShared', 'notificationPreferences'];
+  const allowedUser = ['name', 'mobile', 'profileImage', 'gender', 'age', 'city', 'notificationPreferences', 'fcmToken'];
+  const allowedTrainer = ['fullName', 'mobile', 'profilePhoto', 'bio', 'resume', 'experience', 'certifications', 'achievements', 'pricing', 'categories', 'category', 'languages', 'city', 'availability', 'sessionTypes', 'specializations', 'exactLocation', 'isExactLocationShared', 'notificationPreferences', 'fcmToken'];
 
   const allowed = req.userRole === 'trainer' ? allowedTrainer : allowedUser;
   const updates: any = {};
