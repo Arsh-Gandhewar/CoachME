@@ -22,10 +22,20 @@ export default function HomeScreen() {
   const [activeStatIndex, setActiveStatIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
 
+  const formatStat = (num: number) => {
+    if (num === 0) return '...';
+    if (num < 10) return num.toString();
+    if (num < 100) return `${Math.floor(num / 10) * 10}+`;
+    if (num < 1000) return `${Math.floor(num / 100) * 100}+`;
+    if (num < 10000) return `${Math.floor(num / 100) * 100}+`;
+    if (num < 1000000) return `${Math.floor(num / 1000)}K+`;
+    return `${Math.floor(num / 1000000)}M+`;
+  };
+
   const stats = [
-    { icon: <Shield color="#2196F3" size={24} style={{ marginRight: 12 }} />, number: platformStats.trainersCount > 0 ? platformStats.trainersCount.toString() : '...', label: 'Verified Trainers' },
-    { icon: <Zap color="#FF9800" size={24} style={{ marginRight: 12 }} />, number: platformStats.categoriesCount > 0 ? platformStats.categoriesCount.toString() : '...', label: 'Activities' },
-    { icon: <TrendingUp color="#9E7CFF" size={24} style={{ marginRight: 12 }} />, number: platformStats.bookingsCount > 0 ? platformStats.bookingsCount.toString() : '...', label: 'Sessions Booked' },
+    { icon: <Shield color="#2196F3" size={24} style={{ marginRight: 12 }} />, number: formatStat(platformStats.trainersCount), label: 'Verified Trainers' },
+    { icon: <Zap color="#FF9800" size={24} style={{ marginRight: 12 }} />, number: formatStat(platformStats.categoriesCount), label: 'Activities' },
+    { icon: <TrendingUp color="#9E7CFF" size={24} style={{ marginRight: 12 }} />, number: formatStat(platformStats.bookingsCount), label: 'Sessions Booked' },
   ];
 
   const fetchData = async () => {
