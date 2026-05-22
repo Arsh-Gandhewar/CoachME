@@ -70,3 +70,8 @@ export const contentAPI = {
     headers: { 'Content-Type': 'multipart/form-data' },
   }),
 };
+
+// Support APIs
+export const supportAPI = {
+  chat: (data: { message: string, history?: { role: string, text: string }[] }) => api.post('/support/chat', data),
+};

@@ -28,12 +28,12 @@ export default function SupportScreen() {
 
         <Text style={styles.sectionTitle}>Contact Us</Text>
         <View style={styles.card}>
-          <TouchableOpacity style={styles.itemRow}>
+          <TouchableOpacity style={styles.itemRow} onPress={() => router.push('/(user)/support-chat')}>
             <View style={styles.itemLeft}>
               <MessageCircle color="#FF5722" size={24} />
               <View style={styles.itemText}>
-                <Text style={styles.itemLabel}>Live Chat</Text>
-                <Text style={styles.itemDesc}>Usually replies in 5 minutes</Text>
+                <Text style={styles.itemLabel}>Live AI Support</Text>
+                <Text style={styles.itemDesc}>Instant answers to your queries</Text>
               </View>
             </View>
             <Text style={styles.chevron}>›</Text>
