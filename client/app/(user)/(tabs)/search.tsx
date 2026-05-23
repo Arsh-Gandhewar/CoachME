@@ -20,6 +20,12 @@ export default function SearchScreen() {
   const [categories, setCategories] = useState<{slug: string, name: string}[]>([]);
 
   useEffect(() => {
+    if (params.category !== undefined) {
+      setCategory(params.category as string);
+    }
+  }, [params.category]);
+
+  useEffect(() => {
     trainerAPI.getCategories().then(res => {
       if (res.data?.data) {
         setCategories(res.data.data);

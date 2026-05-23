@@ -8,17 +8,47 @@ import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
 import { AuthRequest } from '../middleware/auth';
 
+function levenshtein(a: string, b: string): number {
+  const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+  for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+  for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return matrix[a.length][b.length];
+}
+
 export const getTrainers = asyncHandler(async (req: AuthRequest, res: Response) => {
   const { query, category, city, minPrice, maxPrice, minRating, sessionType, sort, page = '1', limit = '20', lat, lng } = req.query;
 
   const filter: any = { verificationStatus: 'verified', subscriptionStatus: 'active' };
   if (query) {
+    const qStr = (query as string).toLowerCase().trim();
+    
     filter.$or = [
       { fullName: { $regex: query, $options: 'i' } },
       { city: { $regex: query, $options: 'i' } },
       { specializations: { $regex: query, $options: 'i' } },
       { category: { $regex: query, $options: 'i' } },
     ];
+
+    // Fuzzy match against known categories (allow 1 or 2 typos)
+    const knownCategories = ['gym', 'yoga', 'swimming', 'badminton', 'martial-arts', 'dance', 'cricket', 'football', 'tennis', 'basketball', 'running', 'cycling', 'golf', 'nutrition', 'meditation', 'physiotherapy'];
+    for (const cat of knownCategories) {
+      // If the typo distance is <= 2 (for longer words) or <= 1 (for shorter words), inject it!
+      const maxDistance = cat.length > 5 ? 2 : 1;
+      if (levenshtein(qStr, cat) <= maxDistance) {
+        filter.$or.push({ category: cat });
+        filter.$or.push({ specializations: { $regex: cat, $options: 'i' } });
+      }
+    }
   }
   if (category) filter.category = category;
   if (city) filter.city = { $regex: city, $options: 'i' };
