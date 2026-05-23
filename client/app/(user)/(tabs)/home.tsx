@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, RefreshControl, Dimensions, Platform, Image, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../../store/authStore';
@@ -15,7 +15,10 @@ const FeaturedTrainerCard = ({ trainer, bgColor, onPress }: { trainer: any, bgCo
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   
-  const portfolioImages = trainer.portfolioImages || [];
+  const portfolioImages = useMemo(() => {
+    const images = trainer.portfolioImages || [];
+    return [...images].sort(() => Math.random() - 0.5);
+  }, [trainer.portfolioImages]);
 
   useEffect(() => {
     if (portfolioImages.length <= 1) return;
