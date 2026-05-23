@@ -269,6 +269,7 @@ export default function HomeScreen() {
               <Text style={styles.quoteText}>"{todayQuote}"</Text>
             </View>
           </View>
+        </View>
 
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Browse Categories</Text>
