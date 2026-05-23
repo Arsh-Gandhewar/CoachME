@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, RefreshControl, Dimensions, Platform, Image } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, RefreshControl, Dimensions, Platform, Image, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../../store/authStore';
 import { trainerAPI, contentAPI } from '../../../services/endpoints';
@@ -13,16 +13,28 @@ const isWeb = Platform.OS === 'web';
 
 const FeaturedTrainerCard = ({ trainer, bgColor, onPress }: { trainer: any, bgColor: string, onPress: () => void }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
   
   const portfolioImages = trainer.portfolioImages || [];
 
   useEffect(() => {
     if (portfolioImages.length <= 1) return;
     const interval = setInterval(() => {
-      setActiveImageIndex((prev) => (prev + 1) % portfolioImages.length);
-    }, 3000);
+      Animated.timing(fadeAnim, {
+        toValue: 0.2,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        setActiveImageIndex((prev) => (prev + 1) % portfolioImages.length);
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }).start();
+      });
+    }, 5000); // Slowed down from 3000 to 5000
     return () => clearInterval(interval);
-  }, [portfolioImages.length]);
+  }, [portfolioImages.length, fadeAnim]);
 
   const initials = trainer.fullName.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
 
@@ -58,9 +70,9 @@ const FeaturedTrainerCard = ({ trainer, bgColor, onPress }: { trainer: any, bgCo
         {/* Right Side: Light Grey Scrolling Area */}
         <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 16, overflow: 'hidden', justifyContent: 'center', alignItems: 'center' }}>
           {portfolioImages.length > 0 ? (
-            <Image 
+            <Animated.Image 
               source={{ uri: portfolioImages[activeImageIndex] }} 
-              style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
+              style={{ width: '100%', height: '100%', resizeMode: 'cover', opacity: fadeAnim }}
             />
           ) : (
             <Image 
