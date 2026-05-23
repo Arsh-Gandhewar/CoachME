@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
   contentWrapper: { width: '100%', maxWidth: 1200, paddingHorizontal: 20 },
   
   heroSection: {
-    paddingTop: Platform.OS === 'web' ? 40 : 20,
+    paddingTop: Platform.OS === 'web' ? 40 : 50,
     paddingBottom: 12,
   },
   welcomeText: { color: '#A1A1AA', fontSize: 12, marginBottom: 4 },
