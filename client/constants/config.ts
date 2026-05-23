@@ -1,5 +1,5 @@
-export const API_BASE_URL = 'https://spotty-feet-smash.loca.lt/api';
-export const SOCKET_URL = 'https://spotty-feet-smash.loca.lt';
+export const API_BASE_URL = 'http://10.210.116.209:5000/api';
+export const SOCKET_URL = 'http://10.210.116.209:5000';
 export const APP_NAME = 'CoachME';
 export const APP_VERSION = '1.0.0';
 
