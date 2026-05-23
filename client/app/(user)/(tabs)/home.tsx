@@ -464,7 +464,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   userStatValue: { color: '#fff', fontSize: 18, fontWeight: '800' },
-  userStatLabel: { color: '#A1A1AA', fontSize: 10, marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.5 },
+  userStatLabel: { color: '#A1A1AA', fontSize: 10, marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'center' },
   upcomingLabel: { color: '#A1A1AA', fontSize: 12, fontWeight: '500' },
   upcomingValue: { color: '#C9B07D', fontSize: 12, fontWeight: '700', flexShrink: 1, marginLeft: 10 },
 
