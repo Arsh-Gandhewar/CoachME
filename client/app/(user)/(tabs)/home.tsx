@@ -40,72 +40,70 @@ const FeaturedTrainerCard = ({ trainer, bgColor, onPress }: { trainer: any, bgCo
 
   return (
     <TouchableOpacity 
-      style={[styles.featuredCard, { padding: 0 }]}
+      style={[styles.featuredCard, { padding: 0, backgroundColor: '#1E1E1E' }]}
       onPress={onPress}
       activeOpacity={0.9}
     >
-      {/* Background Animated Image Gallery */}
-      {portfolioImages.length > 0 ? (
-        <Animated.Image 
-          source={{ uri: portfolioImages[activeImageIndex] }} 
-          style={{ ...StyleSheet.absoluteFillObject, resizeMode: 'cover', opacity: fadeAnim }}
-        />
-      ) : (
-        <Image 
-          source={{ uri: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=500&auto=format&fit=crop' }} 
-          style={{ ...StyleSheet.absoluteFillObject, resizeMode: 'cover' }}
-        />
-      )}
+      {/* TOP 65%: Image Gallery */}
+      <View style={{ height: '65%', width: '100%', position: 'relative' }}>
+        {portfolioImages.length > 0 ? (
+          <Animated.Image 
+            source={{ uri: portfolioImages[activeImageIndex] }} 
+            style={{ ...StyleSheet.absoluteFillObject, resizeMode: 'cover', opacity: fadeAnim }}
+          />
+        ) : (
+          <Image 
+            source={{ uri: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=500&auto=format&fit=crop' }} 
+            style={{ ...StyleSheet.absoluteFillObject, resizeMode: 'cover' }}
+          />
+        )}
 
-      {/* Dark Gradient Overlay for Text Legibility */}
-      <LinearGradient
-        colors={['transparent', 'rgba(0,0,0,0.3)', 'rgba(0,0,0,0.9)']}
-        style={StyleSheet.absoluteFillObject}
-      />
-
-      {/* Premium Badge Top Right */}
-      {trainer.premium && (
-        <View style={styles.premiumBadge}>
-          <Text style={styles.premiumText}>★ PREMIUM</Text>
-        </View>
-      )}
-
-      {/* Image Gallery Dots (Top Left) */}
-      {portfolioImages.length > 1 && (
-        <View style={{ flexDirection: 'row', position: 'absolute', top: 16, left: 16, gap: 4 }}>
-          {portfolioImages.map((_, idx) => (
-            <View key={idx} style={{ width: idx === activeImageIndex ? 12 : 4, height: 4, borderRadius: 2, backgroundColor: idx === activeImageIndex ? '#C9B07D' : 'rgba(255,255,255,0.5)' }} />
-          ))}
-        </View>
-      )}
-
-      {/* Content Overlay (Bottom) */}
-      <View style={styles.featuredContent}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-          {/* Small Profile Image */}
-          <View style={styles.featuredProfileWrap}>
-            {trainer.profilePhoto || trainer.profileImage ? (
-              <Image 
-                source={{ uri: trainer.profilePhoto || trainer.profileImage }} 
-                style={styles.featuredProfileImg}
-              />
-            ) : (
-              <Text style={{ color: '#fff', fontSize: 16, fontWeight: '800' }}>{initials}</Text>
-            )}
+        {/* Premium Badge Top Right */}
+        {trainer.premium && (
+          <View style={styles.premiumBadge}>
+            <Text style={styles.premiumText}>★ PREMIUM</Text>
           </View>
-          
-          <View style={{ flex: 1 }}>
-            <Text style={styles.featuredName}>{trainer.fullName} {trainer.verified ? '✓' : ''}</Text>
-            <Text style={{ color: '#C9B07D', fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-              {trainer.category} • {trainer.experience || 0} YRS EXP
-            </Text>
+        )}
+
+        {/* Image Gallery Dots (Bottom center of top section) */}
+        {portfolioImages.length > 1 && (
+          <View style={{ flexDirection: 'row', position: 'absolute', bottom: 10, alignSelf: 'center', gap: 4 }}>
+            {portfolioImages.map((_, idx) => (
+              <View key={idx} style={{ width: idx === activeImageIndex ? 12 : 4, height: 4, borderRadius: 2, backgroundColor: idx === activeImageIndex ? '#C9B07D' : 'rgba(255,255,255,0.5)' }} />
+            ))}
           </View>
+        )}
+      </View>
+
+      {/* BOTTOM 35%: Profile Info */}
+      <View style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 12, flexDirection: 'row', alignItems: 'center' }}>
+        
+        {/* Profile Image */}
+        <View style={styles.featuredProfileWrap}>
+          {trainer.profilePhoto || trainer.profileImage ? (
+            <Image 
+              source={{ uri: trainer.profilePhoto || trainer.profileImage }} 
+              style={styles.featuredProfileImg}
+            />
+          ) : (
+            <Text style={{ color: '#fff', fontSize: 16, fontWeight: '800' }}>{initials}</Text>
+          )}
+        </View>
+        
+        {/* Name, Category, Exp */}
+        <View style={{ flex: 1, marginRight: 8, justifyContent: 'center' }}>
+          <Text style={styles.featuredName} numberOfLines={1}>{trainer.fullName} {trainer.verified ? '✓' : ''}</Text>
+          <Text style={{ color: '#C9B07D', fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 2 }}>
+            {trainer.category} • {trainer.experience || 0} YRS EXP
+          </Text>
         </View>
 
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-          <Text style={styles.featuredRating}>⭐ {trainer.rating} <Text style={{ color: '#A1A1AA', fontSize: 10 }}>({trainer.totalReviews || 0})</Text></Text>
+        {/* Price and Rating */}
+        <View style={{ alignItems: 'flex-end', justifyContent: 'center' }}>
           <Text style={styles.featuredPrice}>₹{trainer.pricing}</Text>
+          <Text style={[styles.featuredRating, { marginTop: 2 }]}>⭐ {trainer.rating}</Text>
         </View>
+
       </View>
     </TouchableOpacity>
   );
@@ -471,9 +469,8 @@ const styles = StyleSheet.create({
   },
   featuredCard: {
     width: width > 768 ? '48%' : '100%',
-    height: 220,
+    height: 240,
     borderRadius: 24,
-    justifyContent: 'flex-end',
     position: 'relative',
     overflow: 'hidden',
     backgroundColor: '#1E1E1E',
@@ -489,20 +486,20 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 8,
     zIndex: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
   },
   premiumText: { color: '#fff', fontSize: 9, fontWeight: '800', letterSpacing: 0.5 },
-  featuredContent: {
-    padding: 20,
-    zIndex: 5,
-  },
   featuredProfileWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: '#333',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 14,
     borderWidth: 2,
     borderColor: '#C9B07D',
     overflow: 'hidden',
@@ -512,7 +509,7 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
   },
-  featuredName: { color: '#fff', fontSize: 16, fontWeight: '800', marginBottom: 2, letterSpacing: 0.5 },
-  featuredRating: { color: '#fff', fontSize: 12, fontWeight: '600' },
+  featuredName: { color: '#fff', fontSize: 15, fontWeight: '800', letterSpacing: 0.5 },
+  featuredRating: { color: '#A1A1AA', fontSize: 11, fontWeight: '600' },
   featuredPrice: { color: '#fff', fontSize: 16, fontWeight: '800' },
 });
