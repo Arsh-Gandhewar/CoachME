@@ -49,7 +49,7 @@ export default function ChatListScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000000', paddingTop: 60 },
+  container: { flex: 1, backgroundColor: '#000000', paddingTop: Platform.OS === 'web' ? 40 : 50 },
   title: { fontSize: 12, fontWeight: '700', color: '#fff', paddingHorizontal: 20, marginBottom: 16 },
   list: { paddingHorizontal: 20 },
   chatItem: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#0A0A0A', borderRadius: 16, padding: 14, marginBottom: 10, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },

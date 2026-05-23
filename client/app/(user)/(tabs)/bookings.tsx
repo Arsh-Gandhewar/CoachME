@@ -150,7 +150,7 @@ export default function BookingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000000', paddingTop: 60 },
+  container: { flex: 1, backgroundColor: '#000000', paddingTop: Platform.OS === 'web' ? 40 : 50 },
   title: { fontSize: 12, fontWeight: '700', color: '#fff', paddingHorizontal: 20, marginBottom: 16 },
   tabs: { flexDirection: 'row', paddingHorizontal: 20, marginBottom: 16 },
   tab: { paddingHorizontal: 18, paddingVertical: 8, borderRadius: 20, backgroundColor: '#0A0A0A', marginRight: 8 },

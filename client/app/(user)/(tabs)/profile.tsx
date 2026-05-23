@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: Platform.OS === 'web' ? 20 : 50,
     marginBottom: 20,
   },
 

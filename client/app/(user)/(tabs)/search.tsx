@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#141414', alignItems: isWeb ? 'center' : 'stretch' },
   contentWrapper: { width: '100%', maxWidth: 1000, flex: 1 },
   
-  header: { paddingHorizontal: 16, paddingTop: 20, paddingBottom: 8 },
+  header: { paddingHorizontal: 16, paddingTop: Platform.OS === 'web' ? 40 : 50, paddingBottom: 8 },
   title: { fontSize: 12, fontWeight: '700', color: '#fff', marginBottom: 12 },
   
   searchBar: { 

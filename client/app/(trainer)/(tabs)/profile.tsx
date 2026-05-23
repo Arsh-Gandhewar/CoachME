@@ -39,7 +39,7 @@ export default function TrainerProfileScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000000' },
-  header: { alignItems: 'center', paddingTop: 70, paddingBottom: 20 },
+  header: { alignItems: 'center', paddingTop: Platform.OS === 'web' ? 40 : 50, paddingBottom: 20 },
   avatar: { width: 80, height: 80, borderRadius: 24, backgroundColor: '#7C4DFF', justifyContent: 'center', alignItems: 'center', marginBottom: 12 },
   avatarText: { color: '#fff', fontSize: 12, fontWeight: '700' },
   name: { fontSize: 12, fontWeight: '700', color: '#fff' },

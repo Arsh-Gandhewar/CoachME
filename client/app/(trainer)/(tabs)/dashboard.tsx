@@ -200,7 +200,7 @@ export default function TrainerDashboard() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000000' },
-  header: { paddingHorizontal: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, paddingBottom: 16 },
+  header: { paddingHorizontal: 20, paddingTop: Platform.OS === 'web' ? 40 : 50, paddingBottom: 16 },
   greeting: { fontSize: 28, fontWeight: '800', color: '#fff' },
   subtitle: { fontSize: 12, color: '#A1A1AA', marginTop: 6 },
   
