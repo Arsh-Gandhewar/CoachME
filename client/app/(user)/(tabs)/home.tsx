@@ -308,7 +308,7 @@ export default function HomeScreen() {
             <View style={styles.userStatsGrid}>
               <View style={styles.userStatCard}>
                 <Text style={[styles.userStatValue, { color: '#4CAF50' }]}>{userStats.completedSessions}</Text>
-                <Text style={styles.userStatLabel}>Completed</Text>
+                <Text style={styles.userStatLabel}>Sessions Completed</Text>
               </View>
               <View style={styles.userStatCard}>
                 <Text style={[styles.userStatValue, { color: '#E91E63' }]}>{userStats.totalFavorites}</Text>
@@ -323,7 +323,6 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.quoteCard}>
-              <Text style={styles.quoteLabel}>✨ Daily Spark</Text>
               <Text style={styles.quoteText}>"{todayQuote}"</Text>
             </View>
           </View>
