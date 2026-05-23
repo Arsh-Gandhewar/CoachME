@@ -187,7 +187,7 @@ export default function HomeScreen() {
 
       // Update quote exactly at midnight local time without reloading
       setTodayQuote(getLocalQuote());
-    }, 2000);
+    }, 5000);
     
     return () => clearInterval(interval);
   }, [sliderWidth]);
