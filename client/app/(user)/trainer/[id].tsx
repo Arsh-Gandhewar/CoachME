@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Linking, Image } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Linking, Image, Platform } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { trainerAPI } from '../../../services/endpoints';
 import { Trainer, Review } from '../../../types';
@@ -199,10 +199,10 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000000' },
   loading: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000000' },
   errorText: { color: '#F44336', fontSize: 12 },
-  hero: { paddingTop: 40, paddingBottom: 16, alignItems: 'center', borderBottomLeftRadius: 28, borderBottomRightRadius: 28 },
-  backBtn: { position: 'absolute', top: 30, left: 16 },
+  hero: { paddingTop: Platform.OS === 'web' ? 40 : 60, paddingBottom: 32, alignItems: 'center', borderBottomLeftRadius: 28, borderBottomRightRadius: 28 },
+  backBtn: { position: 'absolute', top: Platform.OS === 'web' ? 30 : 50, left: 16 },
   backText: { color: '#C9B07D', fontSize: 12, fontWeight: '600' },
-  favBtn: { position: 'absolute', top: 30, right: 16 },
+  favBtn: { position: 'absolute', top: Platform.OS === 'web' ? 30 : 50, right: 16 },
   favIcon: { fontSize: 12 },
   avatarLarge: { width: 70, height: 70, borderRadius: 24, justifyContent: 'center', alignItems: 'center', marginBottom: 8 },
   avatarText: { color: '#fff', fontSize: 24, fontWeight: '700' },
