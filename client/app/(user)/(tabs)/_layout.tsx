@@ -72,7 +72,7 @@ function SlidingTabBar({ state, descriptors, navigation }: any) {
       <Animated.View
         style={{
           position: 'absolute',
-          top: 10,
+          top: 8,
           left: 0,
           width: tabWidth,
           height: 44,
@@ -99,7 +99,7 @@ function SlidingTabBar({ state, descriptors, navigation }: any) {
             key={route.key}
             activeOpacity={1}
             onPress={onPress}
-            style={{ flex: 1, alignItems: 'center', paddingTop: 10, zIndex: 1 }}
+            style={{ flex: 1, alignItems: 'center', paddingTop: 8, zIndex: 1 }}
           >
             <TabIcon name={route.name} focused={isFocused} />
             <Text style={[styles.tabLabel, { color: isFocused ? '#C9B07D' : '#555555' }]}>
@@ -135,15 +135,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000', 
     borderTopColor: 'rgba(255,255,255,0.02)', 
     borderTopWidth: 1, 
-    height: 75, 
-    paddingBottom: 15, 
+    height: Platform.OS === 'ios' ? 70 : 60, 
+    paddingBottom: Platform.OS === 'ios' ? 15 : 5, 
     position: 'relative'
   },
   tabLabel: { 
     fontSize: 9, 
     fontWeight: '800', 
     letterSpacing: 1.2, 
-    marginTop: 8 
+    marginTop: 4 
   },
   tabItem: { 
     alignItems: 'center',
