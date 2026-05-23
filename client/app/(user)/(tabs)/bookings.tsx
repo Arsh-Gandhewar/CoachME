@@ -68,7 +68,7 @@ export default function BookingsScreen() {
         ))}
       </View>
 
-      {loading ? <ActivityIndicator color="#FF5722" size="large" style={{ marginTop: 40 }} /> : (
+      {loading ? <ActivityIndicator color="#C9B07D" size="large" style={{ marginTop: 40 }} /> : (
         <FlatList
           data={filtered}
           renderItem={({ item }) => {
@@ -150,33 +150,33 @@ export default function BookingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0f0f0f', paddingTop: 60 },
-  title: { fontSize: 24, fontWeight: '700', color: '#fff', paddingHorizontal: 20, marginBottom: 16 },
+  container: { flex: 1, backgroundColor: '#000000', paddingTop: 60 },
+  title: { fontSize: 12, fontWeight: '700', color: '#fff', paddingHorizontal: 20, marginBottom: 16 },
   tabs: { flexDirection: 'row', paddingHorizontal: 20, marginBottom: 16 },
-  tab: { paddingHorizontal: 18, paddingVertical: 8, borderRadius: 20, backgroundColor: '#1a1a1a', marginRight: 8 },
-  tabActive: { backgroundColor: '#FF5722' },
-  tabText: { color: '#9E9E9E', fontSize: 13, fontWeight: '500', textTransform: 'capitalize' },
+  tab: { paddingHorizontal: 18, paddingVertical: 8, borderRadius: 20, backgroundColor: '#0A0A0A', marginRight: 8 },
+  tabActive: { backgroundColor: '#C9B07D' },
+  tabText: { color: '#A1A1AA', fontSize: 12, fontWeight: '500', textTransform: 'capitalize' },
   tabTextActive: { color: '#fff' },
   list: { paddingHorizontal: 20 },
-  card: { backgroundColor: '#1a1a1a', borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
+  card: { backgroundColor: '#0A0A0A', borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  trainerName: { fontSize: 16, fontWeight: '600', color: '#fff' },
+  trainerName: { fontSize: 12, fontWeight: '600', color: '#fff' },
   status: { fontSize: 12, fontWeight: '600', textTransform: 'capitalize' },
-  detail: { fontSize: 13, color: '#9E9E9E', marginTop: 4 },
-  empty: { color: '#666', textAlign: 'center', marginTop: 60, fontSize: 14 },
+  detail: { fontSize: 12, color: '#A1A1AA', marginTop: 4 },
+  empty: { color: '#666', textAlign: 'center', marginTop: 60, fontSize: 12 },
   
   reviewBtn: { marginTop: 16, backgroundColor: 'rgba(255, 193, 7, 0.1)', borderWidth: 1, borderColor: '#FFC107', paddingVertical: 10, borderRadius: 12, alignItems: 'center' },
-  reviewBtnText: { color: '#FFC107', fontSize: 14, fontWeight: '600' },
+  reviewBtnText: { color: '#FFC107', fontSize: 12, fontWeight: '600' },
   
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center', padding: 20 },
-  modalContent: { width: '100%', maxWidth: 400, backgroundColor: '#1a1a1a', borderRadius: 24, padding: 24 },
-  modalTitle: { fontSize: 20, fontWeight: '700', color: '#fff', textAlign: 'center', marginBottom: 20 },
+  modalContent: { width: '100%', maxWidth: 400, backgroundColor: '#0A0A0A', borderRadius: 24, padding: 24 },
+  modalTitle: { fontSize: 12, fontWeight: '700', color: '#fff', textAlign: 'center', marginBottom: 20 },
   starRow: { flexDirection: 'row', justifyContent: 'center', marginBottom: 24, gap: 12 },
-  star: { fontSize: 36 },
-  reviewInput: { backgroundColor: '#0f0f0f', color: '#fff', borderRadius: 12, padding: 16, height: 120, textAlignVertical: 'top', fontSize: 15, marginBottom: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
+  star: { fontSize: 38 },
+  reviewInput: { backgroundColor: '#000000', color: '#fff', borderRadius: 12, padding: 16, height: 120, textAlignVertical: 'top', fontSize: 12, marginBottom: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
   modalActions: { flexDirection: 'row', gap: 12 },
   cancelBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, backgroundColor: '#2a2a2a', alignItems: 'center' },
-  cancelBtnText: { color: '#9E9E9E', fontSize: 16, fontWeight: '600' },
-  submitBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, backgroundColor: '#FF5722', alignItems: 'center' },
-  submitBtnText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  cancelBtnText: { color: '#A1A1AA', fontSize: 12, fontWeight: '600' },
+  submitBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, backgroundColor: '#C9B07D', alignItems: 'center' },
+  submitBtnText: { color: '#fff', fontSize: 12, fontWeight: '600' },
 });

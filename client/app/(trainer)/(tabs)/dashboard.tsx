@@ -65,7 +65,7 @@ export default function TrainerDashboard() {
           contact: (user as any)?.mobile || '9999999999',
           name: (user as any)?.name || (user as any)?.fullName || ''
         },
-        theme: { color: '#FF5722' }
+        theme: { color: '#C9B07D' }
       };
 
       RazorpayCheckout.open(options).then(async (data: any) => {
@@ -104,7 +104,7 @@ export default function TrainerDashboard() {
 
   return (
     <View style={styles.container}>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#FF5722" />}>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#C9B07D" />}>
         
         <View style={styles.header}>
           <Text style={styles.greeting}>Hello, {trainerName} 👋</Text>
@@ -115,7 +115,7 @@ export default function TrainerDashboard() {
         <View style={styles.premiumContent}>
           <View style={styles.analyticsRow}>
             <View style={styles.analyticsCard}>
-              <Eye color="#FF5722" size={24} style={{ marginBottom: 8 }} />
+              <Eye color="#C9B07D" size={24} style={{ marginBottom: 8 }} />
               <Text style={styles.analyticsVal}>{profileViews}</Text>
               <Text style={styles.analyticsLabel}>Profile Views</Text>
               <Text style={styles.analyticsTrend}>+12% this week</Text>
@@ -137,13 +137,13 @@ export default function TrainerDashboard() {
               <Text style={styles.statValue}>{confirmed}</Text>
               <Text style={styles.statLabel}>Active Clients</Text>
             </View>
-            <View style={[styles.statCard, { borderColor: '#FF5722', width: '100%' }]}>
+            <View style={[styles.statCard, { borderColor: '#C9B07D', width: '100%' }]}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <View>
                   <Text style={styles.statValue}>₹{revenue}</Text>
                   <Text style={styles.statLabel}>Total Revenue</Text>
                 </View>
-                <TrendingUp color="#FF5722" size={32} opacity={0.5} />
+                <TrendingUp color="#C9B07D" size={32} opacity={0.5} />
               </View>
             </View>
           </View>
@@ -170,7 +170,7 @@ export default function TrainerDashboard() {
           <View style={styles.paywallOverlay} />
           <View style={styles.paywallContent}>
             <View style={styles.lockIconContainer}>
-              <Lock color="#FF5722" size={40} />
+              <Lock color="#C9B07D" size={40} />
             </View>
             <Text style={styles.paywallTitle}>Unlock Your Profile</Text>
             <Text style={styles.paywallDesc}>
@@ -199,28 +199,28 @@ export default function TrainerDashboard() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0f0f0f' },
+  container: { flex: 1, backgroundColor: '#000000' },
   header: { paddingHorizontal: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, paddingBottom: 16 },
-  greeting: { fontSize: 26, fontWeight: '800', color: '#fff' },
-  subtitle: { fontSize: 15, color: '#9E9E9E', marginTop: 6 },
+  greeting: { fontSize: 28, fontWeight: '800', color: '#fff' },
+  subtitle: { fontSize: 12, color: '#A1A1AA', marginTop: 6 },
   
   premiumContent: { paddingHorizontal: 20 },
   
   analyticsRow: { flexDirection: 'row', gap: 12, marginBottom: 20 },
-  analyticsCard: { flex: 1, backgroundColor: '#1a1a1a', borderRadius: 20, padding: 20, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
-  analyticsVal: { color: '#fff', fontSize: 24, fontWeight: '700' },
-  analyticsLabel: { color: '#9E9E9E', fontSize: 13, marginTop: 4 },
-  analyticsTrend: { color: '#FF5722', fontSize: 12, fontWeight: '600', marginTop: 8 },
+  analyticsCard: { flex: 1, backgroundColor: '#0A0A0A', borderRadius: 20, padding: 20, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  analyticsVal: { color: '#fff', fontSize: 12, fontWeight: '700' },
+  analyticsLabel: { color: '#A1A1AA', fontSize: 12, marginTop: 4 },
+  analyticsTrend: { color: '#C9B07D', fontSize: 12, fontWeight: '600', marginTop: 8 },
 
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginBottom: 24 },
-  statCard: { width: '47%' as any, backgroundColor: '#1a1a1a', borderRadius: 16, padding: 18, borderLeftWidth: 3 },
-  statValue: { fontSize: 22, fontWeight: '700', color: '#fff' },
-  statLabel: { fontSize: 13, color: '#9E9E9E', marginTop: 4 },
+  statCard: { width: '47%' as any, backgroundColor: '#0A0A0A', borderRadius: 16, padding: 18, borderLeftWidth: 3 },
+  statValue: { fontSize: 12, fontWeight: '700', color: '#fff' },
+  statLabel: { fontSize: 12, color: '#A1A1AA', marginTop: 4 },
 
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#fff', marginBottom: 14 },
+  sectionTitle: { fontSize: 12, fontWeight: '700', color: '#fff', marginBottom: 14 },
   quickActions: { flexDirection: 'row', gap: 12 },
-  actionBtn: { flex: 1, flexDirection: 'row', backgroundColor: '#242424', padding: 16, borderRadius: 16, alignItems: 'center', justifyContent: 'center', gap: 8 },
-  actionText: { color: '#fff', fontSize: 15, fontWeight: '600' },
+  actionBtn: { flex: 1, flexDirection: 'row', backgroundColor: '#141414', padding: 16, borderRadius: 16, alignItems: 'center', justifyContent: 'center', gap: 8 },
+  actionText: { color: '#fff', fontSize: 12, fontWeight: '600' },
 
   // Paywall
   paywallContainer: {
@@ -241,18 +241,18 @@ const styles = StyleSheet.create({
     maxWidth: 400,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255,87,34,0.3)',
-    shadowColor: '#FF5722',
+    borderColor: 'rgba(201,176,125,0.3)',
+    shadowColor: '#C9B07D',
     shadowOpacity: 0.2,
     shadowRadius: 20,
     elevation: 10,
   },
-  lockIconContainer: { width: 80, height: 80, borderRadius: 40, backgroundColor: 'rgba(255,87,34,0.1)', justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
-  paywallTitle: { fontSize: 24, fontWeight: '800', color: '#fff', marginBottom: 12, textAlign: 'center' },
-  paywallDesc: { fontSize: 15, color: '#9E9E9E', textAlign: 'center', lineHeight: 22, marginBottom: 24 },
+  lockIconContainer: { width: 80, height: 80, borderRadius: 40, backgroundColor: 'rgba(201,176,125,0.1)', justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
+  paywallTitle: { fontSize: 12, fontWeight: '800', color: '#fff', marginBottom: 12, textAlign: 'center' },
+  paywallDesc: { fontSize: 12, color: '#A1A1AA', textAlign: 'center', lineHeight: 22, marginBottom: 24 },
   featuresList: { alignSelf: 'flex-start', marginBottom: 28, width: '100%' },
-  featureItem: { color: '#E0E0E0', fontSize: 15, marginBottom: 10, fontWeight: '500' },
-  subscribeBtn: { backgroundColor: '#FF5722', width: '100%', paddingVertical: 16, borderRadius: 100, alignItems: 'center' },
-  subscribeText: { color: '#fff', fontSize: 16, fontWeight: '700' },
-  cancelAnytime: { color: '#666', fontSize: 13, marginTop: 16 }
+  featureItem: { color: '#E0E0E0', fontSize: 12, marginBottom: 10, fontWeight: '500' },
+  subscribeBtn: { backgroundColor: '#C9B07D', width: '100%', paddingVertical: 16, borderRadius: 100, alignItems: 'center' },
+  subscribeText: { color: '#fff', fontSize: 12, fontWeight: '700' },
+  cancelAnytime: { color: '#666', fontSize: 12, marginTop: 16 }
 });

@@ -80,7 +80,7 @@ export default function NotificationsScreen() {
               <Switch 
                 value={pushEnabled} 
                 onValueChange={(val) => handleToggle('pushEnabled', val, setPushEnabled)}
-                trackColor={{ false: '#333', true: '#FF5722' }}
+                trackColor={{ false: '#333', true: '#C9B07D' }}
               />
             </View>
             <View style={styles.itemRow}>
@@ -88,7 +88,7 @@ export default function NotificationsScreen() {
               <Switch 
                 value={emailEnabled} 
                 onValueChange={(val) => handleToggle('emailEnabled', val, setEmailEnabled)}
-                trackColor={{ false: '#333', true: '#FF5722' }}
+                trackColor={{ false: '#333', true: '#C9B07D' }}
               />
             </View>
             <View style={[styles.itemRow, { borderBottomWidth: 0 }]}>
@@ -96,7 +96,7 @@ export default function NotificationsScreen() {
               <Switch 
                 value={smsEnabled} 
                 onValueChange={(val) => handleToggle('smsEnabled', val, setSmsEnabled)}
-                trackColor={{ false: '#333', true: '#FF5722' }}
+                trackColor={{ false: '#333', true: '#C9B07D' }}
               />
             </View>
           </View>
@@ -113,7 +113,7 @@ export default function NotificationsScreen() {
               <Switch 
                 value={bookingUpdates} 
                 onValueChange={(val) => handleToggle('bookingUpdates', val, setBookingUpdates)}
-                trackColor={{ false: '#333', true: '#FF5722' }}
+                trackColor={{ false: '#333', true: '#C9B07D' }}
               />
             </View>
             <View style={styles.itemRow}>
@@ -124,7 +124,7 @@ export default function NotificationsScreen() {
               <Switch 
                 value={newMessages} 
                 onValueChange={(val) => handleToggle('newMessages', val, setNewMessages)}
-                trackColor={{ false: '#333', true: '#FF5722' }}
+                trackColor={{ false: '#333', true: '#C9B07D' }}
               />
             </View>
             <View style={[styles.itemRow, { borderBottomWidth: 0 }]}>
@@ -135,7 +135,7 @@ export default function NotificationsScreen() {
               <Switch 
                 value={promotions} 
                 onValueChange={(val) => handleToggle('promotions', val, setPromotions)}
-                trackColor={{ false: '#333', true: '#FF5722' }}
+                trackColor={{ false: '#333', true: '#C9B07D' }}
               />
             </View>
           </View>
@@ -149,15 +149,15 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#141414' },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
   backBtn: { width: 60 },
-  backText: { color: '#9E9E9E', fontSize: 16 },
-  title: { color: '#fff', fontSize: 20, fontWeight: '700' },
+  backText: { color: '#A1A1AA', fontSize: 12 },
+  title: { color: '#fff', fontSize: 12, fontWeight: '700' },
   
   content: { padding: 20 },
   section: { marginBottom: 32 },
-  sectionTitle: { color: '#9E9E9E', fontSize: 13, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12, paddingLeft: 4 },
+  sectionTitle: { color: '#A1A1AA', fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12, paddingLeft: 4 },
   
-  card: { backgroundColor: '#1a1a1a', borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  card: { backgroundColor: '#0A0A0A', borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
   itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
-  itemLabel: { color: '#fff', fontSize: 16, marginBottom: 4 },
-  itemDesc: { color: '#777', fontSize: 13 },
+  itemLabel: { color: '#fff', fontSize: 12, marginBottom: 4 },
+  itemDesc: { color: '#777', fontSize: 12 },
 });

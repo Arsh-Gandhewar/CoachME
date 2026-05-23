@@ -16,7 +16,32 @@ export default function HomeScreen() {
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
   const [featured, setFeatured] = useState<Trainer[]>([]);
-  const [todayQuote, setTodayQuote] = useState("The only bad workout is the one that didn't happen.");
+  const quotes = [
+    "The only bad workout is the one that didn't happen.",
+    "Sweat is just fat crying.",
+    "What seems impossible today will one day become your warm-up.",
+    "Motivation is what gets you started. Habit is what keeps you going.",
+    "A one hour workout is 4% of your day. No excuses.",
+    "The hardest lift of all is lifting your butt off the couch.",
+    "It never gets easier, you just get stronger.",
+    "Success starts with self-discipline.",
+    "Don't stop when you're tired. Stop when you're done.",
+    "The body achieves what the mind believes.",
+    "You don't have to be extreme, just consistent.",
+    "Excuses don't burn calories."
+  ];
+
+  const getLocalQuote = () => {
+    // Calculate local day of year
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const diff = now.getTime() - start.getTime();
+    const oneDay = 1000 * 60 * 60 * 24;
+    const dayOfYear = Math.floor(diff / oneDay);
+    return quotes[dayOfYear % quotes.length];
+  };
+
+  const [todayQuote, setTodayQuote] = useState(getLocalQuote());
   const [platformStats, setPlatformStats] = useState({ trainersCount: 0, categoriesCount: 0, bookingsCount: 0 });
   
   const [refreshing, setRefreshing] = useState(false);
@@ -41,15 +66,13 @@ export default function HomeScreen() {
 
   const fetchData = async () => {
     try {
-      const [catRes, featRes, quoteRes, statsRes] = await Promise.all([
+      const [catRes, featRes, statsRes] = await Promise.all([
         trainerAPI.getCategories(),
         trainerAPI.getFeatured(),
-        contentAPI.getDailyQuote().catch(() => ({ data: { data: { text: "The only bad workout is the one that didn't happen." } } })),
         trainerAPI.getPlatformStats().catch(() => null)
       ]);
       if (catRes.data.data) setCategories(catRes.data.data);
       if (featRes.data.data) setFeatured(featRes.data.data);
-      if (quoteRes.data?.data?.text) setTodayQuote(quoteRes.data.data.text);
       if (statsRes?.data?.data) setPlatformStats(statsRes.data.data);
     } catch (err) {
       console.log('Error fetching data:', err);
@@ -68,6 +91,9 @@ export default function HomeScreen() {
         scrollViewRef.current?.scrollTo({ x: next * sliderWidth, animated: true });
         return next;
       });
+
+      // Update quote exactly at midnight local time without reloading
+      setTodayQuote(getLocalQuote());
     }, 2000);
     
     return () => clearInterval(interval);
@@ -99,7 +125,7 @@ export default function HomeScreen() {
   };
 
   const catGradients: any = {
-    gym: ['#FF8A65', '#FF5722'],
+    gym: ['#FF8A65', '#C9B07D'],
     yoga: ['#B388FF', '#7C4DFF'],
     swimming: ['#4DD0E1', '#00BCD4'],
     badminton: ['#81C784', '#4CAF50'],
@@ -108,7 +134,7 @@ export default function HomeScreen() {
     cricket: ['#FFB74D', '#FF9800'],
     football: ['#64B5F6', '#2196F3'],
     tennis: ['#AED581', '#8BC34A'],
-    basketball: ['#FF8A65', '#FF5722'],
+    basketball: ['#FF8A65', '#C9B07D'],
     running: ['#4DB6AC', '#009688'],
     cycling: ['#BA68C8', '#9C27B0'],
     golf: ['#81C784', '#4CAF50'],
@@ -120,7 +146,7 @@ export default function HomeScreen() {
   return (
     <ScrollView 
       style={styles.container} 
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#FF5722" />}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#C9B07D" />}
       contentContainerStyle={styles.scrollContent}
     >
       <View style={styles.contentWrapper}>
@@ -187,7 +213,7 @@ export default function HomeScreen() {
               onPress={() => router.push({ pathname: '/(user)/(tabs)/search', params: { category: cat.slug } })}
             >
               <LinearGradient
-                colors={catGradients[cat.slug] || ['#FF8A65', '#FF5722']}
+                colors={catGradients[cat.slug] || ['#FF8A65', '#C9B07D']}
                 style={styles.categoryBox}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -239,7 +265,7 @@ export default function HomeScreen() {
                 <View style={styles.featuredFooter}>
                   <View>
                     <Text style={styles.featuredName}>{trainer.fullName} {trainer.verified ? '✓' : ''}</Text>
-                    <Text style={styles.featuredRating}>⭐ {trainer.rating} <Text style={{ color: '#9E9E9E', fontSize: 11 }}>({trainer.totalReviews || 0} reviews)</Text></Text>
+                    <Text style={styles.featuredRating}>⭐ {trainer.rating} <Text style={{ color: '#A1A1AA', fontSize: 12 }}>({trainer.totalReviews || 0} reviews)</Text></Text>
                   </View>
                   <Text style={styles.featuredPrice}>₹{trainer.pricing}</Text>
                 </View>
@@ -261,8 +287,8 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'web' ? 60 : 40,
     paddingBottom: 20,
   },
-  welcomeText: { color: '#9E9E9E', fontSize: 16, marginBottom: 8 },
-  welcomeName: { color: '#FF5722', fontWeight: '700' },
+  welcomeText: { color: '#A1A1AA', fontSize: 12, marginBottom: 8 },
+  welcomeName: { color: '#C9B07D', fontWeight: '700' },
   heroTitle: { color: '#ffffff', fontSize: 48, fontWeight: '800', marginBottom: 30, letterSpacing: -1 },
   
   searchBar: {
@@ -274,8 +300,8 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 600,
   },
-  searchIcon: { fontSize: 18, marginRight: 12, opacity: 0.7 },
-  searchPlaceholder: { color: '#777', fontSize: 16 },
+  searchIcon: { fontSize: 12, marginRight: 12, opacity: 0.7 },
+  searchPlaceholder: { color: '#777', fontSize: 12 },
 
   quoteContainer: {
     marginTop: 24,
@@ -283,10 +309,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     borderLeftWidth: 4,
-    borderLeftColor: '#FF5722',
+    borderLeftColor: '#C9B07D',
   },
-  quoteLabel: { color: '#FF5722', fontSize: 12, fontWeight: '700', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 },
-  quoteText: { color: '#E0E0E0', fontSize: 15, fontStyle: 'italic', lineHeight: 22 },
+  quoteLabel: { color: '#C9B07D', fontSize: 12, fontWeight: '700', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 },
+  quoteText: { color: '#E0E0E0', fontSize: 12, fontStyle: 'italic', lineHeight: 22 },
 
   statsWrapper: {
     marginTop: 10,
@@ -304,8 +330,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 16,
   },
-  statNumber: { color: '#fff', fontSize: 20, fontWeight: '700' },
-  statLabel: { color: '#777', fontSize: 13, marginTop: 4 },
+  statNumber: { color: '#fff', fontSize: 12, fontWeight: '700' },
+  statLabel: { color: '#777', fontSize: 12, marginTop: 4 },
   dotsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -314,7 +340,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#333' },
-  activeDot: { backgroundColor: '#FF5722', width: 24 },
+  activeDot: { backgroundColor: '#C9B07D', width: 24 },
 
   sectionHeader: {
     flexDirection: 'row',
@@ -323,8 +349,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
-  sectionTitle: { color: '#fff', fontSize: 24, fontWeight: '700' },
-  seeAllText: { color: '#FF5722', fontSize: 14, fontWeight: '600' },
+  sectionTitle: { color: '#fff', fontSize: 12, fontWeight: '700' },
+  seeAllText: { color: '#C9B07D', fontSize: 12, fontWeight: '600' },
 
   categoriesContainer: {
     paddingBottom: 20,
@@ -352,7 +378,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
-  categoryName: { color: '#fff', fontSize: 16, fontWeight: '800', textAlign: 'center', letterSpacing: 0.5 },
+  categoryName: { color: '#fff', fontSize: 12, fontWeight: '800', textAlign: 'center', letterSpacing: 0.5 },
 
   featuredContainer: {
     flexDirection: 'row',
@@ -394,7 +420,7 @@ const styles = StyleSheet.create({
   },
   featuredInitials: {
     color: '#fff',
-    fontSize: 64,
+    fontSize: 66,
     fontWeight: '800',
     letterSpacing: 2,
     opacity: 0.9,
@@ -408,7 +434,7 @@ const styles = StyleSheet.create({
     padding: 24,
     paddingTop: 16,
   },
-  featuredName: { color: '#fff', fontSize: 18, fontWeight: '700', marginBottom: 4 },
-  featuredRating: { color: '#fff', fontSize: 14, opacity: 0.9 },
-  featuredPrice: { color: '#fff', fontSize: 20, fontWeight: '700' },
+  featuredName: { color: '#fff', fontSize: 12, fontWeight: '700', marginBottom: 4 },
+  featuredRating: { color: '#fff', fontSize: 12, opacity: 0.9 },
+  featuredPrice: { color: '#fff', fontSize: 12, fontWeight: '700' },
 });

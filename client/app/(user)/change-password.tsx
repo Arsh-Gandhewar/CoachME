@@ -95,14 +95,14 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#141414' },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
   backBtn: { width: 60 },
-  backText: { color: '#9E9E9E', fontSize: 16 },
-  title: { color: '#fff', fontSize: 20, fontWeight: '700' },
+  backText: { color: '#A1A1AA', fontSize: 12 },
+  title: { color: '#fff', fontSize: 12, fontWeight: '700' },
   
   form: { padding: 20, marginTop: 20 },
   inputGroup: { marginBottom: 20 },
-  label: { color: '#9E9E9E', fontSize: 14, marginBottom: 8, fontWeight: '500' },
-  input: { backgroundColor: '#1a1a1a', borderRadius: 12, padding: 16, color: '#fff', fontSize: 16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  label: { color: '#A1A1AA', fontSize: 12, marginBottom: 8, fontWeight: '500' },
+  input: { backgroundColor: '#0A0A0A', borderRadius: 12, padding: 16, color: '#fff', fontSize: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
   
-  saveBtn: { backgroundColor: '#FF5722', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 20 },
-  saveBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  saveBtn: { backgroundColor: '#C9B07D', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 20 },
+  saveBtnText: { color: '#fff', fontSize: 12, fontWeight: '700' },
 });

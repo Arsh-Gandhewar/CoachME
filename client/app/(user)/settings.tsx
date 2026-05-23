@@ -33,24 +33,24 @@ export default function SettingsScreen() {
     {
       title: 'Account Settings',
       items: [
-        { icon: <User color="#9E9E9E" size={20} />, label: 'Personal Information', action: () => router.push('/(user)/edit-profile') },
-        { icon: <Mail color="#9E9E9E" size={20} />, label: 'Email Address', value: (user as any)?.email, action: () => router.push('/(user)/edit-profile') },
-        { icon: <Smartphone color="#9E9E9E" size={20} />, label: 'Phone Number', value: (user as any)?.mobile || 'Not set', action: () => router.push('/(user)/edit-profile') },
-        { icon: <Key color="#9E9E9E" size={20} />, label: 'Change Password', action: () => router.push('/(user)/change-password') },
+        { icon: <User color="#A1A1AA" size={20} />, label: 'Personal Information', action: () => router.push('/(user)/edit-profile') },
+        { icon: <Mail color="#A1A1AA" size={20} />, label: 'Email Address', value: (user as any)?.email, action: () => router.push('/(user)/edit-profile') },
+        { icon: <Smartphone color="#A1A1AA" size={20} />, label: 'Phone Number', value: (user as any)?.mobile || 'Not set', action: () => router.push('/(user)/edit-profile') },
+        { icon: <Key color="#A1A1AA" size={20} />, label: 'Change Password', action: () => router.push('/(user)/change-password') },
       ]
     },
     {
       title: 'Preferences',
       items: [
-        { icon: <Bell color="#9E9E9E" size={20} />, label: 'Push Notifications', value: 'On', action: () => router.push('/(user)/notifications') },
-        { icon: <MapPin color="#9E9E9E" size={20} />, label: 'Location Services', value: 'While Using', action: () => router.push('/(user)/location') },
+        { icon: <Bell color="#A1A1AA" size={20} />, label: 'Push Notifications', value: 'On', action: () => router.push('/(user)/notifications') },
+        { icon: <MapPin color="#A1A1AA" size={20} />, label: 'Location Services', value: 'While Using', action: () => router.push('/(user)/location') },
       ]
     },
     {
       title: 'Privacy & Security',
       items: [
-        { icon: <Shield color="#9E9E9E" size={20} />, label: 'Privacy Policy', action: () => router.push('/(user)/privacy-policy') },
-        { icon: <Settings color="#9E9E9E" size={20} />, label: 'Terms of Service', action: () => router.push('/(user)/terms-of-service') },
+        { icon: <Shield color="#A1A1AA" size={20} />, label: 'Privacy Policy', action: () => router.push('/(user)/privacy-policy') },
+        { icon: <Settings color="#A1A1AA" size={20} />, label: 'Terms of Service', action: () => router.push('/(user)/terms-of-service') },
       ]
     }
   ];
@@ -105,23 +105,23 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#141414' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, backgroundColor: '#1a1a1a', borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, backgroundColor: '#0A0A0A', borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
   backBtn: { width: 60 },
-  backText: { color: '#9E9E9E', fontSize: 16 },
-  title: { color: '#fff', fontSize: 20, fontWeight: '700' },
+  backText: { color: '#A1A1AA', fontSize: 12 },
+  title: { color: '#fff', fontSize: 12, fontWeight: '700' },
   
   content: { padding: 20 },
   section: { marginBottom: 32 },
-  sectionTitle: { color: '#9E9E9E', fontSize: 13, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12, paddingLeft: 4 },
+  sectionTitle: { color: '#A1A1AA', fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12, paddingLeft: 4 },
   
-  card: { backgroundColor: '#1a1a1a', borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  card: { backgroundColor: '#0A0A0A', borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
   itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
   itemLeft: { flexDirection: 'row', alignItems: 'center' },
-  itemLabel: { color: '#fff', fontSize: 16, marginLeft: 16 },
+  itemLabel: { color: '#fff', fontSize: 12, marginLeft: 16 },
   itemRight: { flexDirection: 'row', alignItems: 'center' },
-  itemValue: { color: '#9E9E9E', fontSize: 14 },
-  chevron: { color: '#666', fontSize: 22, marginTop: -2 },
+  itemValue: { color: '#A1A1AA', fontSize: 12 },
+  chevron: { color: '#666', fontSize: 12, marginTop: -2 },
 
   deleteBtn: { marginTop: 20, padding: 16, alignItems: 'center' },
-  deleteText: { color: '#F44336', fontSize: 16, fontWeight: '600' }
+  deleteText: { color: '#F44336', fontSize: 12, fontWeight: '600' }
 });

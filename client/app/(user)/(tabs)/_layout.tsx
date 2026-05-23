@@ -17,7 +17,7 @@ export default function UserTabs() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: '#FF5722',
+        tabBarActiveTintColor: '#C9B07D',
         tabBarInactiveTintColor: '#666',
         tabBarLabelStyle: styles.tabLabel,
       }}
@@ -32,9 +32,9 @@ export default function UserTabs() {
 }
 
 const styles = StyleSheet.create({
-  tabBar: { backgroundColor: '#1a1a1a', borderTopColor: 'rgba(255,255,255,0.06)', borderTopWidth: 1, height: 70, paddingBottom: 10, paddingTop: 6 },
-  tabLabel: { fontSize: 11, fontWeight: '500' },
+  tabBar: { backgroundColor: '#0A0A0A', borderTopColor: 'rgba(255,255,255,0.04)', borderTopWidth: 1, height: 70, paddingBottom: 10, paddingTop: 6 },
+  tabLabel: { fontSize: 12, fontWeight: '500' },
   tabItem: { alignItems: 'center' },
-  dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: '#FF5722', marginBottom: 4 },
-  icon: { fontSize: 22 },
+  dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: '#C9B07D', marginBottom: 4 },
+  icon: { fontSize: 20 },
 });

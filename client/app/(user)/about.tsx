@@ -42,20 +42,20 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#141414' },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
   backBtn: { width: 60 },
-  backText: { color: '#9E9E9E', fontSize: 16 },
-  title: { color: '#fff', fontSize: 20, fontWeight: '700' },
+  backText: { color: '#A1A1AA', fontSize: 12 },
+  title: { color: '#fff', fontSize: 12, fontWeight: '700' },
   
   content: { padding: 20 },
   logoContainer: { alignItems: 'center', marginVertical: 40 },
-  logoIcon: { fontSize: 64, marginBottom: 16 },
-  logoText: { fontSize: 32, fontWeight: '800', color: '#fff' },
-  logoAccent: { color: '#FF5722' },
+  logoIcon: { fontSize: 66, marginBottom: 16 },
+  logoText: { fontSize: 34, fontWeight: '800', color: '#fff' },
+  logoAccent: { color: '#C9B07D' },
   version: { color: '#777', marginTop: 8 },
 
-  card: { backgroundColor: '#1a1a1a', borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', marginBottom: 40 },
+  card: { backgroundColor: '#0A0A0A', borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', marginBottom: 40 },
   itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
-  itemLabel: { color: '#fff', fontSize: 16 },
-  chevron: { color: '#666', fontSize: 22, marginTop: -2 },
+  itemLabel: { color: '#fff', fontSize: 12 },
+  chevron: { color: '#666', fontSize: 12, marginTop: -2 },
 
   copyright: { color: '#666', textAlign: 'center', fontSize: 12 },
 });

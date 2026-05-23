@@ -48,11 +48,11 @@ export default function TrainerDetailScreen() {
     }
   };
 
-  if (loading) return <View style={styles.loading}><ActivityIndicator size="large" color="#FF5722" /></View>;
+  if (loading) return <View style={styles.loading}><ActivityIndicator size="large" color="#C9B07D" /></View>;
   if (!trainer) return <View style={styles.loading}><Text style={styles.errorText}>Trainer not found</Text></View>;
 
   const initials = trainer.fullName.split(' ').map((n) => n[0]).join('').slice(0, 2);
-  const colors = ['#FF5722', '#7C4DFF', '#00BCD4', '#4CAF50', '#E91E63'];
+  const colors = ['#C9B07D', '#7C4DFF', '#00BCD4', '#4CAF50', '#E91E63'];
   const bgColor = colors[trainer.fullName.length % colors.length];
 
   return (
@@ -171,50 +171,50 @@ export default function TrainerDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0f0f0f' },
-  loading: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#0f0f0f' },
-  errorText: { color: '#F44336', fontSize: 16 },
+  container: { flex: 1, backgroundColor: '#000000' },
+  loading: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000000' },
+  errorText: { color: '#F44336', fontSize: 12 },
   hero: { paddingTop: 60, paddingBottom: 24, alignItems: 'center', borderBottomLeftRadius: 28, borderBottomRightRadius: 28 },
   backBtn: { position: 'absolute', top: 50, left: 20 },
-  backText: { color: '#FF5722', fontSize: 16, fontWeight: '600' },
+  backText: { color: '#C9B07D', fontSize: 12, fontWeight: '600' },
   favBtn: { position: 'absolute', top: 50, right: 20 },
-  favIcon: { fontSize: 24 },
+  favIcon: { fontSize: 12 },
   avatarLarge: { width: 90, height: 90, borderRadius: 28, justifyContent: 'center', alignItems: 'center', marginBottom: 12 },
-  avatarText: { color: '#fff', fontSize: 32, fontWeight: '700' },
-  name: { fontSize: 24, fontWeight: '700', color: '#fff' },
+  avatarText: { color: '#fff', fontSize: 34, fontWeight: '700' },
+  name: { fontSize: 12, fontWeight: '700', color: '#fff' },
   badges: { flexDirection: 'row', marginTop: 10, gap: 8 },
   badge: { paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12, borderWidth: 1, borderColor: '#4CAF50' },
   premiumBadge: { borderColor: '#FFC107' },
   badgeText: { fontSize: 12, color: '#4CAF50', fontWeight: '600' },
-  stats: { flexDirection: 'row', justifyContent: 'space-around', backgroundColor: '#1a1a1a', marginHorizontal: 20, borderRadius: 16, padding: 16, marginTop: -16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
+  stats: { flexDirection: 'row', justifyContent: 'space-around', backgroundColor: '#0A0A0A', marginHorizontal: 20, borderRadius: 16, padding: 16, marginTop: -16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
   stat: { alignItems: 'center' },
-  statValue: { fontSize: 18, fontWeight: '700', color: '#fff' },
-  statLabel: { fontSize: 12, color: '#9E9E9E', marginTop: 2 },
-  statDivider: { width: 1, backgroundColor: 'rgba(255,255,255,0.06)' },
+  statValue: { fontSize: 12, fontWeight: '700', color: '#fff' },
+  statLabel: { fontSize: 12, color: '#A1A1AA', marginTop: 2 },
+  statDivider: { width: 1, backgroundColor: 'rgba(255,255,255,0.04)' },
   section: { paddingHorizontal: 20, marginTop: 24 },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#fff', marginBottom: 12 },
-  bio: { color: '#9E9E9E', fontSize: 14, lineHeight: 22 },
-  showMore: { color: '#FF5722', fontSize: 13, marginTop: 6, fontWeight: '500' },
-  resumeBtn: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#1E1E1E', paddingVertical: 12, paddingHorizontal: 16, borderRadius: 12, marginTop: 16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', alignSelf: 'flex-start' },
-  resumeBtnText: { color: '#fff', fontSize: 14, fontWeight: '600' },
+  sectionTitle: { fontSize: 12, fontWeight: '700', color: '#fff', marginBottom: 12 },
+  bio: { color: '#A1A1AA', fontSize: 12, lineHeight: 22 },
+  showMore: { color: '#C9B07D', fontSize: 12, marginTop: 6, fontWeight: '500' },
+  resumeBtn: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#1E1E1E', paddingVertical: 12, paddingHorizontal: 16, borderRadius: 12, marginTop: 16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)', alignSelf: 'flex-start' },
+  resumeBtnText: { color: '#fff', fontSize: 12, fontWeight: '600' },
   tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  tag: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20, backgroundColor: '#242424' },
-  tagText: { color: '#fff', fontSize: 13 },
+  tag: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20, backgroundColor: '#141414' },
+  tagText: { color: '#fff', fontSize: 12 },
   certItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-  certIcon: { fontSize: 16, marginRight: 10 },
-  certText: { color: '#fff', fontSize: 14 },
-  sessionItem: { backgroundColor: '#242424', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 12, marginBottom: 8 },
-  sessionText: { color: '#fff', fontSize: 14 },
-  infoRow: { color: '#9E9E9E', fontSize: 14, marginBottom: 6 },
-  reviewCard: { backgroundColor: '#1a1a1a', borderRadius: 14, padding: 14, marginBottom: 10, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
+  certIcon: { fontSize: 12, marginRight: 10 },
+  certText: { color: '#fff', fontSize: 12 },
+  sessionItem: { backgroundColor: '#141414', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 12, marginBottom: 8 },
+  sessionText: { color: '#fff', fontSize: 12 },
+  infoRow: { color: '#A1A1AA', fontSize: 12, marginBottom: 6 },
+  reviewCard: { backgroundColor: '#0A0A0A', borderRadius: 14, padding: 14, marginBottom: 10, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
   reviewHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 },
-  reviewUser: { color: '#fff', fontWeight: '600', fontSize: 14 },
+  reviewUser: { color: '#fff', fontWeight: '600', fontSize: 12 },
   reviewRating: { fontSize: 12 },
-  reviewText: { color: '#9E9E9E', fontSize: 13, lineHeight: 20 },
-  noReviews: { color: '#666', fontSize: 14 },
-  bookBar: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#1a1a1a', borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 16, paddingBottom: 34 },
-  bookPrice: { fontSize: 20, fontWeight: '700', color: '#fff' },
-  bookUnit: { fontSize: 12, color: '#9E9E9E' },
-  bookBtn: { backgroundColor: '#FF5722', paddingHorizontal: 32, paddingVertical: 14, borderRadius: 14 },
-  bookBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  reviewText: { color: '#A1A1AA', fontSize: 12, lineHeight: 20 },
+  noReviews: { color: '#666', fontSize: 12 },
+  bookBar: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#0A0A0A', borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.04)', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 16, paddingBottom: 34 },
+  bookPrice: { fontSize: 12, fontWeight: '700', color: '#fff' },
+  bookUnit: { fontSize: 12, color: '#A1A1AA' },
+  bookBtn: { backgroundColor: '#C9B07D', paddingHorizontal: 32, paddingVertical: 14, borderRadius: 14 },
+  bookBtnText: { color: '#fff', fontSize: 12, fontWeight: '700' },
 });

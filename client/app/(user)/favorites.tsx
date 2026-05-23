@@ -25,7 +25,7 @@ export default function FavoritesScreen() {
   }, []);
 
   const initials = (name: string) => name.split(' ').map((n) => n[0]).join('').slice(0, 2);
-  const colors = ['#4CAF50', '#E91E63', '#F44336', '#FF5722', '#FF9800', '#2196F3', '#00BCD4', '#7C4DFF'];
+  const colors = ['#4CAF50', '#E91E63', '#F44336', '#C9B07D', '#FF9800', '#2196F3', '#00BCD4', '#7C4DFF'];
 
   const renderItem = ({ item }: { item: Trainer }) => (
     <TouchableOpacity style={styles.card} onPress={() => router.push({ pathname: '/(user)/trainer/[id]', params: { id: item._id } })}>
@@ -40,7 +40,7 @@ export default function FavoritesScreen() {
         <Text style={styles.name}>{item.fullName}</Text>
         <Text style={styles.meta}>{item.category?.replace('-', ' ')} • {item.experience}yr Exp</Text>
         <View style={styles.row}>
-          <Text style={styles.rating}>⭐ {item.rating} <Text style={{ color: '#666', fontSize: 11 }}>({item.totalReviews || 0} reviews)</Text></Text>
+          <Text style={styles.rating}>⭐ {item.rating} <Text style={{ color: '#666', fontSize: 12 }}>({item.totalReviews || 0} reviews)</Text></Text>
           <Text style={styles.price}>₹{item.pricing}</Text>
         </View>
       </View>
@@ -60,7 +60,7 @@ export default function FavoritesScreen() {
       <View style={styles.content}>
         {loading ? (
           <View style={styles.centerBox}>
-            <ActivityIndicator size="large" color="#FF5722" />
+            <ActivityIndicator size="large" color="#C9B07D" />
           </View>
         ) : favorites.length > 0 ? (
           <FlatList
@@ -89,37 +89,37 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#141414' },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
   backBtn: { width: 60 },
-  backText: { color: '#9E9E9E', fontSize: 16 },
-  title: { color: '#fff', fontSize: 20, fontWeight: '700' },
+  backText: { color: '#A1A1AA', fontSize: 12 },
+  title: { color: '#fff', fontSize: 12, fontWeight: '700' },
   
   content: { flex: 1 },
   centerBox: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   
   emptyState: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-  icon: { fontSize: 64, marginBottom: 16, opacity: 0.5 },
-  emptyTitle: { color: '#fff', fontSize: 20, fontWeight: '700', marginBottom: 8 },
-  emptyDesc: { color: '#9E9E9E', fontSize: 15, marginBottom: 24 },
+  icon: { fontSize: 66, marginBottom: 16, opacity: 0.5 },
+  emptyTitle: { color: '#fff', fontSize: 12, fontWeight: '700', marginBottom: 8 },
+  emptyDesc: { color: '#A1A1AA', fontSize: 12, marginBottom: 24 },
   
-  browseBtn: { backgroundColor: '#1a1a1a', borderWidth: 1, borderColor: '#FF5722', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 24 },
-  browseText: { color: '#FF5722', fontSize: 16, fontWeight: '600' },
+  browseBtn: { backgroundColor: '#0A0A0A', borderWidth: 1, borderColor: '#C9B07D', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 24 },
+  browseText: { color: '#C9B07D', fontSize: 12, fontWeight: '600' },
 
   list: { padding: 20, paddingBottom: 100 },
   card: { 
     flexDirection: 'row', 
-    backgroundColor: '#1a1a1a', 
+    backgroundColor: '#0A0A0A', 
     borderRadius: 16, 
     padding: 16, 
     marginBottom: 12, 
     borderWidth: 1, 
-    borderColor: 'rgba(255,255,255,0.06)' 
+    borderColor: 'rgba(255,255,255,0.04)' 
   },
   avatar: { width: 56, height: 56, borderRadius: 14, justifyContent: 'center', alignItems: 'center' },
   avatarImage: { width: '100%', height: '100%', borderRadius: 14 },
-  avatarText: { color: '#fff', fontSize: 18, fontWeight: '700' },
+  avatarText: { color: '#fff', fontSize: 12, fontWeight: '700' },
   info: { flex: 1, marginLeft: 16, justifyContent: 'center' },
-  name: { fontSize: 16, fontWeight: '600', color: '#fff', marginBottom: 4 },
-  meta: { fontSize: 13, color: '#9E9E9E', marginBottom: 8, textTransform: 'capitalize' },
+  name: { fontSize: 12, fontWeight: '600', color: '#fff', marginBottom: 4 },
+  meta: { fontSize: 12, color: '#A1A1AA', marginBottom: 8, textTransform: 'capitalize' },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  rating: { color: '#FFC107', fontSize: 13, fontWeight: '500' },
-  price: { color: '#FF5722', fontSize: 15, fontWeight: '600' },
+  rating: { color: '#FFC107', fontSize: 12, fontWeight: '500' },
+  price: { color: '#C9B07D', fontSize: 12, fontWeight: '600' },
 });

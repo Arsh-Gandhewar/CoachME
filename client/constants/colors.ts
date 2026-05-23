@@ -1,14 +1,14 @@
 export const colors = {
   dark: {
-    900: '#0f0f0f',
-    800: '#1a1a1a',
-    700: '#242424',
+    900: '#000000',
+    800: '#0A0A0A',
+    700: '#141414',
     600: '#2d2d2d',
     500: '#333333',
   },
   accent: {
-    DEFAULT: '#FF5722',
-    light: 'rgba(255,87,34,0.15)',
+    DEFAULT: '#C9B07D',
+    light: 'rgba(201,176,125,0.15)',
     hover: '#FF7043',
   },
   purple: {
@@ -16,8 +16,8 @@ export const colors = {
     light: 'rgba(124,77,255,0.15)',
   },
   text: {
-    primary: '#FAFAFA',
-    secondary: '#9E9E9E',
+    primary: '#FFFFFF',
+    secondary: '#A1A1AA',
     muted: '#616161',
   },
   status: {
@@ -25,7 +25,7 @@ export const colors = {
     warning: '#FFC107',
     error: '#F44336',
   },
-  border: 'rgba(255,255,255,0.06)',
+  border: 'rgba(255,255,255,0.04)',
   borderLight: 'rgba(255,255,255,0.12)',
   overlay: 'rgba(0,0,0,0.5)',
   glass: 'rgba(26,26,26,0.85)',

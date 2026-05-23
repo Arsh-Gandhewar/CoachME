@@ -53,7 +53,7 @@ export default function SupportChatScreen() {
     const isUser = item.role === 'user';
     return (
       <View style={[styles.messageBubble, isUser ? styles.userBubble : styles.modelBubble]}>
-        {!isUser && <Bot color="#9E9E9E" size={16} style={{ marginRight: 8, marginTop: 2 }} />}
+        {!isUser && <Bot color="#A1A1AA" size={16} style={{ marginRight: 8, marginTop: 2 }} />}
         <Text style={isUser ? styles.userText : styles.modelText}>{item.text}</Text>
       </View>
     );
@@ -108,10 +108,10 @@ export default function SupportChatScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#141414' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, backgroundColor: '#1a1a1a', borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, backgroundColor: '#0A0A0A', borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
   backBtn: { width: 60 },
-  backText: { color: '#9E9E9E', fontSize: 16 },
-  title: { color: '#fff', fontSize: 18, fontWeight: '700' },
+  backText: { color: '#A1A1AA', fontSize: 12 },
+  title: { color: '#fff', fontSize: 12, fontWeight: '700' },
   
   chatContainer: { padding: 16, paddingBottom: 32 },
   
@@ -123,35 +123,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   userBubble: {
-    backgroundColor: '#FF5722',
+    backgroundColor: '#C9B07D',
     alignSelf: 'flex-end',
     borderBottomRightRadius: 4,
   },
   modelBubble: {
-    backgroundColor: '#242424',
+    backgroundColor: '#141414',
     alignSelf: 'flex-start',
     borderBottomLeftRadius: 4,
   },
-  userText: { color: '#fff', fontSize: 15, lineHeight: 22 },
-  modelText: { color: '#E0E0E0', fontSize: 15, lineHeight: 22, flex: 1 },
+  userText: { color: '#fff', fontSize: 12, lineHeight: 22 },
+  modelText: { color: '#E0E0E0', fontSize: 12, lineHeight: 22, flex: 1 },
   
   inputContainer: {
     flexDirection: 'row',
     padding: 16,
     paddingBottom: Platform.OS === 'ios' ? 32 : 16,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0A0A0A',
     borderTopWidth: 1,
     borderTopColor: 'rgba(255,255,255,0.05)',
     alignItems: 'center',
   },
   input: {
     flex: 1,
-    backgroundColor: '#242424',
+    backgroundColor: '#141414',
     borderRadius: 24,
     paddingHorizontal: 16,
     paddingVertical: 12,
     color: '#fff',
-    fontSize: 16,
+    fontSize: 12,
     maxHeight: 100,
     ...Platform.select({ web: { outlineStyle: 'none' as any }, default: {} })
   },
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#FF5722',
+    backgroundColor: '#C9B07D',
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 12,

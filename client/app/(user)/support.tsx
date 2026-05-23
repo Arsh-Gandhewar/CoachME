@@ -33,7 +33,7 @@ export default function SupportScreen() {
         <View style={styles.card}>
           <TouchableOpacity style={styles.itemRow} onPress={() => router.push('/(user)/support-chat')}>
             <View style={styles.itemLeft}>
-              <MessageCircle color="#FF5722" size={24} />
+              <MessageCircle color="#C9B07D" size={24} />
               <View style={styles.itemText}>
                 <Text style={styles.itemLabel}>Live AI Support</Text>
                 <Text style={styles.itemDesc}>Instant answers to your queries</Text>
@@ -43,7 +43,7 @@ export default function SupportScreen() {
           </TouchableOpacity>
           <TouchableOpacity style={[styles.itemRow, { borderBottomWidth: 0 }]}>
             <View style={styles.itemLeft}>
-              <Mail color="#FF5722" size={24} />
+              <Mail color="#C9B07D" size={24} />
               <View style={styles.itemText}>
                 <Text style={styles.itemLabel}>Email Support</Text>
                 <Text style={styles.itemDesc}>support@trainersapp.com</Text>
@@ -77,22 +77,22 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#141414' },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
   backBtn: { width: 60 },
-  backText: { color: '#9E9E9E', fontSize: 16 },
-  title: { color: '#fff', fontSize: 20, fontWeight: '700' },
+  backText: { color: '#A1A1AA', fontSize: 12 },
+  title: { color: '#fff', fontSize: 12, fontWeight: '700' },
   
   content: { padding: 20 },
   
-  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#1a1a1a', borderRadius: 12, paddingHorizontal: 16, marginBottom: 32, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
-  searchIcon: { fontSize: 16, marginRight: 12 },
-  searchInput: { flex: 1, paddingVertical: 14, color: '#fff', fontSize: 16, ...Platform.select({ web: { outlineStyle: 'none' as any }, default: {} }) },
+  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#0A0A0A', borderRadius: 12, paddingHorizontal: 16, marginBottom: 32, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  searchIcon: { fontSize: 12, marginRight: 12 },
+  searchInput: { flex: 1, paddingVertical: 14, color: '#fff', fontSize: 12, ...Platform.select({ web: { outlineStyle: 'none' as any }, default: {} }) },
 
-  sectionTitle: { color: '#9E9E9E', fontSize: 13, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12, paddingLeft: 4 },
+  sectionTitle: { color: '#A1A1AA', fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12, paddingLeft: 4 },
   
-  card: { backgroundColor: '#1a1a1a', borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', marginBottom: 32 },
+  card: { backgroundColor: '#0A0A0A', borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', marginBottom: 32 },
   itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
   itemLeft: { flexDirection: 'row', alignItems: 'center' },
   itemText: { marginLeft: 16 },
-  itemLabel: { color: '#fff', fontSize: 16, marginBottom: 4 },
-  itemDesc: { color: '#777', fontSize: 13 },
-  chevron: { color: '#666', fontSize: 22, marginTop: -2 },
+  itemLabel: { color: '#fff', fontSize: 12, marginBottom: 4 },
+  itemDesc: { color: '#777', fontSize: 12 },
+  chevron: { color: '#666', fontSize: 12, marginTop: -2 },
 });

@@ -57,7 +57,7 @@ export default function SearchScreen() {
   useEffect(() => { search(); }, [category, sort, location]);
 
   const initials = (name: string) => name.split(' ').map((n) => n[0]).join('').slice(0, 2);
-  const colors = ['#4CAF50', '#E91E63', '#F44336', '#FF5722', '#FF9800', '#2196F3', '#00BCD4', '#7C4DFF'];
+  const colors = ['#4CAF50', '#E91E63', '#F44336', '#C9B07D', '#FF9800', '#2196F3', '#00BCD4', '#7C4DFF'];
 
   return (
     <View style={styles.container}>
@@ -103,7 +103,7 @@ export default function SearchScreen() {
         </View>
 
         {loading ? (
-          <ActivityIndicator size="large" color="#FF5722" style={{ marginTop: 40 }} />
+          <ActivityIndicator size="large" color="#C9B07D" style={{ marginTop: 40 }} />
         ) : (
           <FlatList
             data={trainers}
@@ -121,7 +121,7 @@ export default function SearchScreen() {
                   <Text style={styles.name}>{item.fullName}</Text>
                   <Text style={styles.meta}>{item.category?.replace('-', ' ')} • {item.experience}yr Exp</Text>
                   <View style={styles.row}>
-                    <Text style={styles.rating}>⭐ {item.rating} <Text style={{ color: '#666', fontSize: 11 }}>({item.totalReviews || 0} reviews)</Text></Text>
+                    <Text style={styles.rating}>⭐ {item.rating} <Text style={{ color: '#666', fontSize: 12 }}>({item.totalReviews || 0} reviews)</Text></Text>
                     <Text style={styles.price}>₹{item.pricing}</Text>
                   </View>
                 </View>
@@ -141,19 +141,19 @@ const styles = StyleSheet.create({
   contentWrapper: { width: '100%', maxWidth: 1000, flex: 1 },
   
   header: { paddingHorizontal: 20, paddingTop: 40, paddingBottom: 16 },
-  title: { fontSize: 28, fontWeight: '700', color: '#fff', marginBottom: 20 },
+  title: { fontSize: 12, fontWeight: '700', color: '#fff', marginBottom: 20 },
   
   searchBar: { 
     flexDirection: 'row', 
     alignItems: 'center', 
-    backgroundColor: '#1a1a1a', 
+    backgroundColor: '#0A0A0A', 
     borderRadius: 16, 
     paddingHorizontal: 16,
     borderWidth: 1, 
-    borderColor: 'rgba(255,255,255,0.06)' 
+    borderColor: 'rgba(255,255,255,0.04)' 
   },
-  searchIcon: { fontSize: 16, marginRight: 12 },
-  searchInput: { flex: 1, paddingVertical: 16, color: '#fff', fontSize: 16, ...Platform.select({ web: { outlineStyle: 'none' as any }, default: {} }) },
+  searchIcon: { fontSize: 12, marginRight: 12 },
+  searchInput: { flex: 1, paddingVertical: 16, color: '#fff', fontSize: 12, ...Platform.select({ web: { outlineStyle: 'none' as any }, default: {} }) },
   
   filterSection: {
     paddingHorizontal: 20,
@@ -165,14 +165,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, 
     paddingVertical: 8, 
     borderRadius: 20, 
-    backgroundColor: '#1a1a1a', 
+    backgroundColor: '#0A0A0A', 
     marginRight: 8, 
     borderWidth: 1, 
-    borderColor: 'rgba(255,255,255,0.06)' 
+    borderColor: 'rgba(255,255,255,0.04)' 
   },
-  chipActive: { backgroundColor: 'rgba(255,87,34,0.15)', borderColor: '#FF5722' },
-  chipText: { color: '#9E9E9E', fontSize: 13, textTransform: 'capitalize' },
-  chipTextActive: { color: '#FF5722', fontWeight: '600' },
+  chipActive: { backgroundColor: 'rgba(201,176,125,0.15)', borderColor: '#C9B07D' },
+  chipText: { color: '#A1A1AA', fontSize: 12, textTransform: 'capitalize' },
+  chipTextActive: { color: '#C9B07D', fontWeight: '600' },
   
   sortRow: { flexDirection: 'row', alignItems: 'center', marginTop: 12 },
   sortRowContainer: { alignItems: 'center' },
@@ -182,33 +182,33 @@ const styles = StyleSheet.create({
     paddingVertical: 6, 
     borderRadius: 12, 
     marginRight: 8, 
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#0A0A0A',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.04)'
   },
-  sortChipActive: { backgroundColor: '#FF5722', borderColor: '#FF5722' },
-  sortText: { color: '#9E9E9E', fontSize: 11 },
+  sortChipActive: { backgroundColor: '#C9B07D', borderColor: '#C9B07D' },
+  sortText: { color: '#A1A1AA', fontSize: 12 },
   sortTextActive: { color: '#fff', fontWeight: '600' },
   
   list: { padding: 20, paddingBottom: 100 },
   card: { 
     flexDirection: 'row', 
-    backgroundColor: '#1a1a1a', 
+    backgroundColor: '#0A0A0A', 
     borderRadius: 16, 
     padding: 16, 
     marginBottom: 12, 
     borderWidth: 1, 
-    borderColor: 'rgba(255,255,255,0.06)' 
+    borderColor: 'rgba(255,255,255,0.04)' 
   },
   avatar: { width: 56, height: 56, borderRadius: 14, justifyContent: 'center', alignItems: 'center' },
   avatarImage: { width: '100%', height: '100%', borderRadius: 14 },
-  avatarText: { color: '#fff', fontSize: 18, fontWeight: '700' },
+  avatarText: { color: '#fff', fontSize: 12, fontWeight: '700' },
   info: { flex: 1, marginLeft: 16, justifyContent: 'center' },
-  name: { fontSize: 16, fontWeight: '600', color: '#fff', marginBottom: 4 },
-  meta: { fontSize: 13, color: '#9E9E9E', marginBottom: 8, textTransform: 'capitalize' },
+  name: { fontSize: 12, fontWeight: '600', color: '#fff', marginBottom: 4 },
+  meta: { fontSize: 12, color: '#A1A1AA', marginBottom: 8, textTransform: 'capitalize' },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  rating: { color: '#FFC107', fontSize: 13, fontWeight: '500' },
-  price: { color: '#FF5722', fontSize: 15, fontWeight: '600' },
+  rating: { color: '#FFC107', fontSize: 12, fontWeight: '500' },
+  price: { color: '#C9B07D', fontSize: 12, fontWeight: '600' },
   
-  empty: { color: '#666', textAlign: 'center', marginTop: 40, fontSize: 15 },
+  empty: { color: '#666', textAlign: 'center', marginTop: 40, fontSize: 12 },
 });

@@ -47,7 +47,7 @@ function AuthGate() {
   if (isLoading) {
     return (
       <View style={styles.loading}>
-        <ActivityIndicator size="large" color="#FF5722" />
+        <ActivityIndicator size="large" color="#C9B07D" />
       </View>
     );
   }
@@ -69,6 +69,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#0f0f0f',
+    backgroundColor: '#000000',
   },
 });

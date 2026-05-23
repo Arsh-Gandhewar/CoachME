@@ -43,13 +43,13 @@ export default function ProfileScreen() {
   };
 
   const menuItems = [
-    { icon: <User color="#9E9E9E" size={20} />, label: 'Edit Profile', action: () => router.push('/(user)/edit-profile') },
-    { icon: <Heart color="#9E9E9E" size={20} />, label: 'Favorites', action: () => router.push('/(user)/favorites') },
-    { icon: <CreditCard color="#9E9E9E" size={20} />, label: 'Payment Methods', action: () => router.push('/(user)/payment') },
-    { icon: <Bell color="#9E9E9E" size={20} />, label: 'Notifications', action: () => router.push('/(user)/notifications') },
-    { icon: <Settings color="#9E9E9E" size={20} />, label: 'Settings', action: () => router.push('/(user)/settings') },
-    { icon: <HelpCircle color="#9E9E9E" size={20} />, label: 'Help & Support', action: () => router.push('/(user)/support') },
-    { icon: <Info color="#9E9E9E" size={20} />, label: 'About', action: () => router.push('/(user)/about') },
+    { icon: <User color="#A1A1AA" size={20} />, label: 'Edit Profile', action: () => router.push('/(user)/edit-profile') },
+    { icon: <Heart color="#A1A1AA" size={20} />, label: 'Favorites', action: () => router.push('/(user)/favorites') },
+    { icon: <CreditCard color="#A1A1AA" size={20} />, label: 'Payment Methods', action: () => router.push('/(user)/payment') },
+    { icon: <Bell color="#A1A1AA" size={20} />, label: 'Notifications', action: () => router.push('/(user)/notifications') },
+    { icon: <Settings color="#A1A1AA" size={20} />, label: 'Settings', action: () => router.push('/(user)/settings') },
+    { icon: <HelpCircle color="#A1A1AA" size={20} />, label: 'Help & Support', action: () => router.push('/(user)/support') },
+    { icon: <Info color="#A1A1AA" size={20} />, label: 'About', action: () => router.push('/(user)/about') },
   ];
 
   return (
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   
   pageTitle: {
     color: '#fff',
-    fontSize: 24,
+    fontSize: 12,
     fontWeight: '600',
     textAlign: 'center',
     marginTop: 40,
@@ -127,8 +127,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  avatarIcon: { fontSize: 48 },
-  name: { fontSize: 18, fontWeight: '700', color: '#fff', letterSpacing: 1 },
+  avatarIcon: { fontSize: 50 },
+  name: { fontSize: 12, fontWeight: '700', color: '#fff', letterSpacing: 1 },
   
   statsRow: {
     flexDirection: 'row',
@@ -140,11 +140,11 @@ const styles = StyleSheet.create({
   },
   statValue: {
     color: '#fff',
-    fontSize: 20,
+    fontSize: 12,
     fontWeight: '600',
   },
   statLabel: {
-    color: '#9E9E9E',
+    color: '#A1A1AA',
     fontSize: 12,
     marginTop: 4,
   },
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     marginRight: 16 
   },
   menuLabel: { 
-    fontSize: 16, 
+    fontSize: 12, 
     color: '#E0E0E0', 
     fontWeight: '400' 
   },
