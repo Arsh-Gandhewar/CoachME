@@ -20,14 +20,7 @@ export default function SupportScreen() {
       </View>
 
       <View style={styles.content}>
-        <View style={styles.searchBar}>
-          <Text style={styles.searchIcon}>🔍</Text>
-          <TextInput 
-            style={styles.searchInput} 
-            placeholder="How can we help you?" 
-            placeholderTextColor="#666" 
-          />
-        </View>
+
 
         <Text style={styles.sectionTitle}>Contact Us</Text>
         <View style={styles.card}>
@@ -81,10 +74,6 @@ const styles = StyleSheet.create({
   title: { color: '#fff', fontSize: 12, fontWeight: '700' },
   
   content: { padding: 20 },
-  
-  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#0A0A0A', borderRadius: 12, paddingHorizontal: 16, marginBottom: 32, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
-  searchIcon: { fontSize: 12, marginRight: 12 },
-  searchInput: { flex: 1, paddingVertical: 14, color: '#fff', fontSize: 12, ...Platform.select({ web: { outlineStyle: 'none' as any }, default: {} }) },
 
   sectionTitle: { color: '#A1A1AA', fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12, paddingLeft: 4 },
   
