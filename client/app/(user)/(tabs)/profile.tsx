@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   
   pageTitle: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: 24,
     fontWeight: '600',
     textAlign: 'center',
     marginTop: Platform.OS === 'web' ? 20 : 50,

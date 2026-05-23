@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   contentWrapper: { width: '100%', maxWidth: 1000, flex: 1 },
   
   header: { paddingHorizontal: 16, paddingTop: Platform.OS === 'web' ? 40 : 50, paddingBottom: 8 },
-  title: { fontSize: 12, fontWeight: '700', color: '#fff', marginBottom: 12 },
+  title: { fontSize: 24, fontWeight: '700', color: '#fff', marginBottom: 12 },
   
   searchBar: { 
     flexDirection: 'row', 
