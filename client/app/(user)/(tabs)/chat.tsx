@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { chatAPI } from '../../../services/endpoints';
 import { Chat } from '../../../types';

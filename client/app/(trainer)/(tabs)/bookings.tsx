@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, Platform } from 'react-native';
 import { bookingAPI } from '../../../services/endpoints';
 
 export default function TrainerBookingsScreen() {
