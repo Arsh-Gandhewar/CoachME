@@ -108,17 +108,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     textAlign: 'center',
-    marginTop: 40,
-    marginBottom: 40,
+    marginTop: 20,
+    marginBottom: 20,
   },
 
-  header: { alignItems: 'center', marginBottom: 40 },
-  avatarLarge: { 
+  header: { alignItems: 'center', marginBottom: 20 },
+  avatarContainer: { 
     width: 80, 
     height: 80, 
     justifyContent: 'center', 
     alignItems: 'center', 
-    marginBottom: 16,
+    marginBottom: 12,
     borderRadius: 40,
     overflow: 'hidden',
     backgroundColor: '#1E1E1E',
@@ -132,8 +132,8 @@ const styles = StyleSheet.create({
   
   statsRow: {
     flexDirection: 'row',
-    marginTop: 20,
-    gap: 40,
+    marginTop: 12,
+    gap: 20,
   },
   stat: {
     alignItems: 'center',
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   menuItem: { 
     flexDirection: 'row', 
     alignItems: 'center', 
-    paddingVertical: 20, 
+    paddingVertical: 16, 
     borderBottomWidth: 1, 
     borderBottomColor: 'rgba(255,255,255,0.05)',
   },
