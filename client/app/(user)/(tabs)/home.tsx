@@ -311,7 +311,12 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoriesContainer}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false} 
+          style={{ marginHorizontal: -20 }}
+          contentContainerStyle={[styles.categoriesContainer, { paddingHorizontal: 20 }]}
+        >
           {categories.map((cat: any) => (
             <TouchableOpacity 
               key={cat._id} 
