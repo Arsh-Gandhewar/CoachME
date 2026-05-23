@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
 
   statsWrapper: {
     marginTop: 10,
-    marginBottom: 40,
+    marginBottom: 10,
     alignItems: isWeb ? 'center' : 'flex-start',
   },
   statsContainer: {
