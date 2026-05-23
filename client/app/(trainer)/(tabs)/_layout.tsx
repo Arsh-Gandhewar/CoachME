@@ -44,10 +44,6 @@ function TabIcon({ name, focused }: { name: string; focused: boolean }) {
         name={iconName} 
         size={focused ? 20 : 22} 
         color={color} 
-        style={[
-          focused ? styles.iconGlow : undefined,
-          isHovered && !focused ? styles.iconHoverGlow : undefined
-        ]} 
       />
     </Animated.View>
   );
@@ -156,15 +152,6 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     borderWidth: 1,
     borderColor: 'rgba(201, 176, 125, 0.4)',
-  },
-  iconGlow: {
-    textShadowColor: 'rgba(201, 176, 125, 0.6)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 8,
-  },
-  iconHoverGlow: {
-    textShadowColor: 'rgba(255, 255, 255, 0.3)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 8,
+    overflow: 'hidden',
   }
 });
