@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, RefreshControl, Dimensions, Platform, Image, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../../store/authStore';
@@ -143,9 +143,6 @@ export default function HomeScreen() {
   const [platformStats, setPlatformStats] = useState({ trainersCount: 0, categoriesCount: 0, bookingsCount: 0 });
   
   const [refreshing, setRefreshing] = useState(false);
-  const [activeStatIndex, setActiveStatIndex] = useState(0);
-  const scrollViewRef = useRef<ScrollView>(null);
-
   const formatStat = (num: number) => {
     if (num === 0) return '...';
     if (num < 10) return num.toString();
@@ -177,25 +174,16 @@ export default function HomeScreen() {
     }
   };
 
-  const sliderWidth = Math.min(width - 40, 400); // Responsive width for the carousel
-
   useEffect(() => { 
     fetchData(); 
     
-    // Auto slide for stats
+    // Update quote occasionally without reloading
     const interval = setInterval(() => {
-      setActiveStatIndex((prev) => {
-        const next = (prev + 1) % stats.length;
-        scrollViewRef.current?.scrollTo({ x: next * sliderWidth, animated: true });
-        return next;
-      });
-
-      // Update quote exactly at midnight local time without reloading
       setTodayQuote(getLocalQuote());
-    }, 5000);
+    }, 60000);
     
     return () => clearInterval(interval);
-  }, [sliderWidth]);
+  }, []);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -262,47 +250,25 @@ export default function HomeScreen() {
           </Text>
           <Text style={styles.heroTitle}>Ready to train?</Text>
 
-          <TouchableOpacity 
-            style={styles.searchBar} 
-            onPress={() => router.push('/(user)/(tabs)/search')}
-            activeOpacity={0.9}
-          >
-            <Text style={styles.searchIcon}>🔍</Text>
-            <Text style={styles.searchPlaceholder}>Search trainers, yoga, gym...</Text>
-          </TouchableOpacity>
+          {/* User Dashboard */}
+          <View style={styles.dashboardContainer}>
+            <Text style={styles.dashboardTitle}>Your Dashboard</Text>
 
-          <View style={styles.quoteContainer}>
-            <Text style={styles.quoteLabel}>💡 Today's Motivation</Text>
-            <Text style={styles.quoteText}>"{todayQuote}"</Text>
-          </View>
-        </View>
-
-        <View style={styles.statsWrapper}>
-          <View style={{ width: sliderWidth, overflow: 'hidden', borderRadius: 16 }}>
-            <ScrollView 
-              ref={scrollViewRef}
-              horizontal 
-              showsHorizontalScrollIndicator={false}
-              pagingEnabled
-              scrollEnabled={!isWeb} // Let interval control it on web, or allow swipe on native
-            >
+            <View style={styles.statsRow}>
               {stats.map((stat, idx) => (
-                <View key={idx} style={[styles.statBox, { width: sliderWidth }]}>
-                  {stat.icon}
-                  <View>
-                    <Text style={styles.statNumber}>{stat.number}</Text>
-                    <Text style={styles.statLabel}>{stat.label}</Text>
-                  </View>
+                <View key={idx} style={styles.statMiniCard}>
+                  {React.cloneElement(stat.icon as React.ReactElement, { size: 20, style: { marginBottom: 6 } })}
+                  <Text style={styles.statNumber}>{stat.number}</Text>
+                  <Text style={styles.statLabel}>{stat.label}</Text>
                 </View>
               ))}
-            </ScrollView>
+            </View>
+
+            <View style={styles.quoteCard}>
+              <Text style={styles.quoteLabel}>💡 Today's Motivation</Text>
+              <Text style={styles.quoteText}>"{todayQuote}"</Text>
+            </View>
           </View>
-          <View style={styles.dotsContainer}>
-            {stats.map((_, idx) => (
-              <View key={idx} style={[styles.dot, activeStatIndex === idx && styles.activeDot]} />
-            ))}
-          </View>
-        </View>
 
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Browse Categories</Text>
@@ -376,56 +342,48 @@ const styles = StyleSheet.create({
   welcomeName: { color: '#C9B07D', fontWeight: '700' },
   heroTitle: { color: '#ffffff', fontSize: 48, fontWeight: '800', marginBottom: 16, letterSpacing: -1 },
   
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1E1E1E',
-    borderRadius: 24,
-    padding: 12,
-    width: '100%',
-    maxWidth: 600,
+  dashboardContainer: {
+    backgroundColor: '#0A0A0A',
+    borderRadius: 20,
+    padding: 16,
+    marginTop: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.05)',
   },
-  searchIcon: { fontSize: 12, marginRight: 12, opacity: 0.7 },
-  searchPlaceholder: { color: '#777', fontSize: 12 },
-
-  quoteContainer: {
-    marginTop: 12,
-    backgroundColor: '#1E1E1E',
+  dashboardTitle: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 16,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  statMiniCard: {
+    flex: 1,
+    backgroundColor: '#141414',
     borderRadius: 12,
     padding: 12,
+    alignItems: 'center',
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.03)',
+  },
+  statNumber: { color: '#fff', fontSize: 16, fontWeight: '800' },
+  statLabel: { color: '#A1A1AA', fontSize: 10, marginTop: 4, textAlign: 'center' },
+  
+  quoteCard: {
+    backgroundColor: 'rgba(201, 176, 125, 0.05)',
+    borderRadius: 12,
+    padding: 14,
     borderLeftWidth: 3,
     borderLeftColor: '#C9B07D',
   },
   quoteLabel: { color: '#C9B07D', fontSize: 10, fontWeight: '700', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 },
   quoteText: { color: '#E0E0E0', fontSize: 11, fontStyle: 'italic', lineHeight: 18 },
-
-  statsWrapper: {
-    marginTop: 10,
-    marginBottom: 10,
-    alignItems: isWeb ? 'center' : 'flex-start',
-  },
-  statsContainer: {
-    flexDirection: 'row',
-  },
-  statBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1E1E1E',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 16,
-  },
-  statNumber: { color: '#fff', fontSize: 12, fontWeight: '700' },
-  statLabel: { color: '#777', fontSize: 12, marginTop: 4 },
-  dotsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    width: isWeb ? 'auto' : width - 40,
-    marginTop: 16,
-    gap: 8,
-  },
-  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#333' },
-  activeDot: { backgroundColor: '#C9B07D', width: 24 },
 
   sectionHeader: {
     flexDirection: 'row',
