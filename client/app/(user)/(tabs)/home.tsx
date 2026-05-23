@@ -384,15 +384,15 @@ const styles = StyleSheet.create({
   searchPlaceholder: { color: '#777', fontSize: 12 },
 
   quoteContainer: {
-    marginTop: 24,
+    marginTop: 16,
     backgroundColor: '#1E1E1E',
-    borderRadius: 16,
-    padding: 20,
-    borderLeftWidth: 4,
+    borderRadius: 12,
+    padding: 14,
+    borderLeftWidth: 3,
     borderLeftColor: '#C9B07D',
   },
-  quoteLabel: { color: '#C9B07D', fontSize: 12, fontWeight: '700', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 },
-  quoteText: { color: '#E0E0E0', fontSize: 12, fontStyle: 'italic', lineHeight: 22 },
+  quoteLabel: { color: '#C9B07D', fontSize: 10, fontWeight: '700', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 },
+  quoteText: { color: '#E0E0E0', fontSize: 11, fontStyle: 'italic', lineHeight: 18 },
 
   statsWrapper: {
     marginTop: 10,
