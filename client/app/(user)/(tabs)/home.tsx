@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, RefreshControl, Dimensions, Platform, Image, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../../store/authStore';
-import { trainerAPI, contentAPI } from '../../../services/endpoints';
+import { trainerAPI, contentAPI, bookingAPI, userAPI } from '../../../services/endpoints';
 import { Trainer, Category } from '../../../types';
 import { Shield, Zap, TrendingUp } from 'lucide-react-native';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -68,7 +68,7 @@ const FeaturedTrainerCard = ({ trainer, bgColor, onPress }: { trainer: any, bgCo
         {/* Image Gallery Dots (Bottom center of top section) */}
         {portfolioImages.length > 1 && (
           <View style={{ flexDirection: 'row', position: 'absolute', bottom: 10, alignSelf: 'center', gap: 4 }}>
-            {portfolioImages.map((_, idx) => (
+            {portfolioImages.map((_: any, idx: number) => (
               <View key={idx} style={{ width: idx === activeImageIndex ? 12 : 4, height: 4, borderRadius: 2, backgroundColor: idx === activeImageIndex ? '#C9B07D' : 'rgba(255,255,255,0.5)' }} />
             ))}
           </View>
@@ -142,7 +142,16 @@ export default function HomeScreen() {
   const [todayQuote, setTodayQuote] = useState(getLocalQuote());
   const [platformStats, setPlatformStats] = useState({ trainersCount: 0, categoriesCount: 0, bookingsCount: 0 });
   
+  const [userStats, setUserStats] = useState({
+    completedSessions: 0,
+    upcomingSessionTime: null as string | null,
+    totalFavorites: 0,
+  });
+
   const [refreshing, setRefreshing] = useState(false);
+  const [activeStatIndex, setActiveStatIndex] = useState(0);
+  const scrollViewRef = useRef<ScrollView>(null);
+
   const formatStat = (num: number) => {
     if (num === 0) return '...';
     if (num < 10) return num.toString();
@@ -161,29 +170,68 @@ export default function HomeScreen() {
 
   const fetchData = async () => {
     try {
-      const [catRes, featRes, statsRes] = await Promise.all([
+      const [catRes, featRes, statsRes, bookingsRes, favRes] = await Promise.all([
         trainerAPI.getCategories(),
         trainerAPI.getFeatured(),
-        trainerAPI.getPlatformStats().catch(() => null)
+        trainerAPI.getPlatformStats().catch(() => null),
+        bookingAPI.getUserBookings().catch(() => null),
+        userAPI.getFavorites().catch(() => null)
       ]);
+      
       if (catRes.data.data) setCategories(catRes.data.data);
       if (featRes.data.data) setFeatured(featRes.data.data);
       if (statsRes?.data?.data) setPlatformStats(statsRes.data.data);
+      
+      let completedCount = 0;
+      let upcomingTime = null;
+      if (bookingsRes?.data?.data) {
+        const bookings = bookingsRes.data.data;
+        completedCount = bookings.filter((b: any) => b.bookingStatus === 'completed').length;
+        
+        const upcoming = bookings
+          .filter((b: any) => b.bookingStatus === 'confirmed' && new Date(b.bookingDate) >= new Date())
+          .sort((a: any, b: any) => new Date(a.bookingDate).getTime() - new Date(b.bookingDate).getTime())[0];
+          
+        if (upcoming) {
+          upcomingTime = new Date(upcoming.bookingDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' ' + upcoming.timeSlot;
+        }
+      }
+      
+      let favCount = 0;
+      if (favRes?.data?.data) {
+        favCount = favRes.data.data.length;
+      }
+      
+      setUserStats({
+        completedSessions: completedCount,
+        upcomingSessionTime: upcomingTime,
+        totalFavorites: favCount,
+      });
+      
     } catch (err) {
       console.log('Error fetching data:', err);
     }
   };
 
+  const sliderWidth = Math.min(width - 40, 400); // Responsive width for the carousel
+
   useEffect(() => { 
     fetchData(); 
     
-    // Update quote occasionally without reloading
+    // Auto slide for stats
     const interval = setInterval(() => {
+      setActiveStatIndex((prev) => {
+        const next = (prev + 1) % stats.length;
+        scrollViewRef.current?.scrollTo({ x: next * sliderWidth, animated: true });
+        return next;
+      });
+
+      // Update quote exactly at midnight local time without reloading
       setTodayQuote(getLocalQuote());
-    }, 60000);
+    }, 5000);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [sliderWidth]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -250,24 +298,58 @@ export default function HomeScreen() {
           </Text>
           <Text style={styles.heroTitle}>Ready to train?</Text>
 
-          {/* User Dashboard */}
+          {/* Personal User Dashboard */}
           <View style={styles.dashboardContainer}>
             <Text style={styles.dashboardTitle}>Your Dashboard</Text>
-
-            <View style={styles.statsRow}>
-              {stats.map((stat, idx) => (
-                <View key={idx} style={styles.statMiniCard}>
-                  {React.cloneElement(stat.icon as React.ReactElement, { size: 20, style: { marginBottom: 6 } })}
-                  <Text style={styles.statNumber}>{stat.number}</Text>
-                  <Text style={styles.statLabel}>{stat.label}</Text>
-                </View>
-              ))}
+            
+            <View style={styles.userStatsGrid}>
+              <View style={styles.userStatCard}>
+                <Text style={[styles.userStatValue, { color: '#4CAF50' }]}>{userStats.completedSessions}</Text>
+                <Text style={styles.userStatLabel}>Completed</Text>
+              </View>
+              <View style={styles.userStatCard}>
+                <Text style={[styles.userStatValue, { color: '#E91E63' }]}>{userStats.totalFavorites}</Text>
+                <Text style={styles.userStatLabel}>Favorites</Text>
+              </View>
+              <View style={[styles.userStatCard, styles.upcomingCard]}>
+                <Text style={styles.upcomingLabel}>Next Session</Text>
+                <Text style={styles.upcomingValue} numberOfLines={1}>
+                  {userStats.upcomingSessionTime || 'None scheduled'}
+                </Text>
+              </View>
             </View>
 
             <View style={styles.quoteCard}>
-              <Text style={styles.quoteLabel}>💡 Today's Motivation</Text>
+              <Text style={styles.quoteLabel}>✨ Daily Spark</Text>
               <Text style={styles.quoteText}>"{todayQuote}"</Text>
             </View>
+          </View>
+        </View>
+
+        <View style={styles.statsWrapper}>
+          <View style={{ width: sliderWidth, overflow: 'hidden', borderRadius: 16 }}>
+            <ScrollView 
+              ref={scrollViewRef}
+              horizontal 
+              showsHorizontalScrollIndicator={false}
+              pagingEnabled
+              scrollEnabled={!isWeb} // Let interval control it on web, or allow swipe on native
+            >
+              {stats.map((stat, idx) => (
+                <View key={idx} style={[styles.statBox, { width: sliderWidth }]}>
+                  {stat.icon}
+                  <View>
+                    <Text style={styles.statNumber}>{stat.number}</Text>
+                    <Text style={styles.statLabel}>{stat.label}</Text>
+                  </View>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+          <View style={styles.dotsContainer}>
+            {stats.map((_: any, idx: number) => (
+              <View key={idx} style={[styles.dot, activeStatIndex === idx && styles.activeDot]} />
+            ))}
           </View>
         </View>
 
@@ -348,7 +430,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 16,
     marginTop: 10,
-    marginBottom: 20,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.05)',
   },
@@ -358,24 +439,33 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 16,
   },
-  statsRow: {
+  userStatsGrid: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 8,
     marginBottom: 16,
   },
-  statMiniCard: {
+  userStatCard: {
     flex: 1,
+    minWidth: '28%',
     backgroundColor: '#141414',
     borderRadius: 12,
     padding: 12,
     alignItems: 'center',
-    marginHorizontal: 4,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.03)',
   },
-  statNumber: { color: '#fff', fontSize: 16, fontWeight: '800' },
-  statLabel: { color: '#A1A1AA', fontSize: 10, marginTop: 4, textAlign: 'center' },
-  
+  upcomingCard: {
+    minWidth: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+  },
+  userStatValue: { color: '#fff', fontSize: 18, fontWeight: '800' },
+  userStatLabel: { color: '#A1A1AA', fontSize: 10, marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.5 },
+  upcomingLabel: { color: '#A1A1AA', fontSize: 12, fontWeight: '500' },
+  upcomingValue: { color: '#C9B07D', fontSize: 12, fontWeight: '700', flexShrink: 1, marginLeft: 10 },
+
   quoteCard: {
     backgroundColor: 'rgba(201, 176, 125, 0.05)',
     borderRadius: 12,
@@ -386,12 +476,39 @@ const styles = StyleSheet.create({
   quoteLabel: { color: '#C9B07D', fontSize: 10, fontWeight: '700', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 },
   quoteText: { color: '#E0E0E0', fontSize: 11, fontStyle: 'italic', lineHeight: 18 },
 
+  statsWrapper: {
+    marginTop: 10,
+    marginBottom: 10,
+    alignItems: isWeb ? 'center' : 'flex-start',
+  },
+  statsContainer: {
+    flexDirection: 'row',
+  },
+  statBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1E1E1E',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 16,
+  },
+  statNumber: { color: '#fff', fontSize: 12, fontWeight: '700' },
+  statLabel: { color: '#777', fontSize: 12, marginTop: 4 },
+  dotsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: isWeb ? 'auto' : width - 40,
+    marginTop: 16,
+    gap: 8,
+  },
+  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#333' },
+  activeDot: { backgroundColor: '#C9B07D', width: 24 },
+
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 16,
-    marginTop: 12,
     marginBottom: 8,
   },
   sectionTitle: { color: '#fff', fontSize: 12, fontWeight: '700' },
