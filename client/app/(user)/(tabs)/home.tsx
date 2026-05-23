@@ -14,54 +14,70 @@ const isWeb = Platform.OS === 'web';
 const FeaturedTrainerCard = ({ trainer, bgColor, onPress }: { trainer: any, bgColor: string, onPress: () => void }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   
-  const allImages = [];
-  if (trainer.profilePhoto || trainer.profileImage) allImages.push(trainer.profilePhoto || trainer.profileImage);
-  if (trainer.portfolioImages && trainer.portfolioImages.length > 0) {
-    allImages.push(...trainer.portfolioImages);
-  }
+  const portfolioImages = trainer.portfolioImages || [];
 
   useEffect(() => {
-    if (allImages.length <= 1) return;
+    if (portfolioImages.length <= 1) return;
     const interval = setInterval(() => {
-      setActiveImageIndex((prev) => (prev + 1) % allImages.length);
+      setActiveImageIndex((prev) => (prev + 1) % portfolioImages.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, [allImages.length]);
+  }, [portfolioImages.length]);
 
   const initials = trainer.fullName.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
 
   return (
     <TouchableOpacity 
-      style={[styles.featuredCard, { backgroundColor: bgColor }]}
+      style={[styles.featuredCard, { backgroundColor: bgColor, padding: 0 }]}
       onPress={onPress}
       activeOpacity={0.9}
     >
       {trainer.premium && (
-        <View style={styles.premiumBadge}>
+        <View style={[styles.premiumBadge, { zIndex: 10 }]}>
           <Text style={styles.premiumText}>★ PREMIUM</Text>
         </View>
       )}
       
-      <View style={styles.featuredCenter}>
-        {allImages.length > 0 ? (
-          <Image 
-            source={{ uri: allImages[activeImageIndex] }} 
-            style={styles.featuredImage}
-          />
-        ) : (
-          <Text style={styles.featuredInitials}>{initials}</Text>
-        )}
+      {/* Row Layout for Profile and Portfolio */}
+      <View style={{ flex: 1, flexDirection: 'row', padding: 20, paddingBottom: 0 }}>
         
-        {allImages.length > 1 && (
-          <View style={{ flexDirection: 'row', marginTop: 10, gap: 4 }}>
-            {allImages.map((_, idx) => (
-              <View key={idx} style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: idx === activeImageIndex ? '#C9B07D' : 'rgba(255,255,255,0.3)' }} />
-            ))}
-          </View>
-        )}
+        {/* Left Side: Profile Image */}
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginRight: 15 }}>
+          {trainer.profilePhoto || trainer.profileImage ? (
+            <Image 
+              source={{ uri: trainer.profilePhoto || trainer.profileImage }} 
+              style={styles.featuredImage}
+            />
+          ) : (
+            <View style={[styles.featuredImage, { backgroundColor: 'rgba(255,255,255,0.1)', justifyContent: 'center', alignItems: 'center' }]}>
+              <Text style={{ color: '#fff', fontSize: 24, fontWeight: '800' }}>{initials}</Text>
+            </View>
+          )}
+        </View>
+
+        {/* Right Side: Light Grey Scrolling Area */}
+        <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 16, overflow: 'hidden', justifyContent: 'center', alignItems: 'center' }}>
+          {portfolioImages.length > 0 ? (
+            <Image 
+              source={{ uri: portfolioImages[activeImageIndex] }} 
+              style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
+            />
+          ) : (
+            <Text style={{ color: '#aaa', fontSize: 10, textAlign: 'center', padding: 10 }}>No portfolio</Text>
+          )}
+
+          {/* Dots inside the light grey area */}
+          {portfolioImages.length > 1 && (
+            <View style={{ flexDirection: 'row', position: 'absolute', bottom: 8, gap: 4 }}>
+              {portfolioImages.map((_, idx) => (
+                <View key={idx} style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: idx === activeImageIndex ? '#C9B07D' : 'rgba(255,255,255,0.4)' }} />
+              ))}
+            </View>
+          )}
+        </View>
       </View>
       
-      <View style={styles.featuredFooter}>
+      <View style={[styles.featuredFooter, { paddingHorizontal: 20 }]}>
         <View>
           <Text style={styles.featuredName}>{trainer.fullName} {trainer.verified ? '✓' : ''}</Text>
           <Text style={{ color: '#C9B07D', fontSize: 10, marginBottom: 4, fontWeight: '600', textTransform: 'uppercase' }}>{trainer.category} • {trainer.experience || 0} yrs exp</Text>

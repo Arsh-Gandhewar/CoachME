@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Linking } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Linking, Image } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { trainerAPI } from '../../../services/endpoints';
 import { Trainer, Review } from '../../../types';
@@ -105,6 +105,18 @@ export default function TrainerDetailScreen() {
             </TouchableOpacity>
           )}
         </View>
+
+        {/* Portfolio Gallery */}
+        {trainer.portfolioImages && trainer.portfolioImages.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Portfolio</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexDirection: 'row', marginTop: 10 }}>
+              {trainer.portfolioImages.map((img, idx) => (
+                <Image key={idx} source={{ uri: img }} style={{ width: 140, height: 140, borderRadius: 16, marginRight: 15, resizeMode: 'cover' }} />
+              ))}
+            </ScrollView>
+          </View>
+        )}
 
         {/* Specializations */}
         <View style={styles.section}>
