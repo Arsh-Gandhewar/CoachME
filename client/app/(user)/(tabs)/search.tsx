@@ -62,6 +62,13 @@ export default function SearchScreen() {
 
   useEffect(() => { search(); }, [category, sort, location]);
 
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      search();
+    }, 400);
+    return () => clearTimeout(delayDebounceFn);
+  }, [query]);
+
   const initials = (name: string) => name.split(' ').map((n) => n[0]).join('').slice(0, 2);
   const colors = ['#4CAF50', '#E91E63', '#F44336', '#C9B07D', '#FF9800', '#2196F3', '#00BCD4', '#7C4DFF'];
 

@@ -158,10 +158,6 @@ const styles = StyleSheet.create({
   },
   activeTab3D: {
     backgroundColor: '#111111',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(201, 176, 125, 0.4)',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,1)',
     shadowColor: '#C9B07D',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.2,
