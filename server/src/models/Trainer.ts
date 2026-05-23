@@ -7,7 +7,8 @@ export interface ITrainer extends Document {
   mobile?: string;
   password: string;
   profilePhoto?: string;
-  bio: string;
+  portfolioImages?: string[];
+  bio?: string;
   resume?: string;
   experience: number;
   certifications: string[];
@@ -26,7 +27,6 @@ export interface ITrainer extends Document {
   specializations: string[];
   rating: number;
   totalReviews: number;
-  portfolioImages: string[];
   verificationStatus: 'pending' | 'verified' | 'rejected';
   isPremium: boolean;
   walletBalance: number;
@@ -57,7 +57,8 @@ const TrainerSchema = new Schema<ITrainer>(
     mobile: { type: String, trim: true },
     password: { type: String, required: true, select: false },
     profilePhoto: { type: String },
-    bio: { type: String, default: '' },
+    portfolioImages: [{ type: String }],
+    bio: { type: String, maxlength: 1000 },
     resume: { type: String },
     experience: { type: Number, default: 0 },
     certifications: [{ type: String }],

@@ -20,6 +20,8 @@ export default function EditProfileScreen() {
   const [languages, setLanguages] = useState((user as any)?.languages?.join(', ') || '');
   const [loading, setLoading] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [portfolioImages, setPortfolioImages] = useState<string[]>((user as any)?.portfolioImages || []);
+  const [uploadingPortfolio, setUploadingPortfolio] = useState(false);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -64,6 +66,47 @@ export default function EditProfileScreen() {
     }
   };
 
+  const pickPortfolioImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.5,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      const asset = result.assets[0];
+      setUploadingPortfolio(true);
+      try {
+        let formData = new FormData();
+        if (Platform.OS === 'web') {
+           const res = await fetch(asset.uri);
+           const blob = await res.blob();
+           formData.append('image', blob as any, 'portfolio.jpg');
+        } else {
+           const localUri = asset.uri;
+           const filename = localUri.split('/').pop() || 'portfolio.jpg';
+           const match = /\.(\w+)$/.exec(filename);
+           const type = match ? `image/${match[1]}` : `image`;
+           formData.append('image', { uri: localUri, name: filename, type } as any);
+        }
+
+        const uploadRes = await contentAPI.uploadImage(formData);
+        if (uploadRes.data?.data?.url) {
+          setPortfolioImages(prev => [...prev, uploadRes.data.data.url]);
+        }
+      } catch (err) {
+        console.error("Upload failed", err);
+      } finally {
+        setUploadingPortfolio(false);
+      }
+    }
+  };
+
+  const removePortfolioImage = (index: number) => {
+    setPortfolioImages(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleSave = async () => {
     setLoading(true);
     try {
@@ -84,6 +127,7 @@ export default function EditProfileScreen() {
         payload.certifications = parseList(certifications);
         payload.sessionTypes = parseList(sessionTypes);
         payload.languages = parseList(languages);
+        payload.portfolioImages = portfolioImages;
       }
 
       // Hit the real backend endpoint to update the database
@@ -181,6 +225,30 @@ export default function EditProfileScreen() {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Resume Link (PDF/Drive URL)</Text>
               <TextInput style={styles.input} value={resume} onChangeText={setResume} placeholder="https://..." placeholderTextColor="#666" autoCapitalize="none" />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Portfolio Images</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexDirection: 'row', marginTop: 10 }}>
+                {portfolioImages.map((img, idx) => (
+                  <View key={idx} style={{ position: 'relative', marginRight: 10 }}>
+                    <Image source={{ uri: img }} style={{ width: 80, height: 80, borderRadius: 12 }} />
+                    <TouchableOpacity 
+                      style={{ position: 'absolute', top: -5, right: -5, backgroundColor: 'red', borderRadius: 10, width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}
+                      onPress={() => removePortfolioImage(idx)}
+                    >
+                      <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>X</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+                <TouchableOpacity 
+                  style={{ width: 80, height: 80, borderRadius: 12, backgroundColor: '#0A0A0A', borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', borderStyle: 'dashed', justifyContent: 'center', alignItems: 'center' }}
+                  onPress={pickPortfolioImage}
+                >
+                  <Text style={{ fontSize: 24, color: '#666' }}>+</Text>
+                </TouchableOpacity>
+              </ScrollView>
+              {uploadingPortfolio && <Text style={{ color: '#C9B07D', fontSize: 10, marginTop: 5 }}>Uploading...</Text>}
             </View>
           </>
         )}

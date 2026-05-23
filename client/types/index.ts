@@ -19,6 +19,7 @@ export interface Trainer {
   email: string;
   mobile?: string;
   profilePhoto?: string;
+  portfolioImages?: string[];
   bio: string;
   experience: number;
   certifications: string[];

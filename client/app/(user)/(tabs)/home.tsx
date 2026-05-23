@@ -11,6 +11,68 @@ import { LinearGradient } from 'expo-linear-gradient';
 const { width } = Dimensions.get('window');
 const isWeb = Platform.OS === 'web';
 
+const FeaturedTrainerCard = ({ trainer, bgColor, onPress }: { trainer: any, bgColor: string, onPress: () => void }) => {
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  
+  const allImages = [];
+  if (trainer.profilePhoto || trainer.profileImage) allImages.push(trainer.profilePhoto || trainer.profileImage);
+  if (trainer.portfolioImages && trainer.portfolioImages.length > 0) {
+    allImages.push(...trainer.portfolioImages);
+  }
+
+  useEffect(() => {
+    if (allImages.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveImageIndex((prev) => (prev + 1) % allImages.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [allImages.length]);
+
+  const initials = trainer.fullName.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
+
+  return (
+    <TouchableOpacity 
+      style={[styles.featuredCard, { backgroundColor: bgColor }]}
+      onPress={onPress}
+      activeOpacity={0.9}
+    >
+      {trainer.premium && (
+        <View style={styles.premiumBadge}>
+          <Text style={styles.premiumText}>★ PREMIUM</Text>
+        </View>
+      )}
+      
+      <View style={styles.featuredCenter}>
+        {allImages.length > 0 ? (
+          <Image 
+            source={{ uri: allImages[activeImageIndex] }} 
+            style={styles.featuredImage}
+          />
+        ) : (
+          <Text style={styles.featuredInitials}>{initials}</Text>
+        )}
+        
+        {allImages.length > 1 && (
+          <View style={{ flexDirection: 'row', marginTop: 10, gap: 4 }}>
+            {allImages.map((_, idx) => (
+              <View key={idx} style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: idx === activeImageIndex ? '#C9B07D' : 'rgba(255,255,255,0.3)' }} />
+            ))}
+          </View>
+        )}
+      </View>
+      
+      <View style={styles.featuredFooter}>
+        <View>
+          <Text style={styles.featuredName}>{trainer.fullName} {trainer.verified ? '✓' : ''}</Text>
+          <Text style={{ color: '#C9B07D', fontSize: 10, marginBottom: 4, fontWeight: '600', textTransform: 'uppercase' }}>{trainer.category} • {trainer.experience || 0} yrs exp</Text>
+          <Text style={styles.featuredRating}>⭐ {trainer.rating} <Text style={{ color: '#A1A1AA', fontSize: 10 }}>({trainer.totalReviews || 0})</Text></Text>
+        </View>
+        <Text style={styles.featuredPrice}>₹{trainer.pricing}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
 export default function HomeScreen() {
   const { user } = useAuthStore();
   const router = useRouter();
@@ -149,7 +211,7 @@ export default function HomeScreen() {
     sports: ['#9A7D0A', '#2D2302'],
   };
   
-  const trainerBgColors = ['#F44336', '#7C4DFF', '#00BCD4', '#4CAF50', '#2196F3', '#FF9800'];
+  const trainerBgColors = ['#1A1A1A', '#222222', '#141414', '#1E1E1E', '#2A2A2A', '#111111'];
 
   return (
     <ScrollView 
@@ -244,40 +306,14 @@ export default function HomeScreen() {
 
         <View style={styles.featuredContainer}>
           {featured.map((trainer: Trainer, index: number) => {
-            const initials = trainer.fullName.split(' ').map((n) => n[0]).join('').slice(0, 2);
             const bgColor = trainerBgColors[index % trainerBgColors.length];
             return (
-              <TouchableOpacity 
+              <FeaturedTrainerCard 
                 key={trainer._id} 
-                style={[styles.featuredCard, { backgroundColor: bgColor }]}
+                trainer={trainer} 
+                bgColor={bgColor} 
                 onPress={() => router.push({ pathname: '/(user)/trainer/[id]', params: { id: trainer._id } })}
-                activeOpacity={0.9}
-              >
-                {trainer.premium && (
-                  <View style={styles.premiumBadge}>
-                    <Text style={styles.premiumText}>★ PREMIUM</Text>
-                  </View>
-                )}
-                
-                <View style={styles.featuredCenter}>
-                  {trainer.profilePhoto || (trainer as any).profileImage ? (
-                    <Image 
-                      source={{ uri: trainer.profilePhoto || (trainer as any).profileImage }} 
-                      style={styles.featuredImage}
-                    />
-                  ) : (
-                    <Text style={styles.featuredInitials}>{initials}</Text>
-                  )}
-                </View>
-                
-                <View style={styles.featuredFooter}>
-                  <View>
-                    <Text style={styles.featuredName}>{trainer.fullName} {trainer.verified ? '✓' : ''}</Text>
-                    <Text style={styles.featuredRating}>⭐ {trainer.rating} <Text style={{ color: '#A1A1AA', fontSize: 12 }}>({trainer.totalReviews || 0} reviews)</Text></Text>
-                  </View>
-                  <Text style={styles.featuredPrice}>₹{trainer.pricing}</Text>
-                </View>
-              </TouchableOpacity>
+              />
             );
           })}
         </View>
@@ -406,14 +442,14 @@ const styles = StyleSheet.create({
   },
   premiumBadge: {
     position: 'absolute',
-    top: 20,
-    right: 20,
+    top: 12,
+    right: 12,
     backgroundColor: '#FF9800',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 6,
   },
-  premiumText: { color: '#fff', fontSize: 12, fontWeight: '700' },
+  premiumText: { color: '#fff', fontSize: 8, fontWeight: '800' },
   featuredCenter: {
     flex: 1,
     justifyContent: 'center',
