@@ -153,11 +153,9 @@ const styles = StyleSheet.create({
   },
   activeTab3D: {
     backgroundColor: '#111111',
-    shadowColor: '#C9B07D',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    elevation: 10,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: 'rgba(201, 176, 125, 0.4)',
   },
   iconGlow: {
     textShadowColor: 'rgba(201, 176, 125, 0.6)',

@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { View, Text, TextInput, ScrollView, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator, Platform, Image } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import * as Location from 'expo-location';
 import { trainerAPI } from '../../../services/endpoints';
 import { Trainer } from '../../../types';
@@ -24,6 +24,14 @@ export default function SearchScreen() {
       setCategory(params.category as string);
     }
   }, [params.category]);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setQuery('');
+      };
+    }, [])
+  );
 
   useEffect(() => {
     trainerAPI.getCategories().then(res => {

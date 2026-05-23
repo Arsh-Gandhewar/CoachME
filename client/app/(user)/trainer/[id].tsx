@@ -107,16 +107,18 @@ export default function TrainerDetailScreen() {
         </View>
 
         {/* Portfolio Gallery */}
-        {trainer.portfolioImages && trainer.portfolioImages.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Portfolio</Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Portfolio</Text>
+          {trainer.portfolioImages && trainer.portfolioImages.length > 0 ? (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexDirection: 'row', marginTop: 10 }}>
               {trainer.portfolioImages.map((img, idx) => (
                 <Image key={idx} source={{ uri: img }} style={{ width: 140, height: 140, borderRadius: 16, marginRight: 15, resizeMode: 'cover' }} />
               ))}
             </ScrollView>
-          </View>
-        )}
+          ) : (
+            <Text style={{ color: '#666', fontSize: 12, marginTop: 10 }}>This trainer hasn't uploaded any portfolio images yet.</Text>
+          )}
+        </View>
 
         {/* Specializations */}
         <View style={styles.section}>
