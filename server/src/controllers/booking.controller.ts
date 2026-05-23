@@ -13,6 +13,17 @@ export const createBooking = asyncHandler(async (req: AuthRequest, res: Response
   const trainer = await Trainer.findById(trainerId);
   if (!trainer) throw ApiError.notFound('Trainer not found');
 
+  const existingBooking = await Booking.findOne({
+    trainerId,
+    bookingDate: new Date(bookingDate),
+    timeSlot,
+    bookingStatus: { $ne: 'cancelled' }
+  });
+
+  if (existingBooking) {
+    throw ApiError.badRequest('This time slot is already booked. Please select another slot.');
+  }
+
   const booking = await Booking.create({
     userId: req.user._id,
     trainerId,

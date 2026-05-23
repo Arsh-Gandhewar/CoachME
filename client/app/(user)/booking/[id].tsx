@@ -18,6 +18,22 @@ export default function BookingFlowScreen() {
   const [selectedSlot, setSelectedSlot] = useState('');
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState(false);
+  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
+
+  useEffect(() => {
+    if (selectedDate && trainer) {
+      setLoadingSlots(true);
+      trainerAPI.getAvailability(trainer._id, selectedDate)
+        .then(res => {
+          setBookedSlots(res.data.data.bookedSlots || []);
+        })
+        .catch(console.error)
+        .finally(() => setLoadingSlots(false));
+    } else {
+      setBookedSlots([]);
+    }
+  }, [selectedDate, trainer]);
 
   useEffect(() => {
     (async () => {
@@ -155,11 +171,26 @@ export default function BookingFlowScreen() {
               <View>
                 <Text style={styles.slotTitle}>Available Slots</Text>
                 <View style={styles.slots}>
-                  {availableSlots.length > 0 ? availableSlots.map((slot: string) => (
-                    <TouchableOpacity key={slot} style={[styles.slotChip, selectedSlot === slot && styles.slotChipActive]} onPress={() => setSelectedSlot(slot)}>
-                      <Text style={[styles.slotText, selectedSlot === slot && styles.slotTextActive]}>{slot}</Text>
+                  {loadingSlots ? <ActivityIndicator color="#C9B07D" /> : availableSlots.length > 0 ? availableSlots.map((slot: string) => {
+                    const isBooked = bookedSlots.includes(slot);
+                    return (
+                    <TouchableOpacity 
+                      key={slot} 
+                      disabled={isBooked}
+                      style={[
+                        styles.slotChip, 
+                        selectedSlot === slot && styles.slotChipActive,
+                        isBooked && styles.slotChipDisabled
+                      ]} 
+                      onPress={() => setSelectedSlot(slot)}
+                    >
+                      <Text style={[
+                        styles.slotText, 
+                        selectedSlot === slot && styles.slotTextActive,
+                        isBooked && styles.slotTextDisabled
+                      ]}>{slot}</Text>
                     </TouchableOpacity>
-                  )) : <Text style={styles.noSlots}>No slots available on this day</Text>}
+                  )}) : <Text style={styles.noSlots}>No slots available on this day</Text>}
                 </View>
               </View>
             )}
@@ -222,8 +253,10 @@ const styles = StyleSheet.create({
   slots: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   slotChip: { paddingHorizontal: 18, paddingVertical: 10, borderRadius: 12, backgroundColor: '#0A0A0A', borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
   slotChipActive: { backgroundColor: '#C9B07D', borderColor: '#C9B07D' },
+  slotChipDisabled: { backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.02)', opacity: 0.5 },
   slotText: { color: '#fff', fontSize: 12 },
   slotTextActive: { color: '#fff', fontWeight: '600' },
+  slotTextDisabled: { color: '#555', textDecorationLine: 'line-through' },
   noSlots: { color: '#666', fontSize: 12 },
   summaryCard: { backgroundColor: '#0A0A0A', borderRadius: 20, padding: 20, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
   summaryName: { fontSize: 12, fontWeight: '700', color: '#fff', marginBottom: 16 },

@@ -157,9 +157,24 @@ export const getTrainerReviews = asyncHandler(async (req: AuthRequest, res: Resp
 });
 
 export const getTrainerAvailability = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const { date } = req.query;
   const trainer = await Trainer.findById(req.params.id).select('availability');
   if (!trainer) throw ApiError.notFound('Trainer not found');
-  return ApiResponse.success(res, trainer.availability);
+
+  let bookedSlots: string[] = [];
+  if (date) {
+    const bookings = await Booking.find({
+      trainerId: req.params.id,
+      bookingDate: new Date(date as string),
+      bookingStatus: { $ne: 'cancelled' }
+    });
+    bookedSlots = bookings.map(b => b.timeSlot);
+  }
+
+  return ApiResponse.success(res, {
+    availability: trainer.availability,
+    bookedSlots
+  });
 });
 
 export const getCategories = asyncHandler(async (_req: AuthRequest, res: Response) => {

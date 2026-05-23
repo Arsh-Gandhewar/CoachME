@@ -20,7 +20,7 @@ export const trainerAPI = {
   getTopRated: () => api.get<ApiResponse<Trainer[]>>('/trainers/top-rated'),
   getCategories: () => api.get<ApiResponse<Category[]>>('/trainers/categories'),
   getReviews: (id: string) => api.get<ApiResponse<Review[]>>(`/trainers/${id}/reviews`),
-  getAvailability: (id: string) => api.get(`/trainers/${id}/availability`),
+  getAvailability: (id: string, date?: string) => api.get(`/trainers/${id}/availability${date ? `?date=${date}` : ''}`),
   getPlatformStats: () => api.get<ApiResponse<{trainersCount: number, bookingsCount: number, categoriesCount: number}>>('/trainers/stats/platform'),
 };
 
