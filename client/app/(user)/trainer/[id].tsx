@@ -66,8 +66,12 @@ export default function TrainerDetailScreen() {
           <TouchableOpacity style={styles.favBtn} onPress={toggleFavorite}>
             <Text style={styles.favIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
           </TouchableOpacity>
-          <View style={[styles.avatarLarge, { backgroundColor: bgColor }]}>
-            <Text style={styles.avatarText}>{initials}</Text>
+          <View style={[styles.avatarLarge, { backgroundColor: bgColor, overflow: 'hidden' }]}>
+            {trainer.profilePhoto || trainer.profileImage ? (
+              <Image source={{ uri: trainer.profilePhoto || trainer.profileImage }} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
+            ) : (
+              <Text style={styles.avatarText}>{initials}</Text>
+            )}
           </View>
           <Text style={styles.name}>{trainer.fullName}</Text>
           <View style={styles.badges}>

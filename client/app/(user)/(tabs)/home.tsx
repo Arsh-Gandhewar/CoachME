@@ -39,10 +39,10 @@ const FeaturedTrainerCard = ({ trainer, bgColor, onPress }: { trainer: any, bgCo
       )}
       
       {/* Row Layout for Profile and Portfolio */}
-      <View style={{ flex: 1, flexDirection: 'row', padding: 20, paddingBottom: 0 }}>
+      <View style={{ flex: 1, flexDirection: 'row', padding: 20 }}>
         
         {/* Left Side: Profile Image */}
-        <View style={{ justifyContent: 'center', alignItems: 'center', marginRight: 15 }}>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginRight: 15, width: 80 }}>
           {trainer.profilePhoto || trainer.profileImage ? (
             <Image 
               source={{ uri: trainer.profilePhoto || trainer.profileImage }} 
@@ -63,7 +63,10 @@ const FeaturedTrainerCard = ({ trainer, bgColor, onPress }: { trainer: any, bgCo
               style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
             />
           ) : (
-            <Text style={{ color: '#aaa', fontSize: 10, textAlign: 'center', padding: 10 }}>No portfolio</Text>
+            <Image 
+              source={{ uri: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=500&auto=format&fit=crop' }} 
+              style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
+            />
           )}
 
           {/* Dots inside the light grey area */}
@@ -78,7 +81,7 @@ const FeaturedTrainerCard = ({ trainer, bgColor, onPress }: { trainer: any, bgCo
       </View>
       
       <View style={[styles.featuredFooter, { paddingHorizontal: 20 }]}>
-        <View>
+        <View style={{ flex: 1 }}>
           <Text style={styles.featuredName}>{trainer.fullName} {trainer.verified ? '✓' : ''}</Text>
           <Text style={{ color: '#C9B07D', fontSize: 10, marginBottom: 4, fontWeight: '600', textTransform: 'uppercase' }}>{trainer.category} • {trainer.experience || 0} yrs exp</Text>
           <Text style={styles.featuredRating}>⭐ {trainer.rating} <Text style={{ color: '#A1A1AA', fontSize: 10 }}>({trainer.totalReviews || 0})</Text></Text>
@@ -490,8 +493,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-end',
     backgroundColor: 'rgba(0,0,0,0.3)',
-    margin: -24,
-    padding: 24,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    padding: 20,
     paddingTop: 16,
   },
   featuredName: { color: '#fff', fontSize: 12, fontWeight: '700', marginBottom: 4 },
