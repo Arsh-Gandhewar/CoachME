@@ -109,15 +109,16 @@ export default function TrainerDetailScreen() {
         {/* Portfolio Gallery */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Portfolio</Text>
-          {trainer.portfolioImages && trainer.portfolioImages.length > 0 ? (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexDirection: 'row', marginTop: 10 }}>
-              {trainer.portfolioImages.map((img, idx) => (
-                <Image key={idx} source={{ uri: img }} style={{ width: 140, height: 140, borderRadius: 16, marginRight: 15, resizeMode: 'cover' }} />
-              ))}
-            </ScrollView>
-          ) : (
-            <Text style={{ color: '#666', fontSize: 12, marginTop: 10 }}>This trainer hasn't uploaded any portfolio images yet.</Text>
-          )}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexDirection: 'row', marginTop: 10 }}>
+            {(trainer.portfolioImages && trainer.portfolioImages.length > 0 ? trainer.portfolioImages : [
+              'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=500&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=500&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1599058917212-d750089bc07e?q=80&w=500&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=500&auto=format&fit=crop'
+            ]).map((img, idx) => (
+              <Image key={idx} source={{ uri: img }} style={{ width: 140, height: 140, borderRadius: 16, marginRight: 15, resizeMode: 'cover' }} />
+            ))}
+          </ScrollView>
         </View>
 
         {/* Specializations */}
