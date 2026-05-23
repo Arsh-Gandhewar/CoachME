@@ -108,20 +108,24 @@ export default function HomeScreen() {
   const userName = (user as any)?.name || (user as any)?.fullName || 'User';
 
   const catIcons: any = {
-    gym: <MaterialIcons name="fitness-center" color="#fff" size={44} />,
-    yoga: <MaterialIcons name="self-improvement" color="#fff" size={44} />,
-    swimming: <MaterialIcons name="pool" color="#fff" size={44} />,
-    badminton: <MaterialIcons name="sports-tennis" color="#fff" size={44} />,
-    'martial-arts': <MaterialIcons name="sports-martial-arts" color="#fff" size={44} />,
-    dance: <MaterialIcons name="audiotrack" color="#fff" size={44} />,
-    cricket: <MaterialIcons name="sports-cricket" color="#fff" size={44} />,
-    football: <MaterialIcons name="sports-soccer" color="#fff" size={44} />,
-    tennis: <MaterialIcons name="sports-tennis" color="#fff" size={44} />,
-    basketball: <MaterialIcons name="sports-basketball" color="#fff" size={44} />,
-    running: <MaterialIcons name="directions-run" color="#fff" size={44} />,
-    cycling: <MaterialIcons name="directions-bike" color="#fff" size={44} />,
-    golf: <MaterialIcons name="sports-golf" color="#fff" size={44} />,
-    nutrition: <MaterialIcons name="restaurant" color="#fff" size={44} />,
+    gym: <MaterialIcons name="fitness-center" color="#fff" size={32} />,
+    yoga: <MaterialIcons name="self-improvement" color="#fff" size={32} />,
+    swimming: <MaterialIcons name="pool" color="#fff" size={32} />,
+    badminton: <MaterialIcons name="sports-tennis" color="#fff" size={32} />,
+    'martial-arts': <MaterialIcons name="sports-martial-arts" color="#fff" size={32} />,
+    dance: <MaterialIcons name="audiotrack" color="#fff" size={32} />,
+    cricket: <MaterialIcons name="sports-cricket" color="#fff" size={32} />,
+    football: <MaterialIcons name="sports-soccer" color="#fff" size={32} />,
+    tennis: <MaterialIcons name="sports-tennis" color="#fff" size={32} />,
+    basketball: <MaterialIcons name="sports-basketball" color="#fff" size={32} />,
+    running: <MaterialIcons name="directions-run" color="#fff" size={32} />,
+    cycling: <MaterialIcons name="directions-bike" color="#fff" size={32} />,
+    golf: <MaterialIcons name="sports-golf" color="#fff" size={32} />,
+    nutrition: <MaterialIcons name="restaurant" color="#fff" size={32} />,
+    fitness: <MaterialIcons name="fitness-center" color="#fff" size={32} />,
+    sports: <MaterialIcons name="emoji-events" color="#fff" size={32} />,
+    meditation: <MaterialIcons name="spa" color="#fff" size={32} />,
+    physiotherapy: <MaterialIcons name="healing" color="#fff" size={32} />,
   };
 
   const catGradients: any = {
@@ -219,7 +223,7 @@ export default function HomeScreen() {
                 end={{ x: 1, y: 1 }}
               >
                 <View style={styles.categoryIconCircle}>
-                  {catIcons[cat.slug] || <MaterialIcons name="sports" color="#fff" size={44} />}
+                  {catIcons[cat.slug] || <MaterialIcons name="sports" color="#fff" size={32} />}
                 </View>
                 <Text style={styles.categoryName}>{cat.name}</Text>
               </LinearGradient>
