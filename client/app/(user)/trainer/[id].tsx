@@ -99,14 +99,20 @@ export default function TrainerDetailScreen() {
               <Text style={styles.showMore}>{showFullBio ? 'Show less' : 'Show more'}</Text>
             </TouchableOpacity>
           )}
+        </View>
 
-          {trainer.resume && (
+        {/* Resume Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Resume / PDF Portfolio</Text>
+          {trainer.resume ? (
             <TouchableOpacity 
               style={styles.resumeBtn} 
               onPress={() => Linking.openURL(trainer.resume!)}
             >
-              <Text style={styles.resumeBtnText}>📄 View Full Resume</Text>
+              <Text style={styles.resumeBtnText}>📄 View Uploaded Resume</Text>
             </TouchableOpacity>
+          ) : (
+            <Text style={{ color: '#666', fontSize: 12, marginTop: 10 }}>No resume uploaded.</Text>
           )}
         </View>
 

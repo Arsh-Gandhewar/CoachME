@@ -168,7 +168,17 @@ export const getCategories = asyncHandler(async (_req: AuthRequest, res: Respons
 });
 
 export const getFeaturedTrainers = asyncHandler(async (_req: AuthRequest, res: Response) => {
-  const trainers = await Trainer.find({ isPremium: true, verificationStatus: 'verified', subscriptionStatus: 'active' }).sort({ rating: -1 }).limit(10);
+  const trainers = await Trainer.aggregate([
+    { $match: { verificationStatus: 'verified' } },
+    { $sort: { rating: -1, totalReviews: -1 } },
+    { $group: {
+        _id: '$category',
+        doc: { $first: '$$ROOT' }
+      }
+    },
+    { $replaceRoot: { newRoot: '$doc' } },
+    { $limit: 6 }
+  ]);
   return ApiResponse.success(res, trainers, 'Featured trainers');
 });
 
