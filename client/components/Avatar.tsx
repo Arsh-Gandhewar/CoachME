@@ -24,6 +24,18 @@ export function Avatar({ uri, style, containerStyle, fallbackIcon = '👤', fall
     );
   }
 
+  if (containerStyle) {
+    return (
+      <View style={containerStyle}>
+        <Image 
+          source={{ uri }} 
+          style={style} 
+          onError={() => setError(true)}
+        />
+      </View>
+    );
+  }
+
   return (
     <Image 
       source={{ uri }} 
