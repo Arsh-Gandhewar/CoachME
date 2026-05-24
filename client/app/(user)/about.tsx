@@ -32,7 +32,7 @@ export default function AboutScreen() {
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.copyright}>© 2026 TrainersApp Inc. All rights reserved.</Text>
+        <Text style={styles.copyright}>© 2026 CoachME Inc. All rights reserved.</Text>
       </View>
     </View>
   );
