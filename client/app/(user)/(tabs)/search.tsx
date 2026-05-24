@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { View, Text, TextInput, ScrollView, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator, Platform, Image } from 'react-native';
+import { View, Text, TextInput, ScrollView, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator, Platform } from 'react-native';
 import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import * as Location from 'expo-location';
 import { trainerAPI } from '../../../services/endpoints';
 import { Trainer } from '../../../types';
+import { Avatar } from '../../../components/Avatar';
 
 const isWeb = Platform.OS === 'web';
 
@@ -131,13 +132,12 @@ export default function SearchScreen() {
             contentContainerStyle={styles.list}
             renderItem={({ item }) => (
               <TouchableOpacity style={styles.card} onPress={() => router.push({ pathname: '/(user)/trainer/[id]', params: { id: item._id } })}>
-                <View style={[styles.avatar, { backgroundColor: colors[item.fullName.length % colors.length] }]}>
-                  {item.profilePhoto || (item as any).profileImage ? (
-                    <Image source={{ uri: item.profilePhoto || (item as any).profileImage }} style={styles.avatarImage} />
-                  ) : (
-                    <Text style={styles.avatarText}>{initials(item.fullName)}</Text>
-                  )}
-                </View>
+                <Avatar 
+                  uri={item.profilePhoto || (item as any).profileImage} 
+                  style={styles.avatarImage}
+                  containerStyle={[styles.avatar, { backgroundColor: colors[item.fullName.length % colors.length] }]}
+                  fallbackText={initials(item.fullName)}
+                />
                 <View style={styles.info}>
                   <Text style={styles.name}>{item.fullName}</Text>
                   <Text style={styles.meta}>{item.category?.replace('-', ' ')} • {item.experience}yr Exp</Text>

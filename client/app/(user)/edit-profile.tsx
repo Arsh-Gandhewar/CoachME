@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Platform, Image } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Avatar } from '../../components/Avatar';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuthStore } from '../../store/authStore';
 import { userAPI, contentAPI } from '../../services/endpoints';
@@ -163,7 +164,12 @@ export default function EditProfileScreen() {
       <View style={styles.photoContainer}>
         <TouchableOpacity style={styles.photoUploadBtn} onPress={pickImage}>
           {photo ? (
-            <Image source={{ uri: photo }} style={styles.photoPreview} />
+            <Avatar 
+              uri={photo} 
+              style={styles.photoPreview} 
+              containerStyle={styles.photoPreview} 
+              fallbackIcon="👤" 
+            />
           ) : (
             <View style={styles.photoPlaceholder}>
               {uploadingPhoto ? (

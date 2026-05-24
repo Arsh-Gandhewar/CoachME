@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Platform, FlatList, ActivityI
 import { useRouter } from 'expo-router';
 import api from '../../services/api';
 import { Trainer } from '../../types';
+import { Avatar } from '../../components/Avatar';
 
 export default function FavoritesScreen() {
   const router = useRouter();
@@ -29,13 +30,12 @@ export default function FavoritesScreen() {
 
   const renderItem = ({ item }: { item: Trainer }) => (
     <TouchableOpacity style={styles.card} onPress={() => router.push({ pathname: '/(user)/trainer/[id]', params: { id: item._id } })}>
-      <View style={[styles.avatar, { backgroundColor: colors[item.fullName.length % colors.length] }]}>
-        {item.profilePhoto || (item as any).profileImage ? (
-          <Image source={{ uri: item.profilePhoto || (item as any).profileImage }} style={styles.avatarImage} />
-        ) : (
-          <Text style={styles.avatarText}>{initials(item.fullName)}</Text>
-        )}
-      </View>
+      <Avatar 
+        uri={item.profilePhoto || (item as any).profileImage} 
+        style={styles.avatarImage}
+        containerStyle={[styles.avatar, { backgroundColor: colors[item.fullName.length % colors.length] }]}
+        fallbackText={initials(item.fullName)}
+      />
       <View style={styles.info}>
         <Text style={styles.name}>{item.fullName}</Text>
         <Text style={styles.meta}>{item.category?.replace('-', ' ')} • {item.experience}yr Exp</Text>

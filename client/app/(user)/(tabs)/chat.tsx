@@ -3,6 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Platform, Image } f
 import { useRouter } from 'expo-router';
 import { chatAPI } from '../../../services/endpoints';
 import { Chat } from '../../../types';
+import { Avatar } from '../../../components/Avatar';
 
 export default function ChatListScreen() {
   const router = useRouter();
@@ -26,13 +27,12 @@ export default function ChatListScreen() {
           const photo = item.otherParticipant?.profileImage || item.otherParticipant?.profilePhoto;
           return (
           <TouchableOpacity style={styles.chatItem} onPress={() => router.push({ pathname: '/(user)/chat/[id]' as any, params: { id: item.otherParticipant?._id } })}>
-            {photo ? (
-              <Image source={{ uri: photo }} style={styles.avatarImage} />
-            ) : (
-              <View style={styles.avatar}>
-                <Text style={styles.avatarText}>💬</Text>
-              </View>
-            )}
+            <Avatar 
+              uri={photo} 
+              style={styles.avatarImage} 
+              containerStyle={styles.avatar} 
+              fallbackIcon="💬" 
+            />
             <View style={styles.chatInfo}>
               <Text style={styles.chatName}>{item.otherParticipant?.name || item.otherParticipant?.fullName || 'Chat'}</Text>
               <Text style={styles.lastMsg} numberOfLines={1}>{item.lastMessage?.text || 'No messages yet'}</Text>

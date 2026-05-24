@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Linking, Image, Platform } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Linking, Platform, Image } from 'react-native';
+import { Avatar } from '../../../components/Avatar';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { trainerAPI } from '../../../services/endpoints';
 import { Trainer, Review } from '../../../types';
@@ -66,13 +67,12 @@ export default function TrainerDetailScreen() {
           <TouchableOpacity style={styles.favBtn} onPress={toggleFavorite}>
             <Text style={styles.favIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
           </TouchableOpacity>
-          <View style={[styles.avatarLarge, { backgroundColor: bgColor, overflow: 'hidden' }]}>
-            {trainer.profilePhoto || trainer.profileImage ? (
-              <Image source={{ uri: trainer.profilePhoto || trainer.profileImage }} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
-            ) : (
-              <Text style={styles.avatarText}>{initials}</Text>
-            )}
-          </View>
+          <Avatar 
+            uri={trainer.profilePhoto || trainer.profileImage} 
+            style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
+            containerStyle={[styles.avatarLarge, { backgroundColor: bgColor, overflow: 'hidden' }]}
+            fallbackText={initials}
+          />
           <Text style={styles.name}>{trainer.fullName}</Text>
           <View style={styles.badges}>
             {trainer.verified && <View style={styles.badge}><Text style={styles.badgeText}>✓ Verified</Text></View>}

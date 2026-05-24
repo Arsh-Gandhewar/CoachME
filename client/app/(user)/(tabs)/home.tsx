@@ -7,6 +7,7 @@ import { Trainer, Category } from '../../../types';
 import { Shield, Zap, TrendingUp } from 'lucide-react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Avatar } from '../../../components/Avatar';
 
 const { width } = Dimensions.get('window');
 const isWeb = Platform.OS === 'web';
@@ -82,16 +83,12 @@ const FeaturedTrainerCard = ({ trainer, bgColor, onPress }: { trainer: any, bgCo
       <View style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 12, flexDirection: 'row', alignItems: 'center' }}>
         
         {/* Profile Image */}
-        <View style={styles.featuredProfileWrap}>
-          {trainer.profilePhoto || trainer.profileImage ? (
-            <Image 
-              source={{ uri: trainer.profilePhoto || trainer.profileImage }} 
-              style={styles.featuredProfileImg}
-            />
-          ) : (
-            <Text style={{ color: '#fff', fontSize: 16, fontWeight: '800' }}>{initials}</Text>
-          )}
-        </View>
+        <Avatar 
+          uri={trainer.profilePhoto || trainer.profileImage} 
+          style={styles.featuredProfileImg}
+          containerStyle={styles.featuredProfileWrap}
+          fallbackText={initials}
+        />
         
         {/* Name, Category, Exp */}
         <View style={{ flex: 1, marginRight: 8, justifyContent: 'center' }}>

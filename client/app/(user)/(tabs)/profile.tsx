@@ -4,12 +4,14 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import { useAuthStore } from '../../../store/authStore';
 import { bookingAPI, userAPI } from '../../../services/endpoints';
 import { Heart, CreditCard, Bell, Settings, HelpCircle, Info, LogOut, User, Edit2 } from 'lucide-react-native';
+import { Avatar } from '../../../components/Avatar';
 
 const isWeb = Platform.OS === 'web';
 
 export default function ProfileScreen() {
   const { user, logout } = useAuthStore();
   const router = useRouter();
+  const [imgError, setImgError] = useState(false);
 
   const userName = (user as any)?.name || (user as any)?.fullName || 'User';
   const profileImage = (user as any)?.profileImage || (user as any)?.profilePhoto || null;
@@ -42,11 +44,7 @@ export default function ProfileScreen() {
 
         <View style={styles.header}>
           <View style={styles.avatarLarge}>
-            {profileImage ? (
-              <Image source={{ uri: profileImage }} style={styles.profileImage} />
-            ) : (
-              <Text style={styles.avatarIcon}>👤</Text>
-            )}
+            <Avatar uri={profileImage} style={styles.profileImage} fallbackIcon="👤" />
           </View>
           <Text style={styles.name}>{userName.toUpperCase()}</Text>
         </View>
