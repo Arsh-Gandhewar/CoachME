@@ -299,7 +299,7 @@ export default function HomeScreen() {
           <Text style={styles.welcomeText}>
             Welcome back, <Text style={styles.welcomeName}>{userName}</Text>
           </Text>
-          <Text style={styles.heroTitle}>Ready to train?</Text>
+          <Text style={styles.heroTitle}>Ready to start?</Text>
 
           {/* Personal User Dashboard */}
           <View style={styles.dashboardContainer}>
@@ -425,7 +425,7 @@ const styles = StyleSheet.create({
   },
   welcomeText: { color: '#A1A1AA', fontSize: 12, marginBottom: 4 },
   welcomeName: { color: '#C9B07D', fontWeight: '700' },
-  heroTitle: { color: '#ffffff', fontSize: 48, fontWeight: '800', marginBottom: 16, letterSpacing: -1 },
+  heroTitle: { color: '#ffffff', fontSize: 36, fontWeight: '800', marginBottom: 16, letterSpacing: -1 },
   
   dashboardContainer: {
     backgroundColor: '#0A0A0A',
