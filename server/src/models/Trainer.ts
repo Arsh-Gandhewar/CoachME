@@ -80,7 +80,6 @@ const TrainerSchema = new Schema<ITrainer>(
     specializations: [{ type: String }],
     rating: { type: Number, default: 0 },
     totalReviews: { type: Number, default: 0 },
-    portfolioImages: [{ type: String }],
     verificationStatus: { type: String, enum: ['pending', 'verified', 'rejected'], default: 'pending' },
     isPremium: { type: Boolean, default: false },
     walletBalance: { type: Number, default: 0 },
