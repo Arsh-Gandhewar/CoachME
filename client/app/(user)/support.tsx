@@ -26,7 +26,7 @@ export default function SupportScreen() {
         <View style={styles.card}>
           <TouchableOpacity style={styles.itemRow} onPress={() => router.push('/(user)/support-chat')}>
             <View style={styles.itemLeft}>
-              <MessageCircle color="#C9B07D" size={24} />
+              <MessageCircle color="#9D00FF" size={24} />
               <View style={styles.itemText}>
                 <Text style={styles.itemLabel}>Live AI Support</Text>
                 <Text style={styles.itemDesc}>Instant answers to your queries</Text>
@@ -36,7 +36,7 @@ export default function SupportScreen() {
           </TouchableOpacity>
           <TouchableOpacity style={[styles.itemRow, { borderBottomWidth: 0 }]}>
             <View style={styles.itemLeft}>
-              <Mail color="#C9B07D" size={24} />
+              <Mail color="#9D00FF" size={24} />
               <View style={styles.itemText}>
                 <Text style={styles.itemLabel}>Email Support</Text>
                 <Text style={styles.itemDesc}>support@trainersapp.com</Text>

@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   logoContainer: { alignItems: 'center', marginVertical: 40 },
   logoIcon: { fontSize: 66, marginBottom: 16 },
   logoText: { fontSize: 34, fontWeight: '800', color: '#fff' },
-  logoAccent: { color: '#C9B07D' },
+  logoAccent: { color: '#9D00FF' },
   version: { color: '#777', marginTop: 8 },
 
   card: { backgroundColor: '#0A0A0A', borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', marginBottom: 40 },

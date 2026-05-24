@@ -6,8 +6,8 @@ export const CATEGORIES: Category[] = [
     name: 'Fitness',
     slug: 'fitness',
     icon: 'Dumbbell',
-    color: '#C9B07D',
-    gradient: 'linear-gradient(135deg, #C9B07D, #FF7043)',
+    color: '#9D00FF',
+    gradient: 'linear-gradient(135deg, #9D00FF, #FF7043)',
     isActive: true,
   },
   {

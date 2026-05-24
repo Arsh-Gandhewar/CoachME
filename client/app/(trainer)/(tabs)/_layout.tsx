@@ -27,7 +27,7 @@ function TabIcon({ name, focused }: { name: string; focused: boolean }) {
   };
   
   const iconName = icons[name] || 'circle';
-  const color = focused ? '#C9B07D' : isHovered ? '#FFFFFF' : '#555555';
+  const color = focused ? '#9D00FF' : isHovered ? '#FFFFFF' : '#555555';
 
   return (
     <Animated.View 
@@ -99,7 +99,7 @@ function SlidingTabBar({ state, descriptors, navigation }: any) {
             style={{ flex: 1, alignItems: 'center', paddingTop: 8, zIndex: 1 }}
           >
             <TabIcon name={route.name} focused={isFocused} />
-            <Text style={[styles.tabLabel, { color: isFocused ? '#C9B07D' : '#555555' }]}>
+            <Text style={[styles.tabLabel, { color: isFocused ? '#9D00FF' : '#555555' }]}>
               {options.title || route.name.toUpperCase()}
             </Text>
           </TouchableOpacity>
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#111111',
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: 'rgba(201, 176, 125, 0.4)',
+    borderColor: 'rgba(157,0,255, 0.4)',
     overflow: 'hidden',
   }
 });

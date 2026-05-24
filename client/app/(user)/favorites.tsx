@@ -26,7 +26,7 @@ export default function FavoritesScreen() {
   }, []);
 
   const initials = (name: string) => name.split(' ').map((n) => n[0]).join('').slice(0, 2);
-  const colors = ['#4CAF50', '#E91E63', '#F44336', '#C9B07D', '#FF9800', '#2196F3', '#00BCD4', '#7C4DFF'];
+  const colors = ['#4CAF50', '#E91E63', '#F44336', '#9D00FF', '#FF9800', '#2196F3', '#00BCD4', '#7C4DFF'];
 
   const renderItem = useCallback(({ item }: { item: Trainer }) => (
     <TouchableOpacity style={styles.card} onPress={() => router.push({ pathname: '/(user)/trainer/[id]', params: { id: item._id } })}>
@@ -60,7 +60,7 @@ export default function FavoritesScreen() {
       <View style={styles.content}>
         {loading ? (
           <View style={styles.centerBox}>
-            <ActivityIndicator size="large" color="#C9B07D" />
+            <ActivityIndicator size="large" color="#9D00FF" />
           </View>
         ) : favorites.length > 0 ? (
           <FlatList
@@ -104,8 +104,8 @@ const styles = StyleSheet.create({
   emptyTitle: { color: '#fff', fontSize: 12, fontWeight: '700', marginBottom: 8 },
   emptyDesc: { color: '#A1A1AA', fontSize: 12, marginBottom: 24 },
   
-  browseBtn: { backgroundColor: '#0A0A0A', borderWidth: 1, borderColor: '#C9B07D', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 24 },
-  browseText: { color: '#C9B07D', fontSize: 12, fontWeight: '600' },
+  browseBtn: { backgroundColor: '#0A0A0A', borderWidth: 1, borderColor: '#9D00FF', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 24 },
+  browseText: { color: '#9D00FF', fontSize: 12, fontWeight: '600' },
 
   list: { padding: 20, paddingBottom: 100 },
   card: { 
@@ -125,5 +125,5 @@ const styles = StyleSheet.create({
   meta: { fontSize: 12, color: '#A1A1AA', marginBottom: 8, textTransform: 'capitalize' },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   rating: { color: '#FFC107', fontSize: 12, fontWeight: '500' },
-  price: { color: '#C9B07D', fontSize: 12, fontWeight: '600' },
+  price: { color: '#9D00FF', fontSize: 12, fontWeight: '600' },
 });

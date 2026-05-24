@@ -53,6 +53,23 @@ export default function TrainerDashboard() {
       const res = await subscriptionAPI.createTrainerSubscription();
       const { subscriptionId } = res.data.data;
 
+      if (subscriptionId.startsWith('sub_mock_')) {
+        // Simulate a successful checkout locally to bypass Razorpay SDK errors with fake keys
+        try {
+          await subscriptionAPI.verifyTrainerSubscription({
+            razorpayPaymentId: 'pay_mock_' + Math.random().toString(36).substr(2, 9),
+            razorpaySubscriptionId: subscriptionId,
+            razorpaySignature: 'mock_signature',
+          });
+          Alert.alert('Success', 'Your profile is now live and visible to clients! (Mock Payment)');
+          refreshProfile();
+        } catch (verErr) {
+          Alert.alert('Verification Failed', 'Please contact support.');
+        }
+        setSubscribing(false);
+        return;
+      }
+
       const options = {
         description: 'CoachME Premium Visibility',
         image: 'https://i.imgur.com/3g7nmJC.png',
@@ -65,7 +82,7 @@ export default function TrainerDashboard() {
           contact: (user as any)?.mobile || '9999999999',
           name: (user as any)?.name || (user as any)?.fullName || ''
         },
-        theme: { color: '#C9B07D' }
+        theme: { color: '#9D00FF' }
       };
 
       RazorpayCheckout.open(options).then(async (data: any) => {
@@ -104,7 +121,7 @@ export default function TrainerDashboard() {
 
   return (
     <View style={styles.container}>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#C9B07D" />}>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#9D00FF" />}>
         
         <View style={styles.header}>
           <Text style={styles.greeting}>Hello, {trainerName} 👋</Text>
@@ -115,7 +132,7 @@ export default function TrainerDashboard() {
         <View style={styles.premiumContent}>
           <View style={styles.analyticsRow}>
             <View style={styles.analyticsCard}>
-              <Eye color="#C9B07D" size={24} style={{ marginBottom: 8 }} />
+              <Eye color="#9D00FF" size={24} style={{ marginBottom: 8 }} />
               <Text style={styles.analyticsVal}>{profileViews}</Text>
               <Text style={styles.analyticsLabel}>Profile Views</Text>
               <Text style={styles.analyticsTrend}>+12% this week</Text>
@@ -137,13 +154,13 @@ export default function TrainerDashboard() {
               <Text style={styles.statValue}>{confirmed}</Text>
               <Text style={styles.statLabel}>Active Clients</Text>
             </View>
-            <View style={[styles.statCard, { borderColor: '#C9B07D', width: '100%' }]}>
+            <View style={[styles.statCard, { borderColor: '#9D00FF', width: '100%' }]}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <View>
                   <Text style={styles.statValue}>₹{revenue}</Text>
                   <Text style={styles.statLabel}>Total Revenue</Text>
                 </View>
-                <TrendingUp color="#C9B07D" size={32} opacity={0.5} />
+                <TrendingUp color="#9D00FF" size={32} opacity={0.5} />
               </View>
             </View>
           </View>
@@ -170,7 +187,7 @@ export default function TrainerDashboard() {
           <View style={styles.paywallOverlay} />
           <View style={styles.paywallContent}>
             <View style={styles.lockIconContainer}>
-              <Lock color="#C9B07D" size={40} />
+              <Lock color="#9D00FF" size={40} />
             </View>
             <Text style={styles.paywallTitle}>Unlock Your Profile</Text>
             <Text style={styles.paywallDesc}>
@@ -210,7 +227,7 @@ const styles = StyleSheet.create({
   analyticsCard: { flex: 1, backgroundColor: '#0A0A0A', borderRadius: 20, padding: 20, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
   analyticsVal: { color: '#fff', fontSize: 12, fontWeight: '700' },
   analyticsLabel: { color: '#A1A1AA', fontSize: 12, marginTop: 4 },
-  analyticsTrend: { color: '#C9B07D', fontSize: 12, fontWeight: '600', marginTop: 8 },
+  analyticsTrend: { color: '#9D00FF', fontSize: 12, fontWeight: '600', marginTop: 8 },
 
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginBottom: 24 },
   statCard: { width: '47%' as any, backgroundColor: '#0A0A0A', borderRadius: 16, padding: 18, borderLeftWidth: 3 },
@@ -241,18 +258,18 @@ const styles = StyleSheet.create({
     maxWidth: 400,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(201,176,125,0.3)',
-    shadowColor: '#C9B07D',
+    borderColor: 'rgba(157,0,255,0.3)',
+    shadowColor: '#9D00FF',
     shadowOpacity: 0.2,
     shadowRadius: 20,
     elevation: 10,
   },
-  lockIconContainer: { width: 80, height: 80, borderRadius: 40, backgroundColor: 'rgba(201,176,125,0.1)', justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
+  lockIconContainer: { width: 80, height: 80, borderRadius: 40, backgroundColor: 'rgba(157,0,255,0.1)', justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
   paywallTitle: { fontSize: 12, fontWeight: '800', color: '#fff', marginBottom: 12, textAlign: 'center' },
   paywallDesc: { fontSize: 12, color: '#A1A1AA', textAlign: 'center', lineHeight: 22, marginBottom: 24 },
   featuresList: { alignSelf: 'flex-start', marginBottom: 28, width: '100%' },
   featureItem: { color: '#E0E0E0', fontSize: 12, marginBottom: 10, fontWeight: '500' },
-  subscribeBtn: { backgroundColor: '#C9B07D', width: '100%', paddingVertical: 16, borderRadius: 100, alignItems: 'center' },
+  subscribeBtn: { backgroundColor: '#9D00FF', width: '100%', paddingVertical: 16, borderRadius: 100, alignItems: 'center' },
   subscribeText: { color: '#fff', fontSize: 12, fontWeight: '700' },
   cancelAnytime: { color: '#666', fontSize: 12, marginTop: 16 }
 });

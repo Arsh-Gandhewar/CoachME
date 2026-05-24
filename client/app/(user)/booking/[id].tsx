@@ -97,7 +97,7 @@ export default function BookingFlowScreen() {
             contact: user?.mobile || '',
           },
           theme: {
-            color: '#C9B07D',
+            color: '#9D00FF',
           },
         };
 
@@ -115,7 +115,7 @@ export default function BookingFlowScreen() {
     setBooking(false);
   };
 
-  if (loading) return <View style={styles.center}><ActivityIndicator size="large" color="#C9B07D" /></View>;
+  if (loading) return <View style={styles.center}><ActivityIndicator size="large" color="#9D00FF" /></View>;
   if (!trainer) return <View style={styles.center}><Text style={styles.err}>Trainer not found</Text></View>;
 
   // Generate next 14 days
@@ -171,7 +171,7 @@ export default function BookingFlowScreen() {
               <View>
                 <Text style={styles.slotTitle}>Available Slots</Text>
                 <View style={styles.slots}>
-                  {loadingSlots ? <ActivityIndicator color="#C9B07D" /> : availableSlots.length > 0 ? availableSlots.map((slot: string) => {
+                  {loadingSlots ? <ActivityIndicator color="#9D00FF" /> : availableSlots.length > 0 ? availableSlots.map((slot: string) => {
                     const isBooked = bookedSlots.includes(slot);
                     return (
                     <TouchableOpacity 
@@ -229,22 +229,22 @@ const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000000' },
   err: { color: '#F44336', fontSize: 12 },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 60, paddingBottom: 12 },
-  backText: { color: '#C9B07D', fontSize: 12, fontWeight: '600' },
+  backText: { color: '#9D00FF', fontSize: 12, fontWeight: '600' },
   title: { fontSize: 12, fontWeight: '700', color: '#fff' },
   stepText: { color: '#A1A1AA', fontSize: 12 },
   progress: { flexDirection: 'row', justifyContent: 'center', gap: 8, paddingBottom: 16 },
   progressDot: { width: 40, height: 4, borderRadius: 2, backgroundColor: '#141414' },
-  progressDotActive: { backgroundColor: '#C9B07D' },
+  progressDotActive: { backgroundColor: '#9D00FF' },
   content: { flex: 1, paddingHorizontal: 20 },
   stepTitle: { fontSize: 12, fontWeight: '700', color: '#fff', marginBottom: 20 },
   optionCard: { backgroundColor: '#0A0A0A', borderRadius: 16, padding: 18, marginBottom: 12, borderWidth: 1.5, borderColor: 'rgba(255,255,255,0.04)', flexDirection: 'row', justifyContent: 'space-between' },
-  optionCardActive: { borderColor: '#C9B07D', backgroundColor: 'rgba(201,176,125,0.08)' },
+  optionCardActive: { borderColor: '#9D00FF', backgroundColor: 'rgba(157,0,255,0.08)' },
   optionText: { color: '#fff', fontSize: 12, fontWeight: '500' },
-  optionTextActive: { color: '#C9B07D' },
-  check: { color: '#C9B07D', fontSize: 12, fontWeight: '700' },
+  optionTextActive: { color: '#9D00FF' },
+  check: { color: '#9D00FF', fontSize: 12, fontWeight: '700' },
   dateScroll: { marginBottom: 24 },
   dateChip: { alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, borderRadius: 16, backgroundColor: '#0A0A0A', marginRight: 10, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)', minWidth: 56 },
-  dateChipActive: { backgroundColor: '#C9B07D', borderColor: '#C9B07D' },
+  dateChipActive: { backgroundColor: '#9D00FF', borderColor: '#9D00FF' },
   dateDay: { color: '#A1A1AA', fontSize: 12, fontWeight: '500' },
   dateDayActive: { color: '#fff' },
   dateNum: { color: '#fff', fontSize: 12, fontWeight: '700', marginTop: 4 },
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   slotTitle: { fontSize: 12, fontWeight: '600', color: '#fff', marginBottom: 12 },
   slots: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   slotChip: { paddingHorizontal: 18, paddingVertical: 10, borderRadius: 12, backgroundColor: '#0A0A0A', borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
-  slotChipActive: { backgroundColor: '#C9B07D', borderColor: '#C9B07D' },
+  slotChipActive: { backgroundColor: '#9D00FF', borderColor: '#9D00FF' },
   slotChipDisabled: { backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.02)', opacity: 0.5 },
   slotText: { color: '#fff', fontSize: 12 },
   slotTextActive: { color: '#fff', fontWeight: '600' },
@@ -264,9 +264,9 @@ const styles = StyleSheet.create({
   summaryLabel: { color: '#A1A1AA', fontSize: 12 },
   summaryValue: { color: '#fff', fontSize: 12, fontWeight: '500' },
   summaryTotal: { borderBottomWidth: 0, marginTop: 8 },
-  totalPrice: { color: '#C9B07D', fontSize: 12, fontWeight: '700' },
+  totalPrice: { color: '#9D00FF', fontSize: 12, fontWeight: '700' },
   footer: { paddingHorizontal: 20, paddingBottom: 34, paddingTop: 12 },
-  nextBtn: { backgroundColor: '#C9B07D', borderRadius: 14, padding: 16, alignItems: 'center' },
+  nextBtn: { backgroundColor: '#9D00FF', borderRadius: 14, padding: 16, alignItems: 'center' },
   nextBtnDisabled: { opacity: 0.4 },
   nextBtnText: { color: '#fff', fontSize: 12, fontWeight: '700' },
 });

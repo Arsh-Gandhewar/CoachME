@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   userBubble: {
-    backgroundColor: '#C9B07D',
+    backgroundColor: '#9D00FF',
     alignSelf: 'flex-end',
     borderBottomRightRadius: 4,
   },
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#C9B07D',
+    backgroundColor: '#9D00FF',
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 12,

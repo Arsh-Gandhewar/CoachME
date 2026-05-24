@@ -105,13 +105,13 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000000' },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, paddingBottom: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)', backgroundColor: '#0A0A0A' },
   backBtn: { width: 60 },
-  backText: { color: '#C9B07D', fontSize: 12, fontWeight: '600' },
+  backText: { color: '#9D00FF', fontSize: 12, fontWeight: '600' },
   headerInfo: { flex: 1, alignItems: 'center' },
   headerName: { color: '#fff', fontSize: 14, fontWeight: '700' },
   
   messageList: { padding: 16, paddingBottom: 32 },
   messageBubble: { maxWidth: '80%', padding: 12, borderRadius: 16, marginBottom: 12 },
-  myMessage: { backgroundColor: '#C9B07D', alignSelf: 'flex-end', borderBottomRightRadius: 4 },
+  myMessage: { backgroundColor: '#9D00FF', alignSelf: 'flex-end', borderBottomRightRadius: 4 },
   theirMessage: { backgroundColor: '#1A1A1A', alignSelf: 'flex-start', borderBottomLeftRadius: 4, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
   messageText: { fontSize: 12, lineHeight: 18 },
   myMessageText: { color: '#000', fontWeight: '500' },
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
 
   inputContainer: { flexDirection: 'row', alignItems: 'flex-end', padding: 16, backgroundColor: '#0A0A0A', borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.05)' },
   input: { flex: 1, backgroundColor: '#141414', color: '#fff', borderRadius: 20, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 12, fontSize: 12, maxHeight: 100, minHeight: 40, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
-  sendBtn: { marginLeft: 12, backgroundColor: '#C9B07D', borderRadius: 20, paddingHorizontal: 20, height: 40, justifyContent: 'center', alignItems: 'center' },
+  sendBtn: { marginLeft: 12, backgroundColor: '#9D00FF', borderRadius: 20, paddingHorizontal: 20, height: 40, justifyContent: 'center', alignItems: 'center' },
   sendBtnDisabled: { opacity: 0.5 },
   sendText: { color: '#000', fontSize: 12, fontWeight: '700' },
 });

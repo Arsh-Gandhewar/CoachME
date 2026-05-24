@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 24, fontWeight: '700', color: '#fff', paddingHorizontal: 20, marginBottom: 16 },
   tabs: { flexDirection: 'row', paddingHorizontal: 20, marginBottom: 16 },
   tab: { paddingHorizontal: 18, paddingVertical: 8, borderRadius: 20, backgroundColor: '#0A0A0A', marginRight: 8 },
-  tabActive: { backgroundColor: '#C9B07D' },
+  tabActive: { backgroundColor: '#9D00FF' },
   tabText: { color: '#A1A1AA', fontSize: 12, fontWeight: '500', textTransform: 'capitalize' },
   tabTextActive: { color: '#fff' },
   list: { paddingHorizontal: 20 },

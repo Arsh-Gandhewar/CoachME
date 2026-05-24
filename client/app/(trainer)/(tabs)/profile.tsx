@@ -53,6 +53,6 @@ const styles = StyleSheet.create({
   tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   tag: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20, backgroundColor: '#141414' },
   tagText: { color: '#fff', fontSize: 12 },
-  logoutBtn: { marginHorizontal: 20, marginTop: 30, backgroundColor: '#0A0A0A', borderRadius: 16, padding: 16, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(201,176,125,0.2)' },
+  logoutBtn: { marginHorizontal: 20, marginTop: 30, backgroundColor: '#0A0A0A', borderRadius: 16, padding: 16, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(157,0,255,0.2)' },
   logoutText: { color: '#F44336', fontSize: 12, fontWeight: '600' },
 });

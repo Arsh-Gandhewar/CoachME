@@ -49,11 +49,11 @@ export default function TrainerDetailScreen() {
     }
   };
 
-  if (loading) return <View style={styles.loading}><ActivityIndicator size="large" color="#C9B07D" /></View>;
+  if (loading) return <View style={styles.loading}><ActivityIndicator size="large" color="#9D00FF" /></View>;
   if (!trainer) return <View style={styles.loading}><Text style={styles.errorText}>Trainer not found</Text></View>;
 
   const initials = trainer.fullName.split(' ').map((n) => n[0]).join('').slice(0, 2);
-  const colors = ['#C9B07D', '#7C4DFF', '#00BCD4', '#4CAF50', '#E91E63'];
+  const colors = ['#9D00FF', '#7C4DFF', '#00BCD4', '#4CAF50', '#E91E63'];
   const bgColor = colors[trainer.fullName.length % colors.length];
 
   return (
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   errorText: { color: '#F44336', fontSize: 12 },
   hero: { paddingTop: Platform.OS === 'web' ? 40 : 60, paddingBottom: 32, alignItems: 'center', borderBottomLeftRadius: 28, borderBottomRightRadius: 28 },
   backBtn: { position: 'absolute', top: Platform.OS === 'web' ? 30 : 50, left: 16 },
-  backText: { color: '#C9B07D', fontSize: 12, fontWeight: '600' },
+  backText: { color: '#9D00FF', fontSize: 12, fontWeight: '600' },
   favBtn: { position: 'absolute', top: Platform.OS === 'web' ? 30 : 50, right: 16 },
   favIcon: { fontSize: 12 },
   avatarLarge: { width: 70, height: 70, borderRadius: 24, justifyContent: 'center', alignItems: 'center', marginBottom: 8 },
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   section: { paddingHorizontal: 16, marginTop: 16 },
   sectionTitle: { fontSize: 12, fontWeight: '700', color: '#fff', marginBottom: 8 },
   bio: { color: '#A1A1AA', fontSize: 12, lineHeight: 22 },
-  showMore: { color: '#C9B07D', fontSize: 12, marginTop: 6, fontWeight: '500' },
+  showMore: { color: '#9D00FF', fontSize: 12, marginTop: 6, fontWeight: '500' },
   resumeBtn: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#1E1E1E', paddingVertical: 12, paddingHorizontal: 16, borderRadius: 12, marginTop: 16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)', alignSelf: 'flex-start' },
   resumeBtnText: { color: '#fff', fontSize: 12, fontWeight: '600' },
   tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
@@ -241,10 +241,10 @@ const styles = StyleSheet.create({
   reviewText: { color: '#A1A1AA', fontSize: 12, lineHeight: 20 },
   noReviews: { color: '#666', fontSize: 12 },
   bookBar: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#0A0A0A', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 16, paddingBottom: 34, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.05)' },
-  bookPrice: { color: '#C9B07D', fontSize: 16, fontWeight: '800' },
+  bookPrice: { color: '#9D00FF', fontSize: 16, fontWeight: '800' },
   bookUnit: { color: '#666', fontSize: 10 },
   chatBtn: { backgroundColor: '#1A1A1A', paddingHorizontal: 16, paddingVertical: 14, borderRadius: 14, marginRight: 10, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
   chatBtnText: { color: '#fff', fontSize: 12, fontWeight: '700' },
-  bookBtn: { backgroundColor: '#C9B07D', paddingHorizontal: 24, paddingVertical: 14, borderRadius: 14 },
+  bookBtn: { backgroundColor: '#9D00FF', paddingHorizontal: 24, paddingVertical: 14, borderRadius: 14 },
   bookBtnText: { color: '#fff', fontSize: 12, fontWeight: '700' },
 });

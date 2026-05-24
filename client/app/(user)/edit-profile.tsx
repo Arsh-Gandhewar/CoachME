@@ -254,7 +254,7 @@ export default function EditProfileScreen() {
                   <Text style={{ fontSize: 24, color: '#666' }}>+</Text>
                 </TouchableOpacity>
               </ScrollView>
-              {uploadingPortfolio && <Text style={{ color: '#C9B07D', fontSize: 10, marginTop: 5 }}>Uploading...</Text>}
+              {uploadingPortfolio && <Text style={{ color: '#9D00FF', fontSize: 10, marginTop: 5 }}>Uploading...</Text>}
             </View>
           </>
         )}
@@ -286,6 +286,6 @@ const styles = StyleSheet.create({
   label: { color: '#A1A1AA', fontSize: 12, marginBottom: 8, fontWeight: '500' },
   input: { backgroundColor: '#0A0A0A', borderRadius: 12, padding: 16, color: '#fff', fontSize: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
   
-  saveBtn: { backgroundColor: '#C9B07D', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 20 },
+  saveBtn: { backgroundColor: '#9D00FF', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 20 },
   saveBtnText: { color: '#fff', fontSize: 12, fontWeight: '700' },
 });
