@@ -15,21 +15,6 @@ export default function ProfileScreen() {
   const profileImage = (user as any)?.profileImage || (user as any)?.profilePhoto || null;
   const initials = userName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
 
-  const [sessionsCount, setSessionsCount] = useState<number | string>('...');
-  const [favoritesCount, setFavoritesCount] = useState<number | string>('...');
-
-  useFocusEffect(
-    useCallback(() => {
-      bookingAPI.getUserBookings().then(res => {
-        if (res.data?.data) setSessionsCount(res.data.data.length);
-      }).catch(() => setSessionsCount(0));
-
-      userAPI.getFavorites().then(res => {
-        if (res.data?.data) setFavoritesCount(res.data.data.length);
-      }).catch(() => setFavoritesCount(0));
-    }, [])
-  );
-
   const handleLogout = () => {
     if (isWeb) {
       if (window.confirm('Are you sure you want to log out?')) {
@@ -65,16 +50,6 @@ export default function ProfileScreen() {
             )}
           </View>
           <Text style={styles.name}>{userName.toUpperCase()}</Text>
-          <View style={styles.statsRow}>
-            <View style={styles.stat}>
-              <Text style={styles.statValue}>{sessionsCount}</Text>
-              <Text style={styles.statLabel}>Sessions</Text>
-            </View>
-            <View style={styles.stat}>
-              <Text style={styles.statValue}>{favoritesCount}</Text>
-              <Text style={styles.statLabel}>Favorites</Text>
-            </View>
-          </View>
         </View>
 
         <View style={styles.menu}>
