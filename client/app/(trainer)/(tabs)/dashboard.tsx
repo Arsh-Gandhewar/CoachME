@@ -32,7 +32,7 @@ export default function TrainerDashboard() {
 
   const refreshProfile = async () => {
     try {
-      const res = await authAPI.getProfile();
+      const res = await authAPI.getMe();
       if (res.data?.data) {
         setUser(res.data.data);
       }
