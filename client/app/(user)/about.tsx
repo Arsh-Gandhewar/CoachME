@@ -17,7 +17,7 @@ export default function AboutScreen() {
       <View style={styles.content}>
         <View style={styles.logoContainer}>
           <Text style={styles.logoIcon}>🏋️</Text>
-          <Text style={styles.logoText}>Trainers<Text style={styles.logoAccent}>App</Text></Text>
+          <Text style={styles.logoText}>Coach<Text style={styles.logoAccent}>ME</Text></Text>
           <Text style={styles.version}>Version 1.0.0 (Build 42)</Text>
         </View>
 
