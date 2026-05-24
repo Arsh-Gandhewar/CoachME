@@ -22,13 +22,13 @@ export default function ChatListScreen() {
       <Text style={styles.title}>Messages</Text>
       <FlatList
         data={chats}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.chatItem} onPress={() => router.push({ pathname: '/(user)/chat/[id]' as any, params: { id: item._id } })}>
+        renderItem={({ item }: any) => (
+          <TouchableOpacity style={styles.chatItem} onPress={() => router.push({ pathname: '/(user)/chat/[id]' as any, params: { id: item.otherParticipant?._id } })}>
             <View style={styles.avatar}>
               <Text style={styles.avatarText}>💬</Text>
             </View>
             <View style={styles.chatInfo}>
-              <Text style={styles.chatName}>Chat</Text>
+              <Text style={styles.chatName}>{item.otherParticipant?.name || item.otherParticipant?.fullName || 'Chat'}</Text>
               <Text style={styles.lastMsg} numberOfLines={1}>{item.lastMessage?.text || 'No messages yet'}</Text>
             </View>
             <Text style={styles.time}>{item.lastMessage?.timestamp ? new Date(item.lastMessage.timestamp).toLocaleDateString() : ''}</Text>

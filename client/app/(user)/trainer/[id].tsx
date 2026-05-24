@@ -183,10 +183,13 @@ export default function TrainerDetailScreen() {
 
       {/* Sticky Book Button */}
       <View style={styles.bookBar}>
-        <View>
+        <View style={{ flex: 1 }}>
           <Text style={styles.bookPrice}>₹{trainer.pricing}</Text>
           <Text style={styles.bookUnit}>{trainer.priceUnit}</Text>
         </View>
+        <TouchableOpacity style={styles.chatBtn} onPress={() => router.push({ pathname: '/(user)/chat/[id]' as any, params: { id: trainer._id } })}>
+          <Text style={styles.chatBtnText}>💬 Chat</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.bookBtn} onPress={() => router.push({ pathname: '/(user)/booking/[id]', params: { id: trainer._id } })}>
           <Text style={styles.bookBtnText}>Book Now</Text>
         </TouchableOpacity>
@@ -237,9 +240,11 @@ const styles = StyleSheet.create({
   reviewRating: { fontSize: 12 },
   reviewText: { color: '#A1A1AA', fontSize: 12, lineHeight: 20 },
   noReviews: { color: '#666', fontSize: 12 },
-  bookBar: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#0A0A0A', borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.04)', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 12, paddingBottom: 24 },
-  bookPrice: { fontSize: 12, fontWeight: '700', color: '#fff' },
-  bookUnit: { fontSize: 12, color: '#A1A1AA' },
-  bookBtn: { backgroundColor: '#C9B07D', paddingHorizontal: 32, paddingVertical: 14, borderRadius: 14 },
+  bookBar: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#0A0A0A', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 16, paddingBottom: 34, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.05)' },
+  bookPrice: { color: '#C9B07D', fontSize: 16, fontWeight: '800' },
+  bookUnit: { color: '#666', fontSize: 10 },
+  chatBtn: { backgroundColor: '#1A1A1A', paddingHorizontal: 16, paddingVertical: 14, borderRadius: 14, marginRight: 10, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
+  chatBtnText: { color: '#fff', fontSize: 12, fontWeight: '700' },
+  bookBtn: { backgroundColor: '#C9B07D', paddingHorizontal: 24, paddingVertical: 14, borderRadius: 14 },
   bookBtnText: { color: '#fff', fontSize: 12, fontWeight: '700' },
 });

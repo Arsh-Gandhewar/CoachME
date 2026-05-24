@@ -44,7 +44,8 @@ export const userAPI = {
 
 // Chat APIs
 export const chatAPI = {
-  getChats: () => api.get<ApiResponse<Chat[]>>('/chats'),
+  getChats: () => api.get<ApiResponse<any[]>>('/chats'),
+  getChatByReceiver: (receiverId: string) => api.get(`/chats/by-receiver/${receiverId}`),
   getMessages: (chatId: string) => api.get(`/chats/${chatId}/messages`),
   sendMessage: (receiverId: string, text: string) => api.post(`/chats/${receiverId}/message`, { text }),
 };
