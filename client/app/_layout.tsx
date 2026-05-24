@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import * as Notifications from 'expo-notifications';
 import { useAuthStore } from '../store/authStore';
 
 const queryClient = new QueryClient({
@@ -56,6 +57,19 @@ function AuthGate() {
 }
 
 export default function RootLayout() {
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
+      }
+    })();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <StatusBar style="light" />

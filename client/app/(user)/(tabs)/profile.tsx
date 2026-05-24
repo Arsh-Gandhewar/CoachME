@@ -46,7 +46,6 @@ export default function ProfileScreen() {
     { icon: <User color="#A1A1AA" size={20} />, label: 'Edit Profile', action: () => router.push('/(user)/edit-profile') },
     { icon: <Heart color="#A1A1AA" size={20} />, label: 'Favorites', action: () => router.push('/(user)/favorites') },
     { icon: <CreditCard color="#A1A1AA" size={20} />, label: 'Payment Methods', action: () => router.push('/(user)/payment') },
-    { icon: <Bell color="#A1A1AA" size={20} />, label: 'Notifications', action: () => router.push('/(user)/notifications') },
     { icon: <Settings color="#A1A1AA" size={20} />, label: 'Settings', action: () => router.push('/(user)/settings') },
     { icon: <HelpCircle color="#A1A1AA" size={20} />, label: 'Help & Support', action: () => router.push('/(user)/support') },
     { icon: <Info color="#A1A1AA" size={20} />, label: 'About', action: () => router.push('/(user)/about') },
