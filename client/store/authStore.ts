@@ -90,7 +90,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             return;
           }
         } catch (err) {
-          console.log('Failed to fetch fresh user data, using cached', err);
+          // Failed to fetch fresh user data, using cached
         }
 
         set({

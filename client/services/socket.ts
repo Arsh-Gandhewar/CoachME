@@ -9,7 +9,6 @@ class SocketService {
     this.socket = io(baseUrl, { transports: ['websocket'] });
 
     this.socket.on('connect', () => {
-      console.log('Socket connected');
       this.socket?.emit('join', userId);
     });
 

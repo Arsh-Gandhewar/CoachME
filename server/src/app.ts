@@ -3,6 +3,8 @@ import http from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import compression from 'compression';
+import logger from './utils/logger';
 import { env } from './config/env';
 import connectDB from './config/db';
 import { errorHandler } from './middleware/errorHandler';
@@ -31,6 +33,7 @@ initializeSocket(server);
 // Middleware
 app.use(cors());
 app.use(helmet());
+app.use(compression());
 app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
@@ -138,12 +141,12 @@ const startServer = async () => {
   await connectDB();
 
   server.listen(env.PORT, () => {
-    console.log(`\n🚀 TrainersApp API running on port ${env.PORT}`);
-    console.log(`📡 Environment: ${env.NODE_ENV}`);
-    console.log(`🔗 Health check: http://localhost:${env.PORT}/api/health\n`);
+    logger.info(`🚀 TrainersApp API running on port ${env.PORT}`);
+    logger.info(`📡 Environment: ${env.NODE_ENV}`);
+    logger.info(`🔗 Health check: http://localhost:${env.PORT}/api/health`);
   });
 };
 
-startServer().catch(console.error);
+startServer().catch(err => logger.error('Server failed to start:', err));
 
 export default app;

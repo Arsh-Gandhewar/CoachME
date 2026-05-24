@@ -32,7 +32,7 @@ export async function registerForPushNotificationsAsync() {
     token = (await Notifications.getExpoPushTokenAsync()).data;
   } else {
     // If not a physical device, log it and return null
-    console.log('Must use physical device for Push Notifications');
+    // Must use physical device for Push Notifications
   }
 
   return token;

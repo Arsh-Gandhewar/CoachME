@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Platform, FlatList, ActivityIndicator, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import api from '../../services/api';
@@ -28,7 +28,7 @@ export default function FavoritesScreen() {
   const initials = (name: string) => name.split(' ').map((n) => n[0]).join('').slice(0, 2);
   const colors = ['#4CAF50', '#E91E63', '#F44336', '#C9B07D', '#FF9800', '#2196F3', '#00BCD4', '#7C4DFF'];
 
-  const renderItem = ({ item }: { item: Trainer }) => (
+  const renderItem = useCallback(({ item }: { item: Trainer }) => (
     <TouchableOpacity style={styles.card} onPress={() => router.push({ pathname: '/(user)/trainer/[id]', params: { id: item._id } })}>
       <Avatar 
         uri={item.profilePhoto || (item as any).profileImage} 
@@ -45,7 +45,7 @@ export default function FavoritesScreen() {
         </View>
       </View>
     </TouchableOpacity>
-  );
+  ), [router]);
 
   return (
     <View style={styles.container}>
@@ -69,6 +69,10 @@ export default function FavoritesScreen() {
             keyExtractor={(item) => item._id}
             contentContainerStyle={styles.list}
             showsVerticalScrollIndicator={false}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            windowSize={5}
+            removeClippedSubviews={true}
           />
         ) : (
           <View style={styles.emptyState}>

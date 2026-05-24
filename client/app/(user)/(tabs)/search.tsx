@@ -39,7 +39,7 @@ export default function SearchScreen() {
       if (res.data?.data) {
         setCategories(res.data.data);
       }
-    }).catch(err => console.log('Failed to fetch categories:', err));
+    }).catch(err => { /* silently handle */ });
   }, []);
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function SearchScreen() {
         let loc = await Location.getCurrentPositionAsync({});
         setLocation({ lat: loc.coords.latitude, lng: loc.coords.longitude });
       } catch (err) {
-        console.log('Location error', err);
+        console.error('Location error', err);
       }
     })();
   }, []);
@@ -130,6 +130,10 @@ export default function SearchScreen() {
           <FlatList
             data={trainers}
             contentContainerStyle={styles.list}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            windowSize={5}
+            removeClippedSubviews={true}
             renderItem={({ item }) => (
               <TouchableOpacity style={styles.card} onPress={() => router.push({ pathname: '/(user)/trainer/[id]', params: { id: item._id } })}>
                 <Avatar 

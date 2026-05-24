@@ -37,7 +37,6 @@ export interface Trainer {
   rating: number;
   totalReviews: number;
   reviewCount: number;
-  portfolioImages: string[];
   verificationStatus: 'pending' | 'verified' | 'rejected';
   isPremium: boolean;
   premium: boolean;

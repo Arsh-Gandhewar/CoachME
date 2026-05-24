@@ -1,6 +1,7 @@
 import { Server } from 'socket.io';
 import { Server as HttpServer } from 'http';
 import Chat from '../models/Chat';
+import logger from '../utils/logger';
 
 export const initializeSocket = (httpServer: HttpServer) => {
   const io = new Server(httpServer, {
@@ -8,11 +9,11 @@ export const initializeSocket = (httpServer: HttpServer) => {
   });
 
   io.on('connection', (socket) => {
-    console.log(`🔌 Socket connected: ${socket.id}`);
+    logger.debug(`🔌 Socket connected: ${socket.id}`);
 
     socket.on('join', (userId: string) => {
       socket.join(userId);
-      console.log(`👤 User ${userId} joined room`);
+      logger.debug(`👤 User ${userId} joined room`);
     });
 
     socket.on('join_chat', (chatId: string) => {
@@ -48,7 +49,7 @@ export const initializeSocket = (httpServer: HttpServer) => {
         io.to(data.senderId).emit('message_sent', { chatId: chat._id, message });
         io.to(`chat_${chat._id}`).emit('chat_message', { chatId: chat._id, message });
       } catch (error) {
-        console.error('Socket message error:', error);
+        logger.error('Socket message error:', error);
       }
     });
 
@@ -61,7 +62,7 @@ export const initializeSocket = (httpServer: HttpServer) => {
     });
 
     socket.on('disconnect', () => {
-      console.log(`🔌 Socket disconnected: ${socket.id}`);
+      logger.debug(`🔌 Socket disconnected: ${socket.id}`);
     });
   });
 

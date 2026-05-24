@@ -10,6 +10,7 @@ import Payment from '../models/Payment';
 import User from '../models/User';
 import Trainer from '../models/Trainer';
 import { env } from '../config/env';
+import logger from '../utils/logger';
 
 const razorpay = new Razorpay({
   key_id: env.RAZORPAY_KEY_ID,
@@ -33,7 +34,7 @@ export const setupCard = asyncHandler(async (req: AuthRequest, res: Response) =>
       user.razorpayCustomerId = customer.id;
       await user.save();
     } catch (err: any) {
-      console.error('Razorpay Customer Create Error:', err);
+      logger.error('Razorpay Customer Create Error:', err);
       throw ApiError.badRequest('Failed to create Razorpay customer');
     }
   }
@@ -68,7 +69,7 @@ export const getSavedMethods = asyncHandler(async (req: AuthRequest, res: Respon
     const tokens = await razorpay.customers.fetchTokens(user.razorpayCustomerId);
     return ApiResponse.success(res, tokens);
   } catch (err: any) {
-    console.error('Razorpay fetch tokens error', err);
+    logger.error('Razorpay fetch tokens error', err);
     return ApiResponse.success(res, { items: [] }); // return empty if fails
   }
 });
@@ -86,7 +87,7 @@ export const deleteSavedMethod = asyncHandler(async (req: AuthRequest, res: Resp
     await razorpay.customers.deleteToken(user.razorpayCustomerId, tokenId);
     return ApiResponse.success(res, null, 'Payment method removed');
   } catch (err: any) {
-    console.error('Razorpay delete token error', err);
+    logger.error('Razorpay delete token error', err);
     throw ApiError.badRequest('Failed to remove payment method');
   }
 });

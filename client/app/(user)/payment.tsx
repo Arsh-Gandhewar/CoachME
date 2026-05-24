@@ -20,7 +20,7 @@ export default function PaymentScreen() {
         setMethods(res.data.data.items);
       }
     } catch (error) {
-      console.log('Fetch methods error', error);
+      console.error('Fetch methods error', error);
     } finally {
       setLoading(false);
     }
@@ -66,10 +66,10 @@ export default function PaymentScreen() {
         fetchMethods();
       }).catch((error: any) => {
         // Handled or dismissed
-        console.log('Checkout Error:', error);
+        console.error('Checkout Error:', error);
       });
     } catch (error) {
-      console.log('Setup Card error', error);
+      console.error('Setup Card error', error);
       Alert.alert('Error', 'Failed to initialize setup.');
     } finally {
       setLoading(false);
@@ -82,7 +82,7 @@ export default function PaymentScreen() {
       await paymentAPI.deleteMethod(tokenId);
       setMethods(prev => prev.filter(m => m.id !== tokenId));
     } catch (error) {
-      console.log('Delete method error', error);
+      console.error('Delete method error', error);
       Alert.alert('Error', 'Failed to remove method');
     } finally {
       setLoading(false);

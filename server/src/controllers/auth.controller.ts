@@ -9,6 +9,7 @@ import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
 import { AuthRequest } from '../middleware/auth';
 import { otpService } from '../services/otp.service';
+import logger from '../utils/logger';
 
 const generateTokens = (id: string, role: string) => {
   const accessToken = jwt.sign({ id, role }, env.JWT_SECRET, { expiresIn: env.JWT_EXPIRE as any });
@@ -27,7 +28,7 @@ const getCityCoordinates = async (city: string): Promise<[number, number]> => {
       return [parseFloat(data[0].lon), parseFloat(data[0].lat)];
     }
   } catch (error) {
-    console.log('Geocoding error:', error);
+    logger.error('Geocoding error:', error);
   }
   return [72.8777, 19.0760]; // Fallback to Mumbai
 };
@@ -141,8 +142,8 @@ export const login = asyncHandler(async (req: AuthRequest, res: Response) => {
 
 export const sendOtp = asyncHandler(async (req: AuthRequest, res: Response) => {
   const { email } = req.body;
-  otpService.generate(email);
-  return ApiResponse.success(res, null, 'OTP sent successfully (check server console in dev mode)');
+  await otpService.generate(email);
+  return ApiResponse.success(res, null, 'OTP sent to your email');
 });
 
 export const verifyOtp = asyncHandler(async (req: AuthRequest, res: Response) => {
@@ -177,8 +178,8 @@ export const forgotPassword = asyncHandler(async (req: AuthRequest, res: Respons
     }
   }
 
-  console.log(`🔑 [MOCK EMAIL] Reset token for ${email}: ${resetToken}`);
-  return ApiResponse.success(res, null, 'Password reset link sent (check server console in dev mode)');
+  logger.info(`🔑 Reset token generated for ${email}`);
+  return ApiResponse.success(res, null, 'Password reset link generated');
 });
 
 export const resetPassword = asyncHandler(async (req: AuthRequest, res: Response) => {

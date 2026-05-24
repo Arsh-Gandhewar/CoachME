@@ -29,7 +29,7 @@ export default function TrainerDashboard() {
         setUser(res.data.data);
       }
     } catch (error) {
-      console.log('Refresh profile failed', error);
+      console.error('Refresh profile failed', error);
     }
   }
 
@@ -82,11 +82,11 @@ export default function TrainerDashboard() {
           Alert.alert('Verification Failed', 'Please contact support.');
         }
       }).catch((error: any) => {
-        console.log('Checkout Error:', error);
+        console.error('Checkout Error:', error);
       });
 
     } catch (error) {
-      console.log('Subscription error', error);
+      console.error('Subscription error', error);
       Alert.alert('Error', 'Failed to initialize subscription');
     } finally {
       setSubscribing(false);

@@ -7,6 +7,7 @@ import { ApiError } from '../utils/ApiError';
 import { AuthRequest } from '../middleware/auth';
 import Trainer from '../models/Trainer';
 import { env } from '../config/env';
+import logger from '../utils/logger';
 
 const razorpay = new Razorpay({
   key_id: env.RAZORPAY_KEY_ID,
@@ -30,10 +31,10 @@ const ensurePlan = async () => {
       }
     });
     TRAINER_PLAN_ID = plan.id;
-    console.log('Created dynamic Razorpay Plan:', TRAINER_PLAN_ID);
+    logger.info(`Created dynamic Razorpay Plan: ${TRAINER_PLAN_ID}`);
     return TRAINER_PLAN_ID;
   } catch (error) {
-    console.error('Failed to create Razorpay Plan', error);
+    logger.error('Failed to create Razorpay Plan', error);
     throw ApiError.internal('Failed to setup subscription plan');
   }
 };

@@ -56,7 +56,7 @@ export default function NotificationsScreen() {
         setUser(res.data.data);
       }
     } catch (error) {
-      console.log('Failed to save notification preference', error);
+      console.error('Failed to save notification preference', error);
       setter(!value); // revert on error
     }
   };

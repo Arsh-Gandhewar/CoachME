@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { GoogleGenAI } from '@google/genai';
 import { asyncHandler } from '../utils/asyncHandler';
 import { ApiResponse } from '../utils/ApiResponse';
+import logger from '../utils/logger';
 
 // Initialize the Gemini client
 // Note: Requires GEMINI_API_KEY in .env
@@ -51,7 +52,7 @@ export const chatWithSupport = asyncHandler(async (req: Request, res: Response) 
 
     return ApiResponse.success(res, { reply: replyText });
   } catch (error) {
-    console.error('Gemini API Error:', error);
+    logger.error('Gemini API Error:', error);
     return ApiResponse.error(res, 'Failed to process request with AI', 500);
   }
 });

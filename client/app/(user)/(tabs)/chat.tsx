@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Platform, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { chatAPI } from '../../../services/endpoints';
@@ -18,28 +18,35 @@ export default function ChatListScreen() {
     })();
   }, []);
 
+  const renderItem = useCallback(({ item }: any) => {
+    const photo = item.otherParticipant?.profileImage || item.otherParticipant?.profilePhoto;
+    return (
+      <TouchableOpacity style={styles.chatItem} onPress={() => router.push({ pathname: '/(user)/chat/[id]' as any, params: { id: item.otherParticipant?._id } })}>
+        <Avatar 
+          uri={photo} 
+          style={styles.avatarImage} 
+          containerStyle={styles.avatar} 
+          fallbackIcon="💬" 
+        />
+        <View style={styles.chatInfo}>
+          <Text style={styles.chatName}>{item.otherParticipant?.name || item.otherParticipant?.fullName || 'Chat'}</Text>
+          <Text style={styles.lastMsg} numberOfLines={1}>{item.lastMessage?.text || 'No messages yet'}</Text>
+        </View>
+        <Text style={styles.time}>{item.lastMessage?.timestamp ? new Date(item.lastMessage.timestamp).toLocaleDateString() : ''}</Text>
+      </TouchableOpacity>
+    );
+  }, [router]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Messages</Text>
       <FlatList
         data={chats}
-        renderItem={({ item }: any) => {
-          const photo = item.otherParticipant?.profileImage || item.otherParticipant?.profilePhoto;
-          return (
-          <TouchableOpacity style={styles.chatItem} onPress={() => router.push({ pathname: '/(user)/chat/[id]' as any, params: { id: item.otherParticipant?._id } })}>
-            <Avatar 
-              uri={photo} 
-              style={styles.avatarImage} 
-              containerStyle={styles.avatar} 
-              fallbackIcon="💬" 
-            />
-            <View style={styles.chatInfo}>
-              <Text style={styles.chatName}>{item.otherParticipant?.name || item.otherParticipant?.fullName || 'Chat'}</Text>
-              <Text style={styles.lastMsg} numberOfLines={1}>{item.lastMessage?.text || 'No messages yet'}</Text>
-            </View>
-            <Text style={styles.time}>{item.lastMessage?.timestamp ? new Date(item.lastMessage.timestamp).toLocaleDateString() : ''}</Text>
-          </TouchableOpacity>
-        )}}
+        renderItem={renderItem}
+        initialNumToRender={12}
+        maxToRenderPerBatch={10}
+        windowSize={5}
+        removeClippedSubviews={true}
         keyExtractor={(item) => item._id}
         contentContainerStyle={styles.list}
         ListEmptyComponent={

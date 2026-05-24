@@ -111,8 +111,9 @@ const TrainerSchema = new Schema<ITrainer>(
 );
 
 TrainerSchema.index({ exactLocation: '2dsphere' });
-TrainerSchema.index({ category: 1, rating: -1 });
+TrainerSchema.index({ category: 1 });
 TrainerSchema.index({ city: 1 });
+TrainerSchema.index({ rating: -1 });
 
 // Virtual aliases for backward compat with frontend
 TrainerSchema.virtual('premium').get(function () { return this.isPremium; });

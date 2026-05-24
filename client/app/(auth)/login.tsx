@@ -117,8 +117,6 @@ export default function LoginScreen() {
               </TouchableOpacity>
             </View>
           </View>
-
-          <Text style={styles.testCreds}>Test: rohit@test.com / User@123</Text>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -151,5 +149,4 @@ const styles = StyleSheet.create({
   footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 20 },
   footerText: { color: '#A1A1AA', fontSize: 12 },
   link: { color: '#C9B07D', fontSize: 12, fontWeight: '600' },
-  testCreds: { color: '#616161', fontSize: 12, textAlign: 'center', marginTop: 20 },
 });

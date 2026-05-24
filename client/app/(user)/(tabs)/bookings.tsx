@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Modal, TextInput, Alert, Platform } from 'react-native';
 import { bookingAPI } from '../../../services/endpoints';
 import { Booking } from '../../../types';
@@ -57,6 +57,29 @@ export default function BookingsScreen() {
 
   const statusColor: Record<string, string> = { pending: '#FFC107', confirmed: '#4CAF50', completed: '#2196F3', cancelled: '#F44336' };
 
+  const renderItem = useCallback(({ item }: any) => {
+    const trainer = item.trainerId as any;
+    return (
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <Text style={styles.trainerName}>{trainer?.fullName || 'Trainer'}</Text>
+          <Text style={[styles.status, { color: statusColor[item.bookingStatus] }]}>{item.bookingStatus}</Text>
+        </View>
+        <Text style={styles.detail}>📅 {new Date(item.bookingDate).toLocaleDateString()} • 🕐 {item.timeSlot}</Text>
+        <Text style={styles.detail}>🏷️ {item.sessionType} • ₹{item.price}</Text>
+
+        {item.bookingStatus === 'completed' && (
+          <TouchableOpacity 
+            style={styles.reviewBtn}
+            onPress={() => setReviewModal({ visible: true, trainerId: trainer._id, bookingId: item._id })}
+          >
+            <Text style={styles.reviewBtnText}>⭐ Leave a Review</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  }, [statusColor]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>My Bookings</Text>
@@ -71,31 +94,14 @@ export default function BookingsScreen() {
       {loading ? <ActivityIndicator color="#C9B07D" size="large" style={{ marginTop: 40 }} /> : (
         <FlatList
           data={filtered}
-          renderItem={({ item }) => {
-            const trainer = item.trainerId as any;
-            return (
-              <View style={styles.card}>
-                <View style={styles.cardHeader}>
-                  <Text style={styles.trainerName}>{trainer?.fullName || 'Trainer'}</Text>
-                  <Text style={[styles.status, { color: statusColor[item.bookingStatus] }]}>{item.bookingStatus}</Text>
-                </View>
-                <Text style={styles.detail}>📅 {new Date(item.bookingDate).toLocaleDateString()} • 🕐 {item.timeSlot}</Text>
-                <Text style={styles.detail}>🏷️ {item.sessionType} • ₹{item.price}</Text>
-
-                {item.bookingStatus === 'completed' && (
-                  <TouchableOpacity 
-                    style={styles.reviewBtn}
-                    onPress={() => setReviewModal({ visible: true, trainerId: trainer._id, bookingId: item._id })}
-                  >
-                    <Text style={styles.reviewBtnText}>⭐ Leave a Review</Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            );
-          }}
+          renderItem={renderItem}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={5}
+          removeClippedSubviews={true}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
-          ListEmptyComponent={<Text style={styles.empty}>No {tab} bookings yet</Text>}
+          ListEmptyComponent={<Text style={styles.empty}>No {tab} bookings found.</Text>}
         />
       )}
 

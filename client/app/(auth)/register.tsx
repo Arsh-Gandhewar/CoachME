@@ -35,7 +35,7 @@ export default function RegisterScreen() {
       if (res.data?.data) {
         setCategories(res.data.data);
       }
-    }).catch(err => console.log('Failed to fetch categories:', err));
+    }).catch(err => { /* handle silently */ });
   }, []);
 
   const [loading, setLoading] = useState(false);
