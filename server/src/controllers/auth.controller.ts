@@ -41,8 +41,8 @@ export const register = asyncHandler(async (req: AuthRequest, res: Response) => 
 
     const parseList = (str?: string) => str ? str.split(',').map(s => s.trim()).filter(Boolean) : [];
     const trainerName = encodeURIComponent(fullName || name || 'Trainer');
-    const maleParams = '&top=shortHair,shortHairDreads01,shortHairDreads02,shortHairFrizzle,shortHairShaggyMullet,shortHairShortCurly,shortHairShortFlat,shortHairShortRound,shortHairShortWaved,shortHairSides,shortHairTheCaesar,shortHairTheCaesarSidePart&facialHairProbability=20';
-    const femaleParams = '&top=longHair,longHairBigHair,longHairBob,longHairBun,longHairCurly,longHairCurvy,longHairDreads,longHairFrida,longHairFro,longHairFroBand,longHairNotTooLong,longHairShavedSides,longHairMiaWallace,longHairStraight,longHairStraight2,longHairStraightStrand&facialHairProbability=0';
+    const maleParams = '&facialHairProbability=100&clothing=blazerAndShirt';
+    const femaleParams = '&facialHairProbability=0&clothing=graphicShirt';
     
     let trainerImage = req.body.profilePhoto || `https://api.dicebear.com/9.x/avataaars/png?seed=${trainerName}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
     if (!req.body.profilePhoto && gender === 'male') trainerImage += maleParams;
@@ -85,8 +85,8 @@ export const register = asyncHandler(async (req: AuthRequest, res: Response) => 
     if (exists) throw ApiError.conflict('Email already registered');
 
     const userName = encodeURIComponent(name || 'User');
-    const maleParams = '&top=shortHair,shortHairDreads01,shortHairDreads02,shortHairFrizzle,shortHairShaggyMullet,shortHairShortCurly,shortHairShortFlat,shortHairShortRound,shortHairShortWaved,shortHairSides,shortHairTheCaesar,shortHairTheCaesarSidePart&facialHairProbability=20';
-    const femaleParams = '&top=longHair,longHairBigHair,longHairBob,longHairBun,longHairCurly,longHairCurvy,longHairDreads,longHairFrida,longHairFro,longHairFroBand,longHairNotTooLong,longHairShavedSides,longHairMiaWallace,longHairStraight,longHairStraight2,longHairStraightStrand&facialHairProbability=0';
+    const maleParams = '&facialHairProbability=100&clothing=blazerAndShirt';
+    const femaleParams = '&facialHairProbability=0&clothing=graphicShirt';
 
     let userImage = req.body.profileImage || `https://api.dicebear.com/9.x/avataaars/png?seed=${userName}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
     if (!req.body.profileImage && gender === 'male') userImage += maleParams;
