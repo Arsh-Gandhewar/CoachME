@@ -41,9 +41,12 @@ export const register = asyncHandler(async (req: AuthRequest, res: Response) => 
 
     const parseList = (str?: string) => str ? str.split(',').map(s => s.trim()).filter(Boolean) : [];
     const trainerName = encodeURIComponent(fullName || name || 'Trainer');
-    let trainerImage = req.body.profilePhoto || `https://avatar.iran.liara.run/public?username=${trainerName}`;
-    if (!req.body.profilePhoto && gender === 'male') trainerImage = `https://avatar.iran.liara.run/public/boy?username=${trainerName}`;
-    if (!req.body.profilePhoto && gender === 'female') trainerImage = `https://avatar.iran.liara.run/public/girl?username=${trainerName}`;
+    const maleParams = '&top=shortHair,shortHairDreads01,shortHairDreads02,shortHairFrizzle,shortHairShaggyMullet,shortHairShortCurly,shortHairShortFlat,shortHairShortRound,shortHairShortWaved,shortHairSides,shortHairTheCaesar,shortHairTheCaesarSidePart&facialHairProbability=20';
+    const femaleParams = '&top=longHair,longHairBigHair,longHairBob,longHairBun,longHairCurly,longHairCurvy,longHairDreads,longHairFrida,longHairFro,longHairFroBand,longHairNotTooLong,longHairShavedSides,longHairMiaWallace,longHairStraight,longHairStraight2,longHairStraightStrand&facialHairProbability=0';
+    
+    let trainerImage = req.body.profilePhoto || `https://api.dicebear.com/9.x/avataaars/png?seed=${trainerName}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
+    if (!req.body.profilePhoto && gender === 'male') trainerImage += maleParams;
+    if (!req.body.profilePhoto && gender === 'female') trainerImage += femaleParams;
 
     const trainer = await Trainer.create({
       fullName: fullName || name,
@@ -82,9 +85,12 @@ export const register = asyncHandler(async (req: AuthRequest, res: Response) => 
     if (exists) throw ApiError.conflict('Email already registered');
 
     const userName = encodeURIComponent(name || 'User');
-    let userImage = req.body.profileImage || `https://avatar.iran.liara.run/public?username=${userName}`;
-    if (!req.body.profileImage && gender === 'male') userImage = `https://avatar.iran.liara.run/public/boy?username=${userName}`;
-    if (!req.body.profileImage && gender === 'female') userImage = `https://avatar.iran.liara.run/public/girl?username=${userName}`;
+    const maleParams = '&top=shortHair,shortHairDreads01,shortHairDreads02,shortHairFrizzle,shortHairShaggyMullet,shortHairShortCurly,shortHairShortFlat,shortHairShortRound,shortHairShortWaved,shortHairSides,shortHairTheCaesar,shortHairTheCaesarSidePart&facialHairProbability=20';
+    const femaleParams = '&top=longHair,longHairBigHair,longHairBob,longHairBun,longHairCurly,longHairCurvy,longHairDreads,longHairFrida,longHairFro,longHairFroBand,longHairNotTooLong,longHairShavedSides,longHairMiaWallace,longHairStraight,longHairStraight2,longHairStraightStrand&facialHairProbability=0';
+
+    let userImage = req.body.profileImage || `https://api.dicebear.com/9.x/avataaars/png?seed=${userName}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
+    if (!req.body.profileImage && gender === 'male') userImage += maleParams;
+    if (!req.body.profileImage && gender === 'female') userImage += femaleParams;
     
     const user = await User.create({ name: name || 'User', email, password, mobile, city, gender, profileImage: userImage });
     const tokens = generateTokens(user._id.toString(), 'user');
