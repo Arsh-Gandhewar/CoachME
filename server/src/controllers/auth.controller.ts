@@ -40,7 +40,7 @@ export const register = asyncHandler(async (req: AuthRequest, res: Response) => 
     if (exists) throw ApiError.conflict('Email already registered');
 
     const parseList = (str?: string) => str ? str.split(',').map(s => s.trim()).filter(Boolean) : [];
-    const trainerImage = req.body.profilePhoto || `https://api.dicebear.com/9.x/avataaars/png?seed=${encodeURIComponent(fullName || name || 'Trainer')}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
+    const trainerImage = req.body.profilePhoto || `https://avatar.iran.liara.run/public?username=${encodeURIComponent(fullName || name || 'Trainer')}`;
 
     const trainer = await Trainer.create({
       fullName: fullName || name,
@@ -77,7 +77,7 @@ export const register = asyncHandler(async (req: AuthRequest, res: Response) => 
     const exists = await User.findOne({ email });
     if (exists) throw ApiError.conflict('Email already registered');
 
-    const userImage = req.body.profileImage || `https://api.dicebear.com/9.x/avataaars/png?seed=${encodeURIComponent(name || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
+    const userImage = req.body.profileImage || `https://avatar.iran.liara.run/public?username=${encodeURIComponent(name || 'User')}`;
     const user = await User.create({ name: name || 'User', email, password, mobile, city, profileImage: userImage });
     const tokens = generateTokens(user._id.toString(), 'user');
     user.refreshToken = tokens.refreshToken;
