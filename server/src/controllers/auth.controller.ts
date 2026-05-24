@@ -40,6 +40,7 @@ export const register = asyncHandler(async (req: AuthRequest, res: Response) => 
     if (exists) throw ApiError.conflict('Email already registered');
 
     const parseList = (str?: string) => str ? str.split(',').map(s => s.trim()).filter(Boolean) : [];
+    const trainerImage = req.body.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || name || 'Trainer')}&background=random`;
 
     const trainer = await Trainer.create({
       fullName: fullName || name,
@@ -60,6 +61,7 @@ export const register = asyncHandler(async (req: AuthRequest, res: Response) => 
       exactLocation: { type: 'Point', coordinates: await getCityCoordinates(city || '') },
       isExactLocationShared: false,
       verificationStatus: 'verified', // Auto-verify so they appear in search immediately
+      profilePhoto: trainerImage,
     });
 
     const tokens = generateTokens(trainer._id.toString(), 'trainer');
@@ -75,8 +77,8 @@ export const register = asyncHandler(async (req: AuthRequest, res: Response) => 
     const exists = await User.findOne({ email });
     if (exists) throw ApiError.conflict('Email already registered');
 
-    const profileImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'User')}&background=random`;
-    const user = await User.create({ name: name || 'User', email, password, mobile, city, profileImage });
+    const userImage = req.body.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'User')}&background=random`;
+    const user = await User.create({ name: name || 'User', email, password, mobile, city, profileImage: userImage });
     const tokens = generateTokens(user._id.toString(), 'user');
     user.refreshToken = tokens.refreshToken;
     await user.save();
