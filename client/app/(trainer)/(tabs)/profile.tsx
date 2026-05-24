@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, Platform, Image } from 'react-native';
 import { useAuthStore } from '../../../store/authStore';
 
 export default function TrainerProfileScreen() {
@@ -9,7 +9,11 @@ export default function TrainerProfileScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.avatar}><Text style={styles.avatarText}>{initials}</Text></View>
+        {trainer?.profilePhoto ? (
+          <Image source={{ uri: trainer.profilePhoto }} style={styles.avatarImage} />
+        ) : (
+          <View style={styles.avatar}><Text style={styles.avatarText}>{initials}</Text></View>
+        )}
         <Text style={styles.name}>{trainer?.fullName || 'Trainer'}</Text>
         <Text style={styles.email}>{trainer?.email || ''}</Text>
         <View style={styles.statRow}>
@@ -41,7 +45,8 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000000' },
   header: { alignItems: 'center', paddingTop: Platform.OS === 'web' ? 40 : 50, paddingBottom: 20 },
   avatar: { width: 80, height: 80, borderRadius: 24, backgroundColor: '#7C4DFF', justifyContent: 'center', alignItems: 'center', marginBottom: 12 },
-  avatarText: { color: '#fff', fontSize: 12, fontWeight: '700' },
+  avatarImage: { width: 80, height: 80, borderRadius: 24, marginBottom: 12 },
+  avatarText: { color: '#fff', fontSize: 24, fontWeight: '700' },
   name: { fontSize: 12, fontWeight: '700', color: '#fff' },
   email: { fontSize: 12, color: '#A1A1AA', marginTop: 4 },
   statRow: { flexDirection: 'row', marginTop: 20, gap: 20 },

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, RefreshControl, TouchableOpacity, ActivityIndicator, Alert, Platform, TextInput } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, RefreshControl, TouchableOpacity, ActivityIndicator, Alert, Platform, TextInput, Image } from 'react-native';
 import { useAuthStore } from '../../../store/authStore';
 import { bookingAPI, subscriptionAPI, authAPI, chatAPI } from '../../../services/endpoints';
 import RazorpayCheckout from 'react-native-razorpay';
@@ -138,6 +138,8 @@ export default function TrainerDashboard() {
   const completed = bookings.filter((b) => b.bookingStatus === 'completed').length;
   const revenue = bookings.filter((b) => b.paymentStatus === 'paid').reduce((sum, b) => sum + b.price, 0);
   const trainerName = (user as any)?.fullName || 'Trainer';
+  const profilePhoto = (user as any)?.profilePhoto;
+  const initials = trainerName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
 
   const totalClients = confirmed + completed;
   const retention = totalClients > 0 ? Math.round((completed / totalClients) * 100) : 100;
@@ -161,8 +163,17 @@ export default function TrainerDashboard() {
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#9D00FF" />}>
         
         <View style={styles.header}>
-          <Text style={styles.greeting}>Hello, {trainerName} 👋</Text>
-          <Text style={styles.subtitle}>Here's your dashboard overview</Text>
+          <View style={styles.headerText}>
+            <Text style={styles.greeting}>Hello, {trainerName} 👋</Text>
+            <Text style={styles.subtitle}>Here's your dashboard overview</Text>
+          </View>
+          {profilePhoto ? (
+            <Image source={{ uri: profilePhoto }} style={styles.headerAvatar} />
+          ) : (
+            <View style={styles.headerAvatarInitials}>
+              <Text style={styles.headerAvatarText}>{initials}</Text>
+            </View>
+          )}
         </View>
 
         {/* The Premium Dashboard Content */}
@@ -345,9 +356,13 @@ export default function TrainerDashboard() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000000' },
-  header: { paddingHorizontal: 20, paddingTop: Platform.OS === 'web' ? 40 : 50, paddingBottom: 16 },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: Platform.OS === 'web' ? 40 : 50, paddingBottom: 16 },
+  headerText: { flex: 1 },
   greeting: { fontSize: 28, fontWeight: '800', color: '#fff' },
   subtitle: { fontSize: 12, color: '#A1A1AA', marginTop: 6 },
+  headerAvatar: { width: 50, height: 50, borderRadius: 16 },
+  headerAvatarInitials: { width: 50, height: 50, borderRadius: 16, backgroundColor: '#9D00FF', justifyContent: 'center', alignItems: 'center' },
+  headerAvatarText: { color: '#fff', fontSize: 16, fontWeight: '700' },
   
   premiumContent: { paddingHorizontal: 20 },
   
