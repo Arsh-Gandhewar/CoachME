@@ -32,6 +32,17 @@ export default function TrainerProfileScreen() {
         </View>
       </View>
 
+      {trainer?.portfolioImages && trainer.portfolioImages.length > 0 && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Portfolio Gallery</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.portfolioScroll}>
+            {trainer.portfolioImages.map((img: string, i: number) => (
+              <Image key={i} source={{ uri: img }} style={styles.portfolioImg} />
+            ))}
+          </ScrollView>
+        </View>
+      )}
+
       <TouchableOpacity style={styles.logoutBtn} onPress={() => Alert.alert('Logout', 'Are you sure?', [{ text: 'Cancel' }, { text: 'Logout', style: 'destructive', onPress: logout }])}>
         <Text style={styles.logoutText}>🚪 Logout</Text>
       </TouchableOpacity>
@@ -58,6 +69,8 @@ const styles = StyleSheet.create({
   tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   tag: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20, backgroundColor: '#141414' },
   tagText: { color: '#fff', fontSize: 12 },
+  portfolioScroll: { flexDirection: 'row', marginTop: 8 },
+  portfolioImg: { width: 120, height: 120, borderRadius: 16, marginRight: 12 },
   logoutBtn: { marginHorizontal: 20, marginTop: 30, backgroundColor: '#0A0A0A', borderRadius: 16, padding: 16, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(157,0,255,0.2)' },
   logoutText: { color: '#F44336', fontSize: 12, fontWeight: '600' },
 });

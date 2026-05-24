@@ -28,6 +28,9 @@ export default function RegisterScreen() {
   const [photo, setPhoto] = useState<string | null>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
+  const [portfolioImages, setPortfolioImages] = useState<string[]>([]);
+  const [uploadingPortfolio, setUploadingPortfolio] = useState(false);
+
   const [categories, setCategories] = useState<{slug: string, name: string}[]>([]);
 
   useEffect(() => {
@@ -52,19 +55,17 @@ export default function RegisterScreen() {
 
     if (!result.canceled && result.assets[0]) {
       const asset = result.assets[0];
-      setPhoto(asset.uri); // Temporary preview
+      setPhoto(asset.uri);
       
       setUploadingPhoto(true);
       try {
         let formData = new FormData();
         
         if (Platform.OS === 'web') {
-           // For Web, fetch the blob and append
            const res = await fetch(asset.uri);
            const blob = await res.blob();
            formData.append('image', blob as any, 'profile.jpg');
         } else {
-           // For Mobile, append the object directly
            const localUri = asset.uri;
            const filename = localUri.split('/').pop() || 'profile.jpg';
            const match = /\.(\w+)$/.exec(filename);
@@ -74,13 +75,49 @@ export default function RegisterScreen() {
 
         const uploadRes = await contentAPI.uploadImage(formData);
         if (uploadRes.data?.data?.url) {
-          setPhoto(uploadRes.data.data.url); // Replace with secure Cloudinary URL
+          setPhoto(uploadRes.data.data.url);
         }
       } catch (err) {
         console.error("Upload failed", err);
         Alert.alert('Upload Failed', 'Could not upload image to cloud.');
       } finally {
         setUploadingPhoto(false);
+      }
+    }
+  };
+
+  const pickPortfolioImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.7,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      const asset = result.assets[0];
+      setUploadingPortfolio(true);
+      try {
+        let formData = new FormData();
+        if (Platform.OS === 'web') {
+           const res = await fetch(asset.uri);
+           const blob = await res.blob();
+           formData.append('image', blob as any, 'portfolio.jpg');
+        } else {
+           const localUri = asset.uri;
+           const filename = localUri.split('/').pop() || 'portfolio.jpg';
+           const match = /\.(\w+)$/.exec(filename);
+           const type = match ? `image/${match[1]}` : `image`;
+           formData.append('image', { uri: localUri, name: filename, type } as any);
+        }
+        const uploadRes = await contentAPI.uploadImage(formData);
+        if (uploadRes.data?.data?.url) {
+          setPortfolioImages(prev => [...prev, uploadRes.data.data.url]);
+        }
+      } catch (err) {
+        Alert.alert('Upload Failed', 'Could not upload portfolio image.');
+      } finally {
+        setUploadingPortfolio(false);
       }
     }
   };
@@ -116,6 +153,7 @@ export default function RegisterScreen() {
           certifications,
           sessionTypes,
           languages,
+          portfolioImages,
         }),
       });
       
@@ -249,6 +287,22 @@ export default function RegisterScreen() {
             </View>
 
             <View style={styles.inputGroup}>
+              <Text style={styles.label}>Portfolio Gallery</Text>
+              <ScrollView horizontal style={styles.portfolioScroll}>
+                {portfolioImages.map((img, i) => (
+                  <Image key={i} source={{ uri: img }} style={styles.portfolioImg} />
+                ))}
+                <TouchableOpacity style={styles.addPortfolioBtn} onPress={pickPortfolioImage} disabled={uploadingPortfolio}>
+                  {uploadingPortfolio ? (
+                    <Text style={styles.addPortfolioText}>...</Text>
+                  ) : (
+                    <Text style={styles.addPortfolioText}>+ Add</Text>
+                  )}
+                </TouchableOpacity>
+              </ScrollView>
+            </View>
+
+            <View style={styles.inputGroup}>
               <Text style={styles.label}>Languages (comma separated)</Text>
               <TextInput style={styles.input} placeholder="English, Hindi" placeholderTextColor="#666" value={languages} onChangeText={setLanguages} />
             </View>
@@ -319,5 +373,11 @@ const styles = StyleSheet.create({
   btnText: { color: '#fff', fontSize: 12, fontWeight: '700' },
   footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 24, paddingBottom: 20 },
   footerText: { color: '#A1A1AA', fontSize: 12 },
-  link: { color: '#9D00FF', fontSize: 12, fontWeight: '600' },
+  link: { color: '#9D00FF', fontSize: 12, fontWeight: '700' },
+  
+  // Portfolio
+  portfolioScroll: { flexDirection: 'row', marginTop: 8 },
+  portfolioImg: { width: 80, height: 80, borderRadius: 12, marginRight: 12 },
+  addPortfolioBtn: { width: 80, height: 80, borderRadius: 12, backgroundColor: '#1A1A1A', justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#333', borderStyle: 'dashed' },
+  addPortfolioText: { color: '#A1A1AA', fontSize: 12, fontWeight: '600' }
 });
