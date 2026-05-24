@@ -73,6 +73,26 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const userRole = await storage.getItem('userRole');
 
       if (token && userData) {
+        try {
+          const response = await api.get('/auth/me');
+          if (response.data?.success && response.data?.data?.user) {
+            const freshUser = response.data.data.user;
+            const freshRole = response.data.data.role || freshUser.role || 'user';
+            await storage.setItem('userData', JSON.stringify(freshUser));
+            await storage.setItem('userRole', freshRole);
+            set({
+              user: freshUser,
+              role: freshRole,
+              isAuthenticated: true,
+              accessToken: token,
+              isLoading: false,
+            });
+            return;
+          }
+        } catch (err) {
+          console.log('Failed to fetch fresh user data, using cached', err);
+        }
+
         set({
           user: JSON.parse(userData),
           role: (userRole as any) || 'user',
