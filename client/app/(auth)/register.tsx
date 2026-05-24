@@ -12,6 +12,7 @@ export default function RegisterScreen() {
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [city, setCity] = useState('');
+  const [gender, setGender] = useState<'male' | 'female' | 'other' | ''>('');
   
   // Trainer specific
   const [category, setCategory] = useState('');
@@ -103,6 +104,7 @@ export default function RegisterScreen() {
         mobile,
         role,
         city,
+        gender,
         profileImage: photo,
         profilePhoto: photo, // Trainer schema uses this
         resume: resumeUrl,
@@ -192,6 +194,21 @@ export default function RegisterScreen() {
           <TextInput style={styles.input} placeholder="Your city" placeholderTextColor="#666" value={city} onChangeText={setCity} />
         </View>
 
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Gender</Text>
+          <View style={styles.genderToggle}>
+            <TouchableOpacity style={[styles.genderBtn, gender === 'male' && styles.genderBtnActive]} onPress={() => setGender('male')}>
+              <Text style={[styles.genderText, gender === 'male' && styles.genderTextActive]}>Male</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.genderBtn, gender === 'female' && styles.genderBtnActive]} onPress={() => setGender('female')}>
+              <Text style={[styles.genderText, gender === 'female' && styles.genderTextActive]}>Female</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.genderBtn, gender === 'other' && styles.genderBtnActive]} onPress={() => setGender('other')}>
+              <Text style={[styles.genderText, gender === 'other' && styles.genderTextActive]}>Other</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
         {role === 'trainer' && (
           <>
             <View style={styles.inputGroup}>
@@ -269,6 +286,12 @@ const styles = StyleSheet.create({
   roleBtnActive: { backgroundColor: '#C9B07D' },
   roleText: { color: '#A1A1AA', fontWeight: '600', fontSize: 12 },
   roleTextActive: { color: '#fff' },
+  
+  genderToggle: { flexDirection: 'row', backgroundColor: '#0A0A0A', borderRadius: 12, padding: 4, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
+  genderBtn: { flex: 1, paddingVertical: 10, borderRadius: 8, alignItems: 'center' },
+  genderBtnActive: { backgroundColor: 'rgba(255,255,255,0.1)' },
+  genderText: { color: '#A1A1AA', fontWeight: '500', fontSize: 12 },
+  genderTextActive: { color: '#fff' },
   
   photoContainer: { alignItems: 'center', marginBottom: 24 },
   photoUploadBtn: { width: 100, height: 100, borderRadius: 50, backgroundColor: '#0A0A0A', borderWidth: 2, borderColor: 'rgba(255,255,255,0.06)', borderStyle: 'dashed', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' },

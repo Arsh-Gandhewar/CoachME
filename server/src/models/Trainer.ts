@@ -6,6 +6,7 @@ export interface ITrainer extends Document {
   email: string;
   mobile?: string;
   password: string;
+  gender?: 'male' | 'female' | 'other';
   profilePhoto?: string;
   portfolioImages?: string[];
   bio?: string;
@@ -56,6 +57,7 @@ const TrainerSchema = new Schema<ITrainer>(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     mobile: { type: String, trim: true },
     password: { type: String, required: true, select: false },
+    gender: { type: String, enum: ['male', 'female', 'other'] },
     profilePhoto: { type: String },
     portfolioImages: [{ type: String }],
     bio: { type: String, maxlength: 1000 },

@@ -33,20 +33,24 @@ const getCityCoordinates = async (city: string): Promise<[number, number]> => {
 };
 
 export const register = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const { email, password, role, name, fullName, mobile, category, experience, pricing, bio, city } = req.body;
+  const { email, password, role, name, fullName, mobile, category, experience, pricing, bio, city, gender } = req.body;
 
   if (role === 'trainer') {
     const exists = await Trainer.findOne({ email });
     if (exists) throw ApiError.conflict('Email already registered');
 
     const parseList = (str?: string) => str ? str.split(',').map(s => s.trim()).filter(Boolean) : [];
-    const trainerImage = req.body.profilePhoto || `https://avatar.iran.liara.run/public?username=${encodeURIComponent(fullName || name || 'Trainer')}`;
+    const trainerName = encodeURIComponent(fullName || name || 'Trainer');
+    let trainerImage = req.body.profilePhoto || `https://avatar.iran.liara.run/public?username=${trainerName}`;
+    if (!req.body.profilePhoto && gender === 'male') trainerImage = `https://avatar.iran.liara.run/public/boy?username=${trainerName}`;
+    if (!req.body.profilePhoto && gender === 'female') trainerImage = `https://avatar.iran.liara.run/public/girl?username=${trainerName}`;
 
     const trainer = await Trainer.create({
       fullName: fullName || name,
       email,
       password,
       mobile,
+      gender,
       category: category || '',
       categories: category ? [category] : [],
       experience: experience || 0,
@@ -77,8 +81,12 @@ export const register = asyncHandler(async (req: AuthRequest, res: Response) => 
     const exists = await User.findOne({ email });
     if (exists) throw ApiError.conflict('Email already registered');
 
-    const userImage = req.body.profileImage || `https://avatar.iran.liara.run/public?username=${encodeURIComponent(name || 'User')}`;
-    const user = await User.create({ name: name || 'User', email, password, mobile, city, profileImage: userImage });
+    const userName = encodeURIComponent(name || 'User');
+    let userImage = req.body.profileImage || `https://avatar.iran.liara.run/public?username=${userName}`;
+    if (!req.body.profileImage && gender === 'male') userImage = `https://avatar.iran.liara.run/public/boy?username=${userName}`;
+    if (!req.body.profileImage && gender === 'female') userImage = `https://avatar.iran.liara.run/public/girl?username=${userName}`;
+    
+    const user = await User.create({ name: name || 'User', email, password, mobile, city, gender, profileImage: userImage });
     const tokens = generateTokens(user._id.toString(), 'user');
     user.refreshToken = tokens.refreshToken;
     await user.save();
