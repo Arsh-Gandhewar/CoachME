@@ -48,6 +48,7 @@ export const chatAPI = {
   getChatByReceiver: (receiverId: string) => api.get(`/chats/by-receiver/${receiverId}`),
   getMessages: (chatId: string) => api.get(`/chats/${chatId}/messages`),
   sendMessage: (receiverId: string, text: string) => api.post(`/chats/${receiverId}/message`, { text }),
+  broadcastMessage: (text: string) => api.post('/chats/broadcast', { text }),
 };
 
 // Notification APIs

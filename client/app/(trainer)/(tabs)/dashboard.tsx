@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, RefreshControl, TouchableOpacity, ActivityIndicator, Alert, Platform } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, RefreshControl, TouchableOpacity, ActivityIndicator, Alert, Platform, TextInput } from 'react-native';
 import { useAuthStore } from '../../../store/authStore';
-import { bookingAPI, subscriptionAPI, authAPI } from '../../../services/endpoints';
+import { bookingAPI, subscriptionAPI, authAPI, chatAPI } from '../../../services/endpoints';
 import RazorpayCheckout from 'react-native-razorpay';
 import Constants from 'expo-constants';
-import { Lock, Eye, Users, MessageSquare, TrendingUp, Calendar } from 'lucide-react-native';
+import { Lock, Eye, Users, MessageSquare, TrendingUp, Calendar, X, Send } from 'lucide-react-native';
 import { BlurView } from 'expo-blur'; // Will use generic opacity overlay if blur fails
 
 export default function TrainerDashboard() {
@@ -12,6 +12,14 @@ export default function TrainerDashboard() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
+  
+  // Modals
+  const [broadcastVisible, setBroadcastVisible] = useState(false);
+  const [broadcastText, setBroadcastText] = useState('');
+  const [broadcasting, setBroadcasting] = useState(false);
+  
+  const [scheduleVisible, setScheduleVisible] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<number | null>(null);
 
   const isSubscribed = (user as any)?.subscriptionStatus === 'active';
 
@@ -110,6 +118,21 @@ export default function TrainerDashboard() {
     }
   };
 
+  const handleBroadcast = async () => {
+    if (!broadcastText.trim()) return Alert.alert('Error', 'Please enter a message');
+    try {
+      setBroadcasting(true);
+      const res = await chatAPI.broadcastMessage(broadcastText);
+      Alert.alert('Success', `Broadcast sent to ${res.data.data.count} past clients!`);
+      setBroadcastVisible(false);
+      setBroadcastText('');
+    } catch (err: any) {
+      Alert.alert('Error', err.response?.data?.message || 'Failed to send broadcast');
+    } finally {
+      setBroadcasting(false);
+    }
+  };
+
   const pending = bookings.filter((b) => b.bookingStatus === 'pending').length;
   const confirmed = bookings.filter((b) => b.bookingStatus === 'confirmed').length;
   const completed = bookings.filter((b) => b.bookingStatus === 'completed').length;
@@ -119,6 +142,19 @@ export default function TrainerDashboard() {
   const totalClients = confirmed + completed;
   const retention = totalClients > 0 ? Math.round((completed / totalClients) * 100) : 100;
   const profileViews = totalClients * 7 + pending * 3 + ((user as any)?.totalReviews || 0) * 15;
+
+  const today = new Date();
+  const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+  const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
+  
+  // Dates with active appointments this month
+  const activeDates = bookings
+    .filter(b => b.bookingStatus !== 'cancelled' && new Date(b.bookingDate).getMonth() === today.getMonth())
+    .map(b => new Date(b.bookingDate).getDate());
+
+  const selectedDateBookings = selectedDate 
+    ? bookings.filter(b => new Date(b.bookingDate).getDate() === selectedDate && new Date(b.bookingDate).getMonth() === today.getMonth())
+    : [];
 
   return (
     <View style={styles.container}>
@@ -166,11 +202,11 @@ export default function TrainerDashboard() {
 
           <Text style={styles.sectionTitle}>Quick Actions</Text>
           <View style={styles.quickActions}>
-            <TouchableOpacity style={styles.actionBtn}>
+            <TouchableOpacity style={styles.actionBtn} onPress={() => setScheduleVisible(true)}>
               <Calendar color="#fff" size={20} />
               <Text style={styles.actionText}>Schedule</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.actionBtn}>
+            <TouchableOpacity style={styles.actionBtn} onPress={() => setBroadcastVisible(true)}>
               <MessageSquare color="#fff" size={20} />
               <Text style={styles.actionText}>Broadcast</Text>
             </TouchableOpacity>
@@ -207,6 +243,99 @@ export default function TrainerDashboard() {
               )}
             </TouchableOpacity>
             <Text style={styles.cancelAnytime}>Cancel anytime</Text>
+          </View>
+        </View>
+      )}
+
+      {/* SCHEDULE MODAL */}
+      {scheduleVisible && (
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Your Schedule</Text>
+              <TouchableOpacity onPress={() => setScheduleVisible(false)}>
+                <X color="#fff" size={24} />
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.calendar}>
+              <Text style={styles.monthLabel}>{today.toLocaleString('default', { month: 'long', year: 'numeric' })}</Text>
+              <View style={styles.daysRow}>
+                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => <Text key={i} style={styles.dayName}>{d}</Text>)}
+              </View>
+              <View style={styles.gridContainer}>
+                {Array.from({ length: firstDay }).map((_, i) => <View key={`empty-${i}`} style={styles.dayCell} />)}
+                {Array.from({ length: daysInMonth }).map((_, i) => {
+                  const date = i + 1;
+                  const isActive = activeDates.includes(date);
+                  const isSelected = selectedDate === date;
+                  return (
+                    <TouchableOpacity 
+                      key={date} 
+                      style={[styles.dayCell, isActive && styles.dayActive, isSelected && styles.daySelected]}
+                      onPress={() => setSelectedDate(date)}
+                    >
+                      <Text style={[styles.dayText, isActive && styles.dayTextActive]}>{date}</Text>
+                      {isActive && <View style={styles.dot} />}
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+
+            {selectedDate && (
+              <View style={styles.selectedBookings}>
+                <Text style={styles.selectedTitle}>Appointments on {selectedDate}</Text>
+                {selectedDateBookings.length === 0 ? (
+                  <Text style={styles.noAppt}>No appointments scheduled.</Text>
+                ) : (
+                  selectedDateBookings.map((b, i) => (
+                    <View key={i} style={styles.miniCard}>
+                      <Text style={styles.miniClient}>{b.userId?.name || 'Client'}</Text>
+                      <Text style={styles.miniTime}>{b.timeSlot} - {b.sessionType}</Text>
+                    </View>
+                  ))
+                )}
+              </View>
+            )}
+          </View>
+        </View>
+      )}
+
+      {/* BROADCAST MODAL */}
+      {broadcastVisible && (
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Broadcast Message</Text>
+              <TouchableOpacity onPress={() => setBroadcastVisible(false)}>
+                <X color="#fff" size={24} />
+              </TouchableOpacity>
+            </View>
+            
+            <Text style={styles.broadcastDesc}>
+              Send a mass message to all clients who have previously booked an appointment with you.
+            </Text>
+
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.broadcastInput}
+                placeholder="Type your announcement here..."
+                placeholderTextColor="#666"
+                multiline
+                value={broadcastText}
+                onChangeText={setBroadcastText}
+              />
+            </View>
+
+            <TouchableOpacity style={styles.sendBtn} onPress={handleBroadcast} disabled={broadcasting}>
+              {broadcasting ? <ActivityIndicator color="#fff" /> : (
+                <>
+                  <Send color="#fff" size={16} style={{ marginRight: 8 }} />
+                  <Text style={styles.sendText}>Send Broadcast</Text>
+                </>
+              )}
+            </TouchableOpacity>
           </View>
         </View>
       )}
@@ -270,5 +399,89 @@ const styles = StyleSheet.create({
   featureItem: { color: '#E0E0E0', fontSize: 12, marginBottom: 10, fontWeight: '500' },
   subscribeBtn: { backgroundColor: '#9D00FF', width: '100%', paddingVertical: 16, borderRadius: 100, alignItems: 'center' },
   subscribeText: { color: '#fff', fontSize: 12, fontWeight: '700' },
-  cancelAnytime: { color: '#666', fontSize: 12, marginTop: 16 }
+  cancelAnytime: { color: '#666', fontSize: 12, marginTop: 16 },
+
+  // Modals General
+  modalOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 200,
+  },
+  modalContent: {
+    backgroundColor: '#111',
+    width: '90%',
+    borderRadius: 24,
+    padding: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalTitle: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '800',
+  },
+
+  // Broadcast Modal
+  broadcastDesc: { color: '#A1A1AA', fontSize: 12, marginBottom: 16, lineHeight: 18 },
+  inputContainer: {
+    backgroundColor: '#1A1A1A',
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(157,0,255,0.3)',
+    marginBottom: 20,
+    minHeight: 120,
+  },
+  broadcastInput: { color: '#fff', fontSize: 14, textAlignVertical: 'top', height: 100 },
+  sendBtn: {
+    backgroundColor: '#9D00FF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    borderRadius: 16,
+  },
+  sendText: { color: '#fff', fontWeight: '700', fontSize: 14 },
+
+  // Schedule Modal
+  calendar: {
+    backgroundColor: '#1A1A1A',
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 20,
+  },
+  monthLabel: { color: '#fff', fontSize: 16, fontWeight: '700', marginBottom: 16, textAlign: 'center' },
+  daysRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
+  dayName: { color: '#A1A1AA', fontSize: 12, width: 36, textAlign: 'center', fontWeight: '600' },
+  gridContainer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start' },
+  dayCell: { width: '14.28%', height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 8, borderRadius: 20 },
+  dayActive: { backgroundColor: 'rgba(157,0,255,0.15)' },
+  daySelected: { borderWidth: 1, borderColor: '#9D00FF' },
+  dayText: { color: '#fff', fontSize: 14 },
+  dayTextActive: { color: '#9D00FF', fontWeight: '700' },
+  dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: '#9D00FF', marginTop: 2 },
+
+  selectedBookings: {
+    marginTop: 8,
+  },
+  selectedTitle: { color: '#A1A1AA', fontSize: 12, fontWeight: '600', marginBottom: 12 },
+  noAppt: { color: '#666', fontSize: 12, fontStyle: 'italic' },
+  miniCard: {
+    backgroundColor: '#1A1A1A',
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 8,
+    borderLeftWidth: 3,
+    borderLeftColor: '#9D00FF',
+  },
+  miniClient: { color: '#fff', fontSize: 14, fontWeight: '600' },
+  miniTime: { color: '#A1A1AA', fontSize: 12, marginTop: 4 },
 });
