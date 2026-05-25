@@ -19,6 +19,7 @@ export default function BookingFlowScreen() {
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState(false);
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
+  const [slotMetadata, setSlotMetadata] = useState<Record<string, any>>({});
   const [loadingSlots, setLoadingSlots] = useState(false);
 
   useEffect(() => {
@@ -27,11 +28,13 @@ export default function BookingFlowScreen() {
       trainerAPI.getAvailability(trainer._id, selectedDate)
         .then(res => {
           setBookedSlots(res.data.data.bookedSlots || []);
+          setSlotMetadata(res.data.data.slotMetadata || {});
         })
         .catch(console.error)
         .finally(() => setLoadingSlots(false));
     } else {
       setBookedSlots([]);
+      setSlotMetadata({});
     }
   }, [selectedDate, trainer]);
 
@@ -172,23 +175,37 @@ export default function BookingFlowScreen() {
                 <Text style={styles.slotTitle}>Available Slots</Text>
                 <View style={styles.slots}>
                   {loadingSlots ? <ActivityIndicator color="#B388FF" /> : availableSlots.length > 0 ? availableSlots.map((slot: string) => {
-                    const isBooked = bookedSlots.includes(slot);
+                    const isFullyBooked = bookedSlots.includes(slot);
+                    const meta = slotMetadata[slot];
+                    
+                    let isDisabled = isFullyBooked;
+                    
+                    if (!isDisabled && meta && sessionType) {
+                      const isRequestingGroup = sessionType.toLowerCase().includes('group') || sessionType.toLowerCase().includes('online');
+                      const isExistingGroup = meta.sessionType.toLowerCase().includes('group') || meta.sessionType.toLowerCase().includes('online');
+                      
+                      if (isRequestingGroup !== isExistingGroup) {
+                        isDisabled = true;
+                      }
+                    }
+
                     return (
                     <TouchableOpacity 
                       key={slot} 
-                      disabled={isBooked}
+                      disabled={isDisabled}
                       style={[
                         styles.slotChip, 
                         selectedSlot === slot && styles.slotChipActive,
-                        isBooked && styles.slotChipDisabled
+                        isDisabled && styles.slotChipDisabled
                       ]} 
                       onPress={() => setSelectedSlot(slot)}
                     >
                       <Text style={[
                         styles.slotText, 
                         selectedSlot === slot && styles.slotTextActive,
-                        isBooked && styles.slotTextDisabled
+                        isDisabled && styles.slotTextDisabled
                       ]}>{slot}</Text>
+                      {meta && !isDisabled && <Text style={{fontSize: 10, color: '#B388FF', textAlign: 'center', marginTop: 2}}>{meta.remainingCapacity} left</Text>}
                     </TouchableOpacity>
                   )}) : <Text style={styles.noSlots}>No slots available on this day</Text>}
                 </View>

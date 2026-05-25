@@ -24,6 +24,12 @@ export default function RegisterScreen() {
   const [languages, setLanguages] = useState('');
   const [resumeUrl, setResumeUrl] = useState('');
   
+  // Schedule & Capacity
+  const [startTime, setStartTime] = useState('09:00');
+  const [endTime, setEndTime] = useState('17:00');
+  const [slotDuration, setSlotDuration] = useState('60');
+  const [maxGroupCapacity, setMaxGroupCapacity] = useState('10');
+  
   // File uploads
   const [photo, setPhoto] = useState<string | null>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
@@ -122,6 +128,21 @@ export default function RegisterScreen() {
     }
   };
 
+  const generateAvailability = () => {
+    const slots = [];
+    const current = new Date(`2000-01-01T${startTime.padStart(5, '0')}:00`);
+    const end = new Date(`2000-01-01T${endTime.padStart(5, '0')}:00`);
+    const duration = parseInt(slotDuration) || 60;
+    while (current < end) {
+      slots.push(current.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }));
+      current.setMinutes(current.getMinutes() + duration);
+    }
+    return {
+      monday: slots, tuesday: slots, wednesday: slots, 
+      thursday: slots, friday: slots, saturday: slots, sunday: []
+    };
+  };
+
   const handleRegister = async () => {
     if (!name || !email || !password) {
       if (Platform.OS === 'web') {
@@ -154,6 +175,9 @@ export default function RegisterScreen() {
           sessionTypes,
           languages,
           portfolioImages,
+          slotDuration: parseInt(slotDuration) || 60,
+          maxGroupCapacity: parseInt(maxGroupCapacity) || 10,
+          availability: generateAvailability(),
         }),
       });
       
@@ -284,6 +308,32 @@ export default function RegisterScreen() {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Session Types (comma separated)</Text>
               <TextInput style={styles.input} placeholder="1-on-1, Group, Online" placeholderTextColor="#666" value={sessionTypes} onChangeText={setSessionTypes} />
+            </View>
+
+            <View style={{ marginTop: 24, marginBottom: 16 }}>
+              <Text style={{ color: '#fff', fontSize: 16, fontWeight: '700' }}>Schedule & Capacity</Text>
+            </View>
+
+            <View style={styles.row}>
+              <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
+                <Text style={styles.label}>Start Time (e.g. 09:00)</Text>
+                <TextInput style={styles.input} placeholder="09:00" placeholderTextColor="#666" value={startTime} onChangeText={setStartTime} />
+              </View>
+              <View style={[styles.inputGroup, { flex: 1 }]}>
+                <Text style={styles.label}>End Time (e.g. 17:00)</Text>
+                <TextInput style={styles.input} placeholder="17:00" placeholderTextColor="#666" value={endTime} onChangeText={setEndTime} />
+              </View>
+            </View>
+            
+            <View style={styles.row}>
+              <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
+                <Text style={styles.label}>Slot Duration (mins)</Text>
+                <TextInput style={styles.input} placeholder="60" placeholderTextColor="#666" value={slotDuration} onChangeText={setSlotDuration} keyboardType="numeric" />
+              </View>
+              <View style={[styles.inputGroup, { flex: 1 }]}>
+                <Text style={styles.label}>Max Group Capacity</Text>
+                <TextInput style={styles.input} placeholder="10" placeholderTextColor="#666" value={maxGroupCapacity} onChangeText={setMaxGroupCapacity} keyboardType="numeric" />
+              </View>
             </View>
 
             <View style={styles.inputGroup}>

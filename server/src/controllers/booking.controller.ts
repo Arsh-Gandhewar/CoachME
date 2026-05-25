@@ -13,15 +13,26 @@ export const createBooking = asyncHandler(async (req: AuthRequest, res: Response
   const trainer = await Trainer.findById(trainerId);
   if (!trainer) throw ApiError.notFound('Trainer not found');
 
-  const existingBooking = await Booking.findOne({
+  const existingBookings = await Booking.find({
     trainerId,
     bookingDate: new Date(bookingDate),
     timeSlot,
     bookingStatus: { $ne: 'cancelled' }
   });
 
-  if (existingBooking) {
-    throw ApiError.badRequest('This time slot is already booked. Please select another slot.');
+  if (existingBookings.length > 0) {
+    const isRequestingGroup = sessionType.toLowerCase().includes('group') || sessionType.toLowerCase().includes('online');
+    const firstBookingType = existingBookings[0].sessionType;
+    const isExistingGroup = firstBookingType.toLowerCase().includes('group') || firstBookingType.toLowerCase().includes('online');
+
+    if (!isRequestingGroup || !isExistingGroup) {
+      throw ApiError.badRequest('This time slot is already reserved for a different session type or private session.');
+    }
+
+    const maxCap = (trainer as any).maxGroupCapacity || 10;
+    if (existingBookings.length >= maxCap) {
+      throw ApiError.badRequest(`This group session has reached its maximum capacity of ${maxCap}.`);
+    }
   }
 
   const booking = await Booking.create({

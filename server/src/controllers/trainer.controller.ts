@@ -158,22 +158,51 @@ export const getTrainerReviews = asyncHandler(async (req: AuthRequest, res: Resp
 
 export const getTrainerAvailability = asyncHandler(async (req: AuthRequest, res: Response) => {
   const { date } = req.query;
-  const trainer = await Trainer.findById(req.params.id).select('availability');
+  const trainer = await Trainer.findById(req.params.id).select('availability maxGroupCapacity');
   if (!trainer) throw ApiError.notFound('Trainer not found');
 
   let bookedSlots: string[] = [];
+  let slotMetadata: Record<string, any> = {};
+
   if (date) {
     const bookings = await Booking.find({
       trainerId: req.params.id,
       bookingDate: new Date(date as string),
       bookingStatus: { $ne: 'cancelled' }
     });
-    bookedSlots = bookings.map(b => b.timeSlot);
+
+    const maxCap = trainer.maxGroupCapacity || 10;
+    const slotCounts: Record<string, number> = {};
+    const slotTypes: Record<string, string> = {};
+
+    bookings.forEach(b => {
+      slotCounts[b.timeSlot] = (slotCounts[b.timeSlot] || 0) + 1;
+      slotTypes[b.timeSlot] = b.sessionType;
+    });
+
+    Object.keys(slotCounts).forEach(slot => {
+      const type = slotTypes[slot] || '';
+      const count = slotCounts[slot];
+      const isGroup = type.toLowerCase().includes('group') || type.toLowerCase().includes('online');
+      
+      if (!isGroup) {
+        bookedSlots.push(slot);
+      } else if (count >= maxCap) {
+        bookedSlots.push(slot);
+      }
+
+      slotMetadata[slot] = {
+        sessionType: type,
+        bookedCount: count,
+        remainingCapacity: isGroup ? (maxCap - count) : 0
+      };
+    });
   }
 
   return ApiResponse.success(res, {
     availability: trainer.availability,
-    bookedSlots
+    bookedSlots,
+    slotMetadata
   });
 });
 

@@ -24,6 +24,8 @@ export interface ITrainer extends Document {
   isExactLocationShared: boolean;
   distance?: number;
   availability: Record<string, string[]>;
+  maxGroupCapacity: number;
+  slotDuration: number;
   sessionTypes: string[];
   specializations: string[];
   rating: number;
@@ -89,6 +91,8 @@ const TrainerSchema = new Schema<ITrainer>(
         sunday: []
       })
     },
+    maxGroupCapacity: { type: Number, default: 10 },
+    slotDuration: { type: Number, default: 60 },
     sessionTypes: [{ type: String }],
     specializations: [{ type: String }],
     rating: { type: Number, default: 0 },
