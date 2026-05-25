@@ -79,7 +79,7 @@ export default function SearchScreen() {
   }, [query]);
 
   const initials = (name: string) => name.split(' ').map((n) => n[0]).join('').slice(0, 2);
-  const colors = ['#4CAF50', '#E91E63', '#F44336', '#9D00FF', '#FF9800', '#2196F3', '#00BCD4', '#7C4DFF'];
+  const colors = ['#4CAF50', '#E91E63', '#F44336', '#B388FF', '#FF9800', '#2196F3', '#00BCD4', '#7C4DFF'];
 
   return (
     <View style={styles.container}>
@@ -125,7 +125,7 @@ export default function SearchScreen() {
         </View>
 
         {loading ? (
-          <ActivityIndicator size="large" color="#9D00FF" style={{ marginTop: 40 }} />
+          <ActivityIndicator size="large" color="#B388FF" style={{ marginTop: 40 }} />
         ) : (
           <FlatList
             data={trainers}
@@ -195,9 +195,9 @@ const styles = StyleSheet.create({
     borderWidth: 1, 
     borderColor: 'rgba(255,255,255,0.04)' 
   },
-  chipActive: { backgroundColor: 'rgba(157,0,255,0.15)', borderColor: '#9D00FF' },
+  chipActive: { backgroundColor: 'rgba(179,136,255,0.15)', borderColor: '#B388FF' },
   chipText: { color: '#A1A1AA', fontSize: 12, textTransform: 'capitalize' },
-  chipTextActive: { color: '#9D00FF', fontWeight: '600' },
+  chipTextActive: { color: '#B388FF', fontWeight: '600' },
   
   sortRow: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
   sortRowContainer: { alignItems: 'center' },
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.04)'
   },
-  sortChipActive: { backgroundColor: '#9D00FF', borderColor: '#9D00FF' },
+  sortChipActive: { backgroundColor: '#B388FF', borderColor: '#B388FF' },
   sortText: { color: '#A1A1AA', fontSize: 12 },
   sortTextActive: { color: '#fff', fontWeight: '600' },
   
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
   meta: { fontSize: 11, color: '#A1A1AA', marginBottom: 6, textTransform: 'capitalize' },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   rating: { color: '#FFC107', fontSize: 12, fontWeight: '500' },
-  price: { color: '#9D00FF', fontSize: 12, fontWeight: '600' },
+  price: { color: '#B388FF', fontSize: 12, fontWeight: '600' },
   
   empty: { color: '#666', textAlign: 'center', marginTop: 40, fontSize: 12 },
 });

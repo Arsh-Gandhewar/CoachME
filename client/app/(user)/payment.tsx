@@ -57,7 +57,7 @@ export default function PaymentScreen() {
           contact: (user as any)?.mobile || '9999999999',
           name: (user as any)?.name || (user as any)?.fullName || ''
         },
-        theme: { color: '#9D00FF' }
+        theme: { color: '#B388FF' }
       };
 
       RazorpayCheckout.open(options).then((data: any) => {
@@ -101,7 +101,7 @@ export default function PaymentScreen() {
 
       <View style={styles.content}>
         {loading && methods.length === 0 ? (
-          <ActivityIndicator size="large" color="#9D00FF" style={{ marginTop: 40 }} />
+          <ActivityIndicator size="large" color="#B388FF" style={{ marginTop: 40 }} />
         ) : methods.length === 0 ? (
           <View style={styles.emptyState}>
             <Text style={styles.emptyText}>No saved payment methods</Text>
@@ -125,7 +125,7 @@ export default function PaymentScreen() {
 
         <TouchableOpacity style={styles.addBtn} onPress={handleAddMethod} disabled={loading}>
           {loading && methods.length > 0 ? (
-            <ActivityIndicator size="small" color="#9D00FF" />
+            <ActivityIndicator size="small" color="#B388FF" />
           ) : (
             <>
               <Text style={styles.addIcon}>+</Text>
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   removeBtn: { alignSelf: 'flex-start' },
   removeText: { color: '#F44336', fontSize: 12, fontWeight: '500' },
 
-  addBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 16, borderRadius: 16, borderWidth: 1, borderColor: '#9D00FF', borderStyle: 'dashed' },
-  addIcon: { color: '#9D00FF', fontSize: 12, marginRight: 8, marginTop: -4 },
-  addText: { color: '#9D00FF', fontSize: 12, fontWeight: '600' },
+  addBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 16, borderRadius: 16, borderWidth: 1, borderColor: '#B388FF', borderStyle: 'dashed' },
+  addIcon: { color: '#B388FF', fontSize: 12, marginRight: 8, marginTop: -4 },
+  addText: { color: '#B388FF', fontSize: 12, fontWeight: '600' },
 });

@@ -7,8 +7,8 @@ export const colors = {
     500: '#333333',
   },
   accent: {
-    DEFAULT: '#9D00FF',
-    light: 'rgba(157,0,255,0.15)',
+    DEFAULT: '#B388FF',
+    light: 'rgba(179,136,255,0.15)',
     hover: '#FF7043',
   },
   purple: {

@@ -30,7 +30,7 @@ export default function LocationScreen() {
               <Switch 
                 value={preciseLocation} 
                 onValueChange={setPreciseLocation}
-                trackColor={{ false: '#333', true: '#9D00FF' }}
+                trackColor={{ false: '#333', true: '#B388FF' }}
               />
             </View>
             <View style={[styles.itemRow, { borderBottomWidth: 0 }]}>
@@ -41,7 +41,7 @@ export default function LocationScreen() {
               <Switch 
                 value={backgroundLocation} 
                 onValueChange={setBackgroundLocation}
-                trackColor={{ false: '#333', true: '#9D00FF' }}
+                trackColor={{ false: '#333', true: '#B388FF' }}
               />
             </View>
           </View>

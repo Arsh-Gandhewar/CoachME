@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
   
   roleToggle: { flexDirection: 'row', backgroundColor: '#0A0A0A', borderRadius: 14, padding: 4, marginBottom: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
   roleBtn: { flex: 1, paddingVertical: 12, borderRadius: 12, alignItems: 'center' },
-  roleBtnActive: { backgroundColor: '#9D00FF' },
+  roleBtnActive: { backgroundColor: '#B388FF' },
   roleText: { color: '#A1A1AA', fontWeight: '600', fontSize: 12 },
   roleTextActive: { color: '#fff' },
   
@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
 
   resumeUploadBtn: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#0A0A0A', borderRadius: 12, padding: 14, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)', borderStyle: 'dashed' },
   resumeIcon: { fontSize: 12, marginRight: 10 },
-  resumeText: { color: '#9D00FF', fontSize: 12, flex: 1 },
+  resumeText: { color: '#B388FF', fontSize: 12, flex: 1 },
 
   inputGroup: { marginBottom: 14 },
   label: { fontSize: 12, color: '#A1A1AA', marginBottom: 6, fontWeight: '500' },
@@ -364,16 +364,16 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row' },
   catScroll: { marginBottom: 4 },
   catChip: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: '#0A0A0A', marginRight: 8, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
-  catChipActive: { backgroundColor: 'rgba(157,0,255,0.15)', borderColor: '#9D00FF' },
+  catChipActive: { backgroundColor: 'rgba(179,136,255,0.15)', borderColor: '#B388FF' },
   catText: { color: '#A1A1AA', fontSize: 12, textTransform: 'capitalize' },
-  catTextActive: { color: '#9D00FF' },
+  catTextActive: { color: '#B388FF' },
   
-  btn: { backgroundColor: '#9D00FF', borderRadius: 14, padding: 16, alignItems: 'center', marginTop: 16 },
+  btn: { backgroundColor: '#B388FF', borderRadius: 14, padding: 16, alignItems: 'center', marginTop: 16 },
   btnDisabled: { opacity: 0.6 },
   btnText: { color: '#fff', fontSize: 12, fontWeight: '700' },
   footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 24, paddingBottom: 20 },
   footerText: { color: '#A1A1AA', fontSize: 12 },
-  link: { color: '#9D00FF', fontSize: 12, fontWeight: '700' },
+  link: { color: '#B388FF', fontSize: 12, fontWeight: '700' },
   
   // Portfolio
   portfolioScroll: { flexDirection: 'row', marginTop: 8 },

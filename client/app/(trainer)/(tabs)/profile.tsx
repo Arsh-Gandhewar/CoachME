@@ -71,6 +71,6 @@ const styles = StyleSheet.create({
   tagText: { color: '#fff', fontSize: 12 },
   portfolioScroll: { flexDirection: 'row', marginTop: 8 },
   portfolioImg: { width: 120, height: 120, borderRadius: 16, marginRight: 12 },
-  logoutBtn: { marginHorizontal: 20, marginTop: 30, backgroundColor: '#0A0A0A', borderRadius: 16, padding: 16, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(157,0,255,0.2)' },
+  logoutBtn: { marginHorizontal: 20, marginTop: 30, backgroundColor: '#0A0A0A', borderRadius: 16, padding: 16, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(179,136,255,0.2)' },
   logoutText: { color: '#F44336', fontSize: 12, fontWeight: '600' },
 });

@@ -91,7 +91,7 @@ export default function BookingsScreen() {
         ))}
       </View>
 
-      {loading ? <ActivityIndicator color="#9D00FF" size="large" style={{ marginTop: 40 }} /> : (
+      {loading ? <ActivityIndicator color="#B388FF" size="large" style={{ marginTop: 40 }} /> : (
         <FlatList
           data={filtered}
           renderItem={renderItem}
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 24, fontWeight: '700', color: '#fff', paddingHorizontal: 20, marginBottom: 16 },
   tabs: { flexDirection: 'row', paddingHorizontal: 20, marginBottom: 16 },
   tab: { paddingHorizontal: 18, paddingVertical: 8, borderRadius: 20, backgroundColor: '#0A0A0A', marginRight: 8 },
-  tabActive: { backgroundColor: '#9D00FF' },
+  tabActive: { backgroundColor: '#B388FF' },
   tabText: { color: '#A1A1AA', fontSize: 12, fontWeight: '500', textTransform: 'capitalize' },
   tabTextActive: { color: '#fff' },
   list: { paddingHorizontal: 20 },
@@ -183,6 +183,6 @@ const styles = StyleSheet.create({
   modalActions: { flexDirection: 'row', gap: 12 },
   cancelBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, backgroundColor: '#2a2a2a', alignItems: 'center' },
   cancelBtnText: { color: '#A1A1AA', fontSize: 12, fontWeight: '600' },
-  submitBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, backgroundColor: '#9D00FF', alignItems: 'center' },
+  submitBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, backgroundColor: '#B388FF', alignItems: 'center' },
   submitBtnText: { color: '#fff', fontSize: 12, fontWeight: '600' },
 });

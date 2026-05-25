@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#141414' },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: 40, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
   backBtn: { width: 60 },
-  backText: { color: '#9D00FF', fontSize: 12 },
+  backText: { color: '#B388FF', fontSize: 12 },
   title: { color: '#fff', fontSize: 12, fontWeight: '700' },
   content: { padding: 20 },
   text: { color: '#A1A1AA', fontSize: 12, lineHeight: 24 }

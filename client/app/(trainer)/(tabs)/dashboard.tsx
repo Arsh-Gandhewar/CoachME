@@ -90,7 +90,7 @@ export default function TrainerDashboard() {
           contact: (user as any)?.mobile || '9999999999',
           name: (user as any)?.name || (user as any)?.fullName || ''
         },
-        theme: { color: '#9D00FF' }
+        theme: { color: '#B388FF' }
       };
 
       RazorpayCheckout.open(options).then(async (data: any) => {
@@ -160,7 +160,7 @@ export default function TrainerDashboard() {
 
   return (
     <View style={styles.container}>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#9D00FF" />}>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#B388FF" />}>
         
         <View style={styles.header}>
           <View style={styles.headerText}>
@@ -180,7 +180,7 @@ export default function TrainerDashboard() {
         <View style={styles.premiumContent}>
           <View style={styles.analyticsRow}>
             <View style={styles.analyticsCard}>
-              <Eye color="#9D00FF" size={24} style={{ marginBottom: 8 }} />
+              <Eye color="#B388FF" size={24} style={{ marginBottom: 8 }} />
               <Text style={styles.analyticsVal}>{profileViews}</Text>
               <Text style={styles.analyticsLabel}>Profile Views</Text>
             </View>
@@ -200,13 +200,13 @@ export default function TrainerDashboard() {
               <Text style={styles.statValue}>{confirmed}</Text>
               <Text style={styles.statLabel}>Active Clients</Text>
             </View>
-            <View style={[styles.statCard, { borderColor: '#9D00FF', width: '100%' }]}>
+            <View style={[styles.statCard, { borderColor: '#B388FF', width: '100%' }]}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <View>
                   <Text style={styles.statValue}>₹{revenue}</Text>
                   <Text style={styles.statLabel}>Total Revenue</Text>
                 </View>
-                <TrendingUp color="#9D00FF" size={32} opacity={0.5} />
+                <TrendingUp color="#B388FF" size={32} opacity={0.5} />
               </View>
             </View>
           </View>
@@ -233,7 +233,7 @@ export default function TrainerDashboard() {
           <View style={styles.paywallOverlay} />
           <View style={styles.paywallContent}>
             <View style={styles.lockIconContainer}>
-              <Lock color="#9D00FF" size={40} />
+              <Lock color="#B388FF" size={40} />
             </View>
             <Text style={styles.paywallTitle}>Unlock Your Profile</Text>
             <Text style={styles.paywallDesc}>
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
   greeting: { fontSize: 28, fontWeight: '800', color: '#fff' },
   subtitle: { fontSize: 12, color: '#A1A1AA', marginTop: 6 },
   headerAvatar: { width: 50, height: 50, borderRadius: 16 },
-  headerAvatarInitials: { width: 50, height: 50, borderRadius: 16, backgroundColor: '#9D00FF', justifyContent: 'center', alignItems: 'center' },
+  headerAvatarInitials: { width: 50, height: 50, borderRadius: 16, backgroundColor: '#B388FF', justifyContent: 'center', alignItems: 'center' },
   headerAvatarText: { color: '#fff', fontSize: 16, fontWeight: '700' },
   
   premiumContent: { paddingHorizontal: 20 },
@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
   analyticsCard: { flex: 1, backgroundColor: '#0A0A0A', borderRadius: 20, padding: 20, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
   analyticsVal: { color: '#fff', fontSize: 12, fontWeight: '700' },
   analyticsLabel: { color: '#A1A1AA', fontSize: 12, marginTop: 4 },
-  analyticsTrend: { color: '#9D00FF', fontSize: 12, fontWeight: '600', marginTop: 8 },
+  analyticsTrend: { color: '#B388FF', fontSize: 12, fontWeight: '600', marginTop: 8 },
 
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginBottom: 24 },
   statCard: { width: '47%' as any, backgroundColor: '#0A0A0A', borderRadius: 16, padding: 18, borderLeftWidth: 3 },
@@ -401,18 +401,18 @@ const styles = StyleSheet.create({
     maxWidth: 400,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(157,0,255,0.3)',
-    shadowColor: '#9D00FF',
+    borderColor: 'rgba(179,136,255,0.3)',
+    shadowColor: '#B388FF',
     shadowOpacity: 0.2,
     shadowRadius: 20,
     elevation: 10,
   },
-  lockIconContainer: { width: 80, height: 80, borderRadius: 40, backgroundColor: 'rgba(157,0,255,0.1)', justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
+  lockIconContainer: { width: 80, height: 80, borderRadius: 40, backgroundColor: 'rgba(179,136,255,0.1)', justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
   paywallTitle: { fontSize: 12, fontWeight: '800', color: '#fff', marginBottom: 12, textAlign: 'center' },
   paywallDesc: { fontSize: 12, color: '#A1A1AA', textAlign: 'center', lineHeight: 22, marginBottom: 24 },
   featuresList: { alignSelf: 'flex-start', marginBottom: 28, width: '100%' },
   featureItem: { color: '#E0E0E0', fontSize: 12, marginBottom: 10, fontWeight: '500' },
-  subscribeBtn: { backgroundColor: '#9D00FF', width: '100%', paddingVertical: 16, borderRadius: 100, alignItems: 'center' },
+  subscribeBtn: { backgroundColor: '#B388FF', width: '100%', paddingVertical: 16, borderRadius: 100, alignItems: 'center' },
   subscribeText: { color: '#fff', fontSize: 12, fontWeight: '700' },
   cancelAnytime: { color: '#666', fontSize: 12, marginTop: 16 },
 
@@ -451,13 +451,13 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: 'rgba(157,0,255,0.3)',
+    borderColor: 'rgba(179,136,255,0.3)',
     marginBottom: 20,
     minHeight: 120,
   },
   broadcastInput: { color: '#fff', fontSize: 14, textAlignVertical: 'top', height: 100 },
   sendBtn: {
-    backgroundColor: '#9D00FF',
+    backgroundColor: '#B388FF',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -478,11 +478,11 @@ const styles = StyleSheet.create({
   dayName: { color: '#A1A1AA', fontSize: 12, width: 36, textAlign: 'center', fontWeight: '600' },
   gridContainer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start' },
   dayCell: { width: '14.28%', height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 8, borderRadius: 20 },
-  dayActive: { backgroundColor: 'rgba(157,0,255,0.15)' },
-  daySelected: { borderWidth: 1, borderColor: '#9D00FF' },
+  dayActive: { backgroundColor: 'rgba(179,136,255,0.15)' },
+  daySelected: { borderWidth: 1, borderColor: '#B388FF' },
   dayText: { color: '#fff', fontSize: 14 },
-  dayTextActive: { color: '#9D00FF', fontWeight: '700' },
-  dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: '#9D00FF', marginTop: 2 },
+  dayTextActive: { color: '#B388FF', fontWeight: '700' },
+  dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: '#B388FF', marginTop: 2 },
 
   selectedBookings: {
     marginTop: 8,
@@ -495,7 +495,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 8,
     borderLeftWidth: 3,
-    borderLeftColor: '#9D00FF',
+    borderLeftColor: '#B388FF',
   },
   miniClient: { color: '#fff', fontSize: 14, fontWeight: '600' },
   miniTime: { color: '#A1A1AA', fontSize: 12, marginTop: 4 },

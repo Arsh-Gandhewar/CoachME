@@ -80,7 +80,7 @@ export default function NotificationsScreen() {
               <Switch 
                 value={pushEnabled} 
                 onValueChange={(val) => handleToggle('pushEnabled', val, setPushEnabled)}
-                trackColor={{ false: '#333', true: '#9D00FF' }}
+                trackColor={{ false: '#333', true: '#B388FF' }}
               />
             </View>
             <View style={styles.itemRow}>
@@ -88,7 +88,7 @@ export default function NotificationsScreen() {
               <Switch 
                 value={emailEnabled} 
                 onValueChange={(val) => handleToggle('emailEnabled', val, setEmailEnabled)}
-                trackColor={{ false: '#333', true: '#9D00FF' }}
+                trackColor={{ false: '#333', true: '#B388FF' }}
               />
             </View>
             <View style={[styles.itemRow, { borderBottomWidth: 0 }]}>
@@ -96,7 +96,7 @@ export default function NotificationsScreen() {
               <Switch 
                 value={smsEnabled} 
                 onValueChange={(val) => handleToggle('smsEnabled', val, setSmsEnabled)}
-                trackColor={{ false: '#333', true: '#9D00FF' }}
+                trackColor={{ false: '#333', true: '#B388FF' }}
               />
             </View>
           </View>
@@ -113,7 +113,7 @@ export default function NotificationsScreen() {
               <Switch 
                 value={bookingUpdates} 
                 onValueChange={(val) => handleToggle('bookingUpdates', val, setBookingUpdates)}
-                trackColor={{ false: '#333', true: '#9D00FF' }}
+                trackColor={{ false: '#333', true: '#B388FF' }}
               />
             </View>
             <View style={styles.itemRow}>
@@ -124,7 +124,7 @@ export default function NotificationsScreen() {
               <Switch 
                 value={newMessages} 
                 onValueChange={(val) => handleToggle('newMessages', val, setNewMessages)}
-                trackColor={{ false: '#333', true: '#9D00FF' }}
+                trackColor={{ false: '#333', true: '#B388FF' }}
               />
             </View>
             <View style={[styles.itemRow, { borderBottomWidth: 0 }]}>
@@ -135,7 +135,7 @@ export default function NotificationsScreen() {
               <Switch 
                 value={promotions} 
                 onValueChange={(val) => handleToggle('promotions', val, setPromotions)}
-                trackColor={{ false: '#333', true: '#9D00FF' }}
+                trackColor={{ false: '#333', true: '#B388FF' }}
               />
             </View>
           </View>

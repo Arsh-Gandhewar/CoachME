@@ -73,7 +73,7 @@ const FeaturedTrainerCard = ({ trainer, bgColor, onPress }: { trainer: any, bgCo
         {portfolioImages.length > 1 && (
           <View style={{ flexDirection: 'row', position: 'absolute', bottom: 10, alignSelf: 'center', gap: 4 }}>
             {portfolioImages.map((_: any, idx: number) => (
-              <View key={idx} style={{ width: idx === activeImageIndex ? 12 : 4, height: 4, borderRadius: 2, backgroundColor: idx === activeImageIndex ? '#9D00FF' : 'rgba(255,255,255,0.5)' }} />
+              <View key={idx} style={{ width: idx === activeImageIndex ? 12 : 4, height: 4, borderRadius: 2, backgroundColor: idx === activeImageIndex ? '#B388FF' : 'rgba(255,255,255,0.5)' }} />
             ))}
           </View>
         )}
@@ -93,7 +93,7 @@ const FeaturedTrainerCard = ({ trainer, bgColor, onPress }: { trainer: any, bgCo
         {/* Name, Category, Exp */}
         <View style={{ flex: 1, marginRight: 8, justifyContent: 'center' }}>
           <Text style={styles.featuredName} numberOfLines={1}>{trainer.fullName} {trainer.verified ? '✓' : ''}</Text>
-          <Text style={{ color: '#9D00FF', fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 2 }}>
+          <Text style={{ color: '#B388FF', fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 2 }}>
             {trainer.category} • {trainer.experience || 0} YRS EXP
           </Text>
         </View>
@@ -288,7 +288,7 @@ export default function HomeScreen() {
   return (
     <ScrollView 
       style={styles.container} 
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#9D00FF" />}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#B388FF" />}
       contentContainerStyle={styles.scrollContent}
     >
       <View style={styles.contentWrapper}>
@@ -372,7 +372,7 @@ export default function HomeScreen() {
               onPress={() => router.push({ pathname: '/(user)/(tabs)/search', params: { category: cat.slug } })}
             >
               <LinearGradient
-                colors={catGradients[cat.slug] || ['#FF8A65', '#9D00FF']}
+                colors={catGradients[cat.slug] || ['#FF8A65', '#B388FF']}
                 style={styles.categoryBox}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   welcomeText: { color: '#A1A1AA', fontSize: 12, marginBottom: 4 },
-  welcomeName: { color: '#9D00FF', fontWeight: '700' },
+  welcomeName: { color: '#B388FF', fontWeight: '700' },
   heroTitle: { color: '#ffffff', fontSize: 36, fontWeight: '800', marginBottom: 16, letterSpacing: -1 },
   
   dashboardContainer: {
@@ -463,16 +463,16 @@ const styles = StyleSheet.create({
   userStatValue: { color: '#fff', fontSize: 18, fontWeight: '800' },
   userStatLabel: { color: '#A1A1AA', fontSize: 10, marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'center' },
   upcomingLabel: { color: '#A1A1AA', fontSize: 12, fontWeight: '500' },
-  upcomingValue: { color: '#9D00FF', fontSize: 12, fontWeight: '700', flexShrink: 1, marginLeft: 10 },
+  upcomingValue: { color: '#B388FF', fontSize: 12, fontWeight: '700', flexShrink: 1, marginLeft: 10 },
 
   quoteCard: {
-    backgroundColor: 'rgba(157,0,255, 0.05)',
+    backgroundColor: 'rgba(179,136,255, 0.05)',
     borderRadius: 12,
     padding: 14,
     borderLeftWidth: 3,
-    borderLeftColor: '#9D00FF',
+    borderLeftColor: '#B388FF',
   },
-  quoteLabel: { color: '#9D00FF', fontSize: 10, fontWeight: '700', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 },
+  quoteLabel: { color: '#B388FF', fontSize: 10, fontWeight: '700', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 },
   quoteText: { color: '#E0E0E0', fontSize: 11, fontStyle: 'italic', lineHeight: 18 },
 
   statsWrapper: {
@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#333' },
-  activeDot: { backgroundColor: '#9D00FF', width: 24 },
+  activeDot: { backgroundColor: '#B388FF', width: 24 },
 
   sectionHeader: {
     flexDirection: 'row',
@@ -511,7 +511,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   sectionTitle: { color: '#fff', fontSize: 12, fontWeight: '700' },
-  seeAllText: { color: '#9D00FF', fontSize: 12, fontWeight: '600' },
+  seeAllText: { color: '#B388FF', fontSize: 12, fontWeight: '600' },
 
   categoriesContainer: {
     paddingBottom: 16,
@@ -582,7 +582,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 14,
     borderWidth: 2,
-    borderColor: '#9D00FF',
+    borderColor: '#B388FF',
     overflow: 'hidden',
   },
   featuredProfileImg: {
