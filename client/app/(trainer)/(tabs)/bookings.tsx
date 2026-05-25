@@ -53,6 +53,13 @@ export default function TrainerBookingsScreen() {
                 </TouchableOpacity>
               </View>
             )}
+            {item.bookingStatus === 'confirmed' && (
+              <View style={styles.actions}>
+                <TouchableOpacity style={[styles.confirmBtn, { backgroundColor: 'rgba(179, 136, 255, 0.15)', borderColor: '#B388FF' }]} onPress={() => updateStatus(item._id, 'completed')}>
+                  <Text style={[styles.confirmText, { color: '#B388FF' }]}>Mark as Complete ✓</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         )}
         keyExtractor={(item) => item._id}
