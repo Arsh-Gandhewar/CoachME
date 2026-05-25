@@ -77,7 +77,18 @@ const TrainerSchema = new Schema<ITrainer>(
     },
     isExactLocationShared: { type: Boolean, default: false },
     distance: { type: Number },
-    availability: { type: Schema.Types.Mixed, default: {} },
+    availability: {
+      type: Schema.Types.Mixed,
+      default: () => ({
+        monday: ['10:00', '11:00', '16:00', '17:00'],
+        tuesday: ['10:00', '11:00', '16:00', '17:00'],
+        wednesday: ['10:00', '11:00', '16:00', '17:00'],
+        thursday: ['10:00', '11:00', '16:00', '17:00'],
+        friday: ['10:00', '11:00', '16:00', '17:00'],
+        saturday: ['10:00', '11:00'],
+        sunday: []
+      })
+    },
     sessionTypes: [{ type: String }],
     specializations: [{ type: String }],
     rating: { type: Number, default: 0 },
