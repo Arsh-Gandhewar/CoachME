@@ -213,13 +213,13 @@ export default function TrainerDashboard() {
 
           <Text style={styles.sectionTitle}>Quick Actions</Text>
           <View style={styles.quickActions}>
-            <TouchableOpacity style={styles.actionBtn} onPress={() => setScheduleVisible(true)}>
-              <Calendar color="#fff" size={20} />
-              <Text style={styles.actionText}>Schedule</Text>
+            <TouchableOpacity style={[styles.actionBtn, { backgroundColor: 'rgba(0, 229, 255, 0.1)', borderColor: '#00E5FF', borderWidth: 1 }]} onPress={() => setScheduleVisible(true)}>
+              <Calendar color="#00E5FF" size={20} />
+              <Text style={[styles.actionText, { color: '#00E5FF' }]}>Schedule</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.actionBtn} onPress={() => setBroadcastVisible(true)}>
-              <MessageSquare color="#fff" size={20} />
-              <Text style={styles.actionText}>Broadcast</Text>
+            <TouchableOpacity style={[styles.actionBtn, { backgroundColor: 'rgba(255, 64, 129, 0.1)', borderColor: '#FF4081', borderWidth: 1 }]} onPress={() => setBroadcastVisible(true)}>
+              <MessageSquare color="#FF4081" size={20} />
+              <Text style={[styles.actionText, { color: '#FF4081' }]}>Broadcast</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
 
   sectionTitle: { fontSize: 12, fontWeight: '700', color: '#fff', marginBottom: 14 },
   quickActions: { flexDirection: 'row', gap: 12 },
-  actionBtn: { flex: 1, flexDirection: 'row', backgroundColor: '#141414', padding: 16, borderRadius: 16, alignItems: 'center', justifyContent: 'center', gap: 8 },
+  actionBtn: { flex: 1, borderRadius: 16, padding: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
   actionText: { color: '#fff', fontSize: 12, fontWeight: '600' },
 
   // Paywall

@@ -463,16 +463,16 @@ const styles = StyleSheet.create({
   userStatValue: { color: '#fff', fontSize: 18, fontWeight: '800' },
   userStatLabel: { color: '#A1A1AA', fontSize: 10, marginTop: 4, textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'center' },
   upcomingLabel: { color: '#A1A1AA', fontSize: 12, fontWeight: '500' },
-  upcomingValue: { color: '#B388FF', fontSize: 12, fontWeight: '700', flexShrink: 1, marginLeft: 10 },
+  upcomingValue: { color: '#00E5FF', fontSize: 12, fontWeight: '700', flexShrink: 1, marginLeft: 10 },
 
   quoteCard: {
-    backgroundColor: 'rgba(179,136,255, 0.05)',
+    backgroundColor: 'rgba(255, 179, 0, 0.05)',
     borderRadius: 12,
     padding: 14,
     borderLeftWidth: 3,
-    borderLeftColor: '#B388FF',
+    borderLeftColor: '#FFB300',
   },
-  quoteLabel: { color: '#B388FF', fontSize: 10, fontWeight: '700', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 },
+  quoteLabel: { color: '#FFB300', fontSize: 10, fontWeight: '700', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 },
   quoteText: { color: '#E0E0E0', fontSize: 11, fontStyle: 'italic', lineHeight: 18 },
 
   statsWrapper: {
