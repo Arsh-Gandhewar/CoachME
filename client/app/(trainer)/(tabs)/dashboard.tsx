@@ -134,15 +134,34 @@ export default function TrainerDashboard() {
   };
 
   const pending = bookings.filter((b) => b.bookingStatus === 'pending').length;
-  const confirmed = bookings.filter((b) => b.bookingStatus === 'confirmed').length;
-  const completed = bookings.filter((b) => b.bookingStatus === 'completed').length;
+  
+  // Unique Active Clients (Confirmed)
+  const activeClientsSet = new Set();
+  bookings.filter(b => b.bookingStatus === 'confirmed').forEach(b => {
+    activeClientsSet.add(b.userId?._id || b.userId);
+  });
+  const activeClients = activeClientsSet.size;
+
+  // Unique Total Clients (Confirmed + Completed)
+  const allClientsSet = new Set();
+  bookings.filter(b => b.bookingStatus === 'confirmed' || b.bookingStatus === 'completed').forEach(b => {
+    allClientsSet.add(b.userId?._id || b.userId);
+  });
+  const totalClients = allClientsSet.size;
+  
+  // Completed Bookings for retention (using unique clients that have completed a session)
+  const completedClientsSet = new Set();
+  bookings.filter(b => b.bookingStatus === 'completed').forEach(b => {
+    completedClientsSet.add(b.userId?._id || b.userId);
+  });
+  const completedClients = completedClientsSet.size;
+
   const revenue = bookings.filter((b) => b.paymentStatus === 'paid').reduce((sum, b) => sum + b.price, 0);
   const trainerName = (user as any)?.fullName || 'Trainer';
   const profilePhoto = (user as any)?.profilePhoto;
   const initials = trainerName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
 
-  const totalClients = confirmed + completed;
-  const retention = totalClients > 0 ? Math.round((completed / totalClients) * 100) : 100;
+  const retention = totalClients > 0 ? Math.round((completedClients / totalClients) * 100) : 100;
   const profileViews = totalClients * 7 + pending * 3 + ((user as any)?.totalReviews || 0) * 15;
 
   const today = new Date();
@@ -197,7 +216,7 @@ export default function TrainerDashboard() {
               <Text style={styles.statLabel}>Pending Requests</Text>
             </View>
             <View style={[styles.statCard, { borderColor: '#2196F3' }]}>
-              <Text style={styles.statValue}>{confirmed}</Text>
+              <Text style={styles.statValue}>{activeClients}</Text>
               <Text style={styles.statLabel}>Active Clients</Text>
             </View>
             <View style={[styles.statCard, { borderColor: '#B388FF', width: '100%' }]}>
