@@ -58,7 +58,7 @@ export default function BookingFlowScreen() {
       const bookingId = bookingRes.data.data._id;
 
       // 2. Create Payment Order
-      const orderRes = await paymentAPI.createOrder(bookingId, trainer.pricing);
+      const orderRes = await paymentAPI.createOrder({ bookingId, amount: trainer.pricing });
       const { orderId, amount, currency } = orderRes.data.data;
 
       // 3. Open Razorpay Checkout (Web)

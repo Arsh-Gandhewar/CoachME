@@ -104,7 +104,13 @@ export const createOrder = asyncHandler(async (req: AuthRequest, res: Response) 
     receipt: `receipt_${bookingId}`,
   };
 
-  const order = await razorpay.orders.create(options);
+  let order;
+  try {
+    order = await razorpay.orders.create(options);
+  } catch (err: any) {
+    logger.error('Razorpay Order Create Error:', err);
+    throw ApiError.badRequest(err?.error?.description || err?.message || 'Failed to create payment order');
+  }
 
   const payment = await Payment.create({
     bookingId,
