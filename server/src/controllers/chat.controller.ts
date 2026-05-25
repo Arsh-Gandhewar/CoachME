@@ -14,10 +14,10 @@ export const getChats = asyncHandler(async (req: AuthRequest, res: Response) => 
   for (let chat of chats) {
     const otherParticipantId = chat.participants.find((p: any) => p.toString() !== req.user._id.toString());
     if (otherParticipantId) {
-      let otherUser = await User.findById(otherParticipantId).select('name profileImage');
-      if (!otherUser) {
-        otherUser = await Trainer.findById(otherParticipantId).select('fullName profilePhoto');
-      }
+    let otherUser: any = await User.findById(otherParticipantId).select('name profileImage');
+    if (!otherUser) {
+      otherUser = await Trainer.findById(otherParticipantId).select('fullName profilePhoto');
+    }
       (chat as any).otherParticipant = otherUser;
     }
   }
@@ -65,7 +65,7 @@ export const getChatByReceiver = asyncHandler(async (req: AuthRequest, res: Resp
     chat = await Chat.create({ participants: [senderId, receiverId], messages: [] }) as any;
   }
 
-  let otherUser = await User.findById(receiverId).select('name profileImage');
+  let otherUser: any = await User.findById(receiverId).select('name profileImage');
   if (!otherUser) {
     otherUser = await Trainer.findById(receiverId).select('fullName profilePhoto');
   }

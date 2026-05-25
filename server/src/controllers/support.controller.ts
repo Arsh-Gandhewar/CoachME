@@ -12,7 +12,7 @@ export const chatWithSupport = asyncHandler(async (req: Request, res: Response) 
   const { message, history } = req.body;
 
   if (!message) {
-    return ApiResponse.error(res, 'Message is required', 400);
+    return ApiResponse.error(res, 400, 'Message is required');
   }
 
   try {
@@ -53,6 +53,6 @@ export const chatWithSupport = asyncHandler(async (req: Request, res: Response) 
     return ApiResponse.success(res, { reply: replyText });
   } catch (error) {
     logger.error('Gemini API Error:', error);
-    return ApiResponse.error(res, 'Failed to process request with AI', 500);
+    return ApiResponse.error(res, 500, 'Failed to process request with AI');
   }
 });

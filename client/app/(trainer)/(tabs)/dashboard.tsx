@@ -34,7 +34,7 @@ export default function TrainerDashboard() {
     try {
       const res = await authAPI.getMe();
       if (res.data?.data) {
-        setUser(res.data.data);
+        setUser(res.data.data, 'trainer');
       }
     } catch (error) {
       console.error('Refresh profile failed', error);

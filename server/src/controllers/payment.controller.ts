@@ -18,8 +18,9 @@ const razorpay = new Razorpay({
 });
 
 export const setupCard = asyncHandler(async (req: AuthRequest, res: Response) => {
-  let userModel = req.userRole === 'trainer' ? Trainer : User;
-  let user = await userModel.findById(req.user._id);
+  let user = req.userRole === 'trainer' 
+    ? await Trainer.findById(req.user._id)
+    : await User.findById(req.user._id);
   
   if (!user) throw ApiError.notFound('User not found');
 
@@ -58,8 +59,9 @@ export const setupCard = asyncHandler(async (req: AuthRequest, res: Response) =>
 });
 
 export const getSavedMethods = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const userModel = req.userRole === 'trainer' ? Trainer : User;
-  const user = await userModel.findById(req.user._id);
+  const user = req.userRole === 'trainer' 
+    ? await Trainer.findById(req.user._id)
+    : await User.findById(req.user._id);
 
   if (!user || !user.razorpayCustomerId) {
     return ApiResponse.success(res, { items: [] });
@@ -76,8 +78,9 @@ export const getSavedMethods = asyncHandler(async (req: AuthRequest, res: Respon
 
 export const deleteSavedMethod = asyncHandler(async (req: AuthRequest, res: Response) => {
   const { tokenId } = req.params;
-  const userModel = req.userRole === 'trainer' ? Trainer : User;
-  const user = await userModel.findById(req.user._id);
+  const user = req.userRole === 'trainer' 
+    ? await Trainer.findById(req.user._id)
+    : await User.findById(req.user._id);
 
   if (!user || !user.razorpayCustomerId) {
     throw ApiError.badRequest('No Razorpay customer found');

@@ -75,7 +75,7 @@ export default function SettingsScreen() {
                   key={itemIdx} 
                   style={[styles.itemRow, itemIdx === section.items.length - 1 && { borderBottomWidth: 0 }]}
                   onPress={item.action}
-                  activeOpacity={item.action ? 0.7 : 1}
+                  activeOpacity={!!item.action ? 0.7 : 1}
                 >
                   <View style={styles.itemLeft}>
                     {item.icon}
@@ -83,11 +83,11 @@ export default function SettingsScreen() {
                   </View>
                   <View style={styles.itemRight}>
                     {item.value && (
-                      <Text style={[styles.itemValue, item.action && { marginRight: 12 }]}>
+                      <Text style={[styles.itemValue, !!item.action && { marginRight: 12 }]}>
                         {item.value}
                       </Text>
                     )}
-                    {item.action && <Text style={styles.chevron}>›</Text>}
+                    {!!item.action && <Text style={styles.chevron}>›</Text>}
                   </View>
                 </TouchableOpacity>
               ))}

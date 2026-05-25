@@ -1,6 +1,7 @@
 export interface User {
   _id: string;
   name: string;
+  fullName?: string;
   email: string;
   mobile?: string;
   profileImage?: string;
@@ -16,10 +17,13 @@ export interface User {
 export interface Trainer {
   _id: string;
   fullName: string;
+  name?: string;
   email: string;
   mobile?: string;
   profilePhoto?: string;
+  profileImage?: string;
   portfolioImages?: string[];
+  resume?: string;
   bio: string;
   experience: number;
   certifications: string[];
