@@ -1,87 +1,87 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { HelpCircle, MessageCircle, Mail } from 'lucide-react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+import { MessageCircle, Mail, ChevronRight, ChevronDown } from 'lucide-react-native';
+import { theme } from '../../constants/colors';
+import { typography } from '../../constants/typography';
+import { spacing, radius } from '../../constants/spacing';
+import ScreenWrapper from '../../components/ScreenWrapper';
+import Header from '../../components/Header';
+import Card from '../../components/Card';
+
+const faqData = [
+  { q: 'How do I cancel a booking?', a: 'You can cancel a booking up to 24 hours before the scheduled session for a full refund. Go to your Bookings tab, find the booking, and tap "Cancel".' },
+  { q: 'How do payments work?', a: 'Payments are processed securely via Razorpay. We support credit/debit cards, UPI, and net banking. Payment is charged when you confirm a booking.' },
+  { q: 'Refund policy', a: 'Once a cancellation is approved, refunds are processed within 5–7 business days back to your original payment method.' },
+];
 
 export default function SupportScreen() {
   const router = useRouter();
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backBtn} 
-          onPress={() => router.canGoBack() ? router.back() : router.push('/(user)/(tabs)/profile')}
-        >
-          <Text style={styles.backText}>{'<'} Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>Help & Support</Text>
-        <View style={{ width: 60 }} />
-      </View>
+    <ScreenWrapper>
+      <Header title="Help & Support" onBack={() => router.canGoBack() ? router.back() : router.push('/(user)/(tabs)/profile')} />
 
-      <View style={styles.content}>
-
-
+      <Animated.View entering={FadeInDown.duration(400).delay(100)}>
         <Text style={styles.sectionTitle}>Contact Us</Text>
-        <View style={styles.card}>
-          <TouchableOpacity style={styles.itemRow} onPress={() => router.push('/(user)/support-chat')}>
+        <Card style={{ padding: 0, marginBottom: spacing['2xl'] }}>
+          <TouchableOpacity style={[styles.itemRow, styles.itemBorder]} onPress={() => router.push('/(user)/support-chat')} activeOpacity={0.7}>
             <View style={styles.itemLeft}>
-              <MessageCircle color="#B388FF" size={24} />
-              <View style={styles.itemText}>
+              <View style={[styles.iconWrap, { backgroundColor: theme.accent.purpleLight }]}>
+                <MessageCircle color={theme.accent.purple} size={20} />
+              </View>
+              <View>
                 <Text style={styles.itemLabel}>Live AI Support</Text>
                 <Text style={styles.itemDesc}>Instant answers to your queries</Text>
               </View>
             </View>
-            <Text style={styles.chevron}>›</Text>
+            <ChevronRight size={18} color={theme.text.muted} />
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.itemRow, { borderBottomWidth: 0 }]}>
+          <TouchableOpacity style={styles.itemRow} activeOpacity={0.7}>
             <View style={styles.itemLeft}>
-              <Mail color="#B388FF" size={24} />
-              <View style={styles.itemText}>
+              <View style={[styles.iconWrap, { backgroundColor: theme.accent.purpleLight }]}>
+                <Mail color={theme.accent.purple} size={20} />
+              </View>
+              <View>
                 <Text style={styles.itemLabel}>Email Support</Text>
-                <Text style={styles.itemDesc}>support@trainersapp.com</Text>
+                <Text style={styles.itemDesc}>support@coachme.app</Text>
               </View>
             </View>
-            <Text style={styles.chevron}>›</Text>
+            <ChevronRight size={18} color={theme.text.muted} />
           </TouchableOpacity>
-        </View>
+        </Card>
+      </Animated.View>
 
-        <Text style={styles.sectionTitle}>FAQ</Text>
-        <View style={styles.card}>
-          <TouchableOpacity style={styles.itemRow}>
-            <Text style={styles.itemLabel}>How do I cancel a booking?</Text>
-            <Text style={styles.chevron}>›</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.itemRow}>
-            <Text style={styles.itemLabel}>How do payments work?</Text>
-            <Text style={styles.chevron}>›</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.itemRow, { borderBottomWidth: 0 }]}>
-            <Text style={styles.itemLabel}>Refund policy</Text>
-            <Text style={styles.chevron}>›</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ScrollView>
+      <Animated.View entering={FadeInDown.duration(400).delay(250)}>
+        <Text style={styles.sectionTitle}>Frequently Asked Questions</Text>
+        <Card style={{ padding: 0 }}>
+          {faqData.map((faq, i) => (
+            <TouchableOpacity key={i} style={[styles.faqRow, i < faqData.length - 1 && styles.itemBorder]} onPress={() => setOpenFaq(openFaq === i ? null : i)} activeOpacity={0.7}>
+              <View style={styles.faqHeader}>
+                <Text style={styles.faqQuestion}>{faq.q}</Text>
+                {openFaq === i ? <ChevronDown size={18} color={theme.accent.purple} /> : <ChevronRight size={18} color={theme.text.muted} />}
+              </View>
+              {openFaq === i && <Text style={styles.faqAnswer}>{faq.a}</Text>}
+            </TouchableOpacity>
+          ))}
+        </Card>
+      </Animated.View>
+    </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#141414' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
-  backBtn: { width: 60 },
-  backText: { color: '#A1A1AA', fontSize: 12 },
-  title: { color: '#fff', fontSize: 12, fontWeight: '700' },
-  
-  content: { padding: 20 },
-
-  sectionTitle: { color: '#A1A1AA', fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12, paddingLeft: 4 },
-  
-  card: { backgroundColor: '#0A0A0A', borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', marginBottom: 32 },
-  itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
-  itemLeft: { flexDirection: 'row', alignItems: 'center' },
-  itemText: { marginLeft: 16 },
-  itemLabel: { color: '#fff', fontSize: 12, marginBottom: 4 },
-  itemDesc: { color: '#777', fontSize: 12 },
-  chevron: { color: '#666', fontSize: 12, marginTop: -2 },
+  sectionTitle: { ...typography.label, color: theme.text.muted, textTransform: 'uppercase', letterSpacing: 1, marginBottom: spacing.sm, paddingLeft: spacing.xs },
+  itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: spacing.lg },
+  itemBorder: { borderBottomWidth: 1, borderBottomColor: theme.border.subtle },
+  itemLeft: { flexDirection: 'row', alignItems: 'center', flex: 1 },
+  iconWrap: { width: 40, height: 40, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', marginRight: spacing.md },
+  itemLabel: { ...typography.bodyMedium, color: theme.text.primary },
+  itemDesc: { ...typography.caption, color: theme.text.muted, marginTop: 2 },
+  faqRow: { padding: spacing.lg },
+  faqHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  faqQuestion: { ...typography.bodyMedium, color: theme.text.primary, flex: 1 },
+  faqAnswer: { ...typography.bodySmall, color: theme.text.secondary, marginTop: spacing.sm, lineHeight: 20 },
 });

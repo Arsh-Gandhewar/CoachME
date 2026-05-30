@@ -1,127 +1,92 @@
-import { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Settings, User, Bell, Shield, MapPin, Smartphone, Mail, Key } from 'lucide-react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+import { User, Bell, Shield, MapPin, Smartphone, Mail, Key, ChevronRight } from 'lucide-react-native';
 import { useAuthStore } from '../../store/authStore';
+import { theme } from '../../constants/colors';
+import { typography } from '../../constants/typography';
+import { spacing, radius } from '../../constants/spacing';
+import ScreenWrapper from '../../components/ScreenWrapper';
+import Header from '../../components/Header';
+import Card from '../../components/Card';
+import Button from '../../components/Button';
 
 export default function SettingsScreen() {
   const router = useRouter();
   const { user } = useAuthStore();
-  
-  const handleWIP = (feature: string) => {
-    if (Platform.OS === 'web') {
-      window.alert(`${feature} settings will be available in the next update!`);
-    } else {
-      Alert.alert('Coming Soon', `${feature} settings will be available in the next update!`);
-    }
-  };
 
   const handleDelete = () => {
-    if (Platform.OS === 'web') {
+    if (typeof window !== 'undefined' && window.confirm) {
       if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
         window.alert('Account deletion requested. Please contact support.');
       }
-    } else {
-      Alert.alert('Delete Account', 'Are you sure you want to delete your account? This action cannot be undone.', [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Delete', style: 'destructive', onPress: () => Alert.alert('Account deletion requested. Please contact support.') }
-      ]);
     }
   };
 
   const sections = [
     {
-      title: 'Account Settings',
+      title: 'Account',
       items: [
-        { icon: <User color="#A1A1AA" size={20} />, label: 'Personal Information', action: () => router.push('/(user)/edit-profile') },
-        { icon: <Mail color="#A1A1AA" size={20} />, label: 'Email Address', value: (user as any)?.email, action: () => router.push('/(user)/edit-profile') },
-        { icon: <Smartphone color="#A1A1AA" size={20} />, label: 'Phone Number', value: (user as any)?.mobile || 'Not set', action: () => router.push('/(user)/edit-profile') },
-        { icon: <Key color="#A1A1AA" size={20} />, label: 'Change Password', action: () => router.push('/(user)/change-password') },
+        { icon: <User color={theme.text.secondary} size={20} />, label: 'Personal Information', value: '', action: () => router.push('/(user)/edit-profile') },
+        { icon: <Mail color={theme.text.secondary} size={20} />, label: 'Email', value: (user as any)?.email || '', action: () => router.push('/(user)/edit-profile') },
+        { icon: <Smartphone color={theme.text.secondary} size={20} />, label: 'Phone', value: (user as any)?.mobile || 'Not set', action: () => router.push('/(user)/edit-profile') },
+        { icon: <Key color={theme.text.secondary} size={20} />, label: 'Change Password', value: '', action: () => router.push('/(user)/change-password') },
       ]
     },
     {
       title: 'Preferences',
       items: [
-        { icon: <Bell color="#A1A1AA" size={20} />, label: 'Push Notifications', value: 'On', action: () => router.push('/(user)/notifications') },
-        { icon: <MapPin color="#A1A1AA" size={20} />, label: 'Location Services', value: 'While Using', action: () => router.push('/(user)/location') },
+        { icon: <Bell color={theme.text.secondary} size={20} />, label: 'Notifications', value: '', action: () => router.push('/(user)/notifications') },
+        { icon: <MapPin color={theme.text.secondary} size={20} />, label: 'Location', value: '', action: () => router.push('/(user)/location') },
       ]
     },
     {
-      title: 'Privacy & Security',
+      title: 'Legal',
       items: [
-        { icon: <Shield color="#A1A1AA" size={20} />, label: 'Privacy Policy', action: () => router.push('/(user)/privacy-policy') },
-        { icon: <Settings color="#A1A1AA" size={20} />, label: 'Terms of Service', action: () => router.push('/(user)/terms-of-service') },
+        { icon: <Shield color={theme.text.secondary} size={20} />, label: 'Privacy Policy', value: '', action: () => router.push('/(user)/privacy-policy') },
+        { icon: <Shield color={theme.text.secondary} size={20} />, label: 'Terms of Service', value: '', action: () => router.push('/(user)/terms-of-service') },
       ]
     }
   ];
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.canGoBack() ? router.back() : router.push('/(user)/(tabs)/profile')}>
-          <Text style={styles.backText}>{'<'} Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>Settings</Text>
-        <View style={{ width: 60 }} />
-      </View>
+    <ScreenWrapper>
+      <Header title="Settings" onBack={() => router.canGoBack() ? router.back() : router.push('/(user)/(tabs)/profile')} />
 
-      <View style={styles.content}>
-        {sections.map((section, idx) => (
-          <View key={idx} style={styles.section}>
-            <Text style={styles.sectionTitle}>{section.title}</Text>
-            <View style={styles.card}>
-              {section.items.map((item, itemIdx) => (
-                <TouchableOpacity 
-                  key={itemIdx} 
-                  style={[styles.itemRow, itemIdx === section.items.length - 1 && { borderBottomWidth: 0 }]}
-                  onPress={item.action}
-                  activeOpacity={!!item.action ? 0.7 : 1}
-                >
-                  <View style={styles.itemLeft}>
-                    {item.icon}
-                    <Text style={styles.itemLabel}>{item.label}</Text>
-                  </View>
-                  <View style={styles.itemRight}>
-                    {item.value && (
-                      <Text style={[styles.itemValue, !!item.action && { marginRight: 12 }]}>
-                        {item.value}
-                      </Text>
-                    )}
-                    {!!item.action && <Text style={styles.chevron}>›</Text>}
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-        ))}
+      {sections.map((section, sIdx) => (
+        <Animated.View key={sIdx} entering={FadeInDown.duration(400).delay(100 + sIdx * 100)}>
+          <Text style={styles.sectionTitle}>{section.title}</Text>
+          <Card style={{ padding: 0, marginBottom: spacing.xl }}>
+            {section.items.map((item, i) => (
+              <TouchableOpacity key={i} style={[styles.itemRow, i < section.items.length - 1 && styles.itemBorder]} onPress={item.action} activeOpacity={0.7}>
+                <View style={styles.itemLeft}>
+                  <View style={styles.iconWrap}>{item.icon}</View>
+                  <Text style={styles.itemLabel}>{item.label}</Text>
+                </View>
+                <View style={styles.itemRight}>
+                  {!!item.value && <Text style={styles.itemValue}>{item.value}</Text>}
+                  <ChevronRight size={18} color={theme.text.muted} />
+                </View>
+              </TouchableOpacity>
+            ))}
+          </Card>
+        </Animated.View>
+      ))}
 
-        <TouchableOpacity style={styles.deleteBtn} onPress={handleDelete}>
-          <Text style={styles.deleteText}>Delete Account</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      <Animated.View entering={FadeInDown.duration(400).delay(500)}>
+        <Button title="Delete Account" variant="danger" onPress={handleDelete} fullWidth />
+      </Animated.View>
+    </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#141414' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, backgroundColor: '#0A0A0A', borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
-  backBtn: { width: 60 },
-  backText: { color: '#A1A1AA', fontSize: 12 },
-  title: { color: '#fff', fontSize: 12, fontWeight: '700' },
-  
-  content: { padding: 20 },
-  section: { marginBottom: 32 },
-  sectionTitle: { color: '#A1A1AA', fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12, paddingLeft: 4 },
-  
-  card: { backgroundColor: '#0A0A0A', borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
-  itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
-  itemLeft: { flexDirection: 'row', alignItems: 'center' },
-  itemLabel: { color: '#fff', fontSize: 12, marginLeft: 16 },
-  itemRight: { flexDirection: 'row', alignItems: 'center' },
-  itemValue: { color: '#A1A1AA', fontSize: 12 },
-  chevron: { color: '#666', fontSize: 12, marginTop: -2 },
-
-  deleteBtn: { marginTop: 20, padding: 16, alignItems: 'center' },
-  deleteText: { color: '#F44336', fontSize: 12, fontWeight: '600' }
+  sectionTitle: { ...typography.label, color: theme.text.muted, textTransform: 'uppercase', letterSpacing: 1, marginBottom: spacing.sm, paddingLeft: spacing.xs },
+  itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: spacing.lg },
+  itemBorder: { borderBottomWidth: 1, borderBottomColor: theme.border.subtle },
+  itemLeft: { flexDirection: 'row', alignItems: 'center', flex: 1 },
+  iconWrap: { width: 36, height: 36, borderRadius: radius.sm, backgroundColor: theme.bg.input, alignItems: 'center', justifyContent: 'center', marginRight: spacing.md },
+  itemLabel: { ...typography.body, color: theme.text.primary },
+  itemRight: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  itemValue: { ...typography.bodySmall, color: theme.text.muted, maxWidth: 140 },
 });

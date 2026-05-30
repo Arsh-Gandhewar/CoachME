@@ -1,61 +1,52 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+import { ChevronRight } from 'lucide-react-native';
+import { theme } from '../../constants/colors';
+import { typography } from '../../constants/typography';
+import { spacing, radius } from '../../constants/spacing';
+import ScreenWrapper from '../../components/ScreenWrapper';
+import Header from '../../components/Header';
+import Card from '../../components/Card';
 
 export default function AboutScreen() {
   const router = useRouter();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.canGoBack() ? router.back() : router.push('/(user)/(tabs)/profile')}>
-          <Text style={styles.backText}>{'<'} Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>About</Text>
-        <View style={{ width: 60 }} />
-      </View>
+    <ScreenWrapper>
+      <Header title="About" onBack={() => router.canGoBack() ? router.back() : router.push('/(user)/(tabs)/profile')} />
 
-      <View style={styles.content}>
-        <View style={styles.logoContainer}>
-          <Text style={styles.logoIcon}>🏋️</Text>
-          <Text style={styles.logoText}>Coach<Text style={styles.logoAccent}>ME</Text></Text>
-          <Text style={styles.version}>Version 1.0.0 (Build 42)</Text>
-        </View>
+      <Animated.View entering={FadeInDown.duration(400).delay(100)} style={styles.logoContainer}>
+        <Text style={styles.logoIcon}>🏋️</Text>
+        <Text style={styles.logoText}>Coach<Text style={styles.logoAccent}>ME</Text></Text>
+        <Text style={styles.version}>Version 1.0.0</Text>
+      </Animated.View>
 
-        <View style={styles.card}>
-          <TouchableOpacity style={styles.itemRow} onPress={() => router.push('/(user)/terms-of-service')}>
+      <Animated.View entering={FadeInDown.duration(400).delay(250)}>
+        <Card style={{ padding: 0 }}>
+          <TouchableOpacity style={styles.itemRow} onPress={() => router.push('/(user)/terms-of-service')} activeOpacity={0.7}>
             <Text style={styles.itemLabel}>Terms of Service</Text>
-            <Text style={styles.chevron}>›</Text>
+            <ChevronRight size={18} color={theme.text.muted} />
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.itemRow, { borderBottomWidth: 0 }]} onPress={() => router.push('/(user)/privacy-policy')}>
+          <TouchableOpacity style={[styles.itemRow, { borderBottomWidth: 0 }]} onPress={() => router.push('/(user)/privacy-policy')} activeOpacity={0.7}>
             <Text style={styles.itemLabel}>Privacy Policy</Text>
-            <Text style={styles.chevron}>›</Text>
+            <ChevronRight size={18} color={theme.text.muted} />
           </TouchableOpacity>
-        </View>
+        </Card>
+      </Animated.View>
 
-        <Text style={styles.copyright}>© 2026 CoachME Inc. All rights reserved.</Text>
-      </View>
-    </View>
+      <Text style={styles.copyright}>© 2026 CoachME Inc. All rights reserved.</Text>
+    </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#141414' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
-  backBtn: { width: 60 },
-  backText: { color: '#A1A1AA', fontSize: 12 },
-  title: { color: '#fff', fontSize: 12, fontWeight: '700' },
-  
-  content: { padding: 20 },
-  logoContainer: { alignItems: 'center', marginVertical: 40 },
-  logoIcon: { fontSize: 66, marginBottom: 16 },
-  logoText: { fontSize: 34, fontWeight: '800', color: '#fff' },
-  logoAccent: { color: '#B388FF' },
-  version: { color: '#777', marginTop: 8 },
-
-  card: { backgroundColor: '#0A0A0A', borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', marginBottom: 40 },
-  itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
-  itemLabel: { color: '#fff', fontSize: 12 },
-  chevron: { color: '#666', fontSize: 12, marginTop: -2 },
-
-  copyright: { color: '#666', textAlign: 'center', fontSize: 12 },
+  logoContainer: { alignItems: 'center', marginVertical: spacing['4xl'] },
+  logoIcon: { fontSize: 66, marginBottom: spacing.lg },
+  logoText: { ...typography.hero, fontSize: 34, color: theme.text.primary },
+  logoAccent: { color: theme.accent.purple },
+  version: { ...typography.bodySmall, color: theme.text.muted, marginTop: spacing.sm },
+  itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: spacing.lg, borderBottomWidth: 1, borderBottomColor: theme.border.subtle },
+  itemLabel: { ...typography.body, color: theme.text.primary },
+  copyright: { ...typography.caption, color: theme.text.muted, textAlign: 'center', marginTop: spacing['4xl'] },
 });
