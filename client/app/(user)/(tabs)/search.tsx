@@ -1,12 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
-import { View, Text, TextInput, ScrollView, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, TextInput, ScrollView, TouchableOpacity, FlatList, StyleSheet, Platform, RefreshControl } from 'react-native';
 import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Location from 'expo-location';
+import { Search as SearchIcon, Star, MapPin } from 'lucide-react-native';
 import { trainerAPI } from '../../../services/endpoints';
 import { Trainer } from '../../../types';
-import { Avatar } from '../../../components/Avatar';
-
-const isWeb = Platform.OS === 'web';
+import { theme } from '../../../constants/colors';
+import { typography } from '../../../constants/typography';
+import { spacing, radius } from '../../../constants/spacing';
+import ScreenWrapper from '../../../components/ScreenWrapper';
+import Avatar from '../../../components/Avatar';
+import Card from '../../../components/Card';
+import Chip from '../../../components/Chip';
+import EmptyState from '../../../components/EmptyState';
+import SkeletonLoader from '../../../components/SkeletonLoader';
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -17,41 +25,22 @@ export default function SearchScreen() {
   const [loading, setLoading] = useState(false);
   const [sort, setSort] = useState('');
   const [location, setLocation] = useState<{lat: number, lng: number} | null>(null);
-
   const [categories, setCategories] = useState<{slug: string, name: string}[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => { if (params.category !== undefined) setCategory(params.category as string); }, [params.category]);
+  useFocusEffect(useCallback(() => { return () => setQuery(''); }, []));
 
   useEffect(() => {
-    if (params.category !== undefined) {
-      setCategory(params.category as string);
-    }
-  }, [params.category]);
-
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        setQuery('');
-      };
-    }, [])
-  );
-
-  useEffect(() => {
-    trainerAPI.getCategories().then(res => {
-      if (res.data?.data) {
-        setCategories(res.data.data);
-      }
-    }).catch(err => { /* silently handle */ });
+    trainerAPI.getCategories().then(res => { if (res.data?.data) setCategories(res.data.data); }).catch(() => {});
   }, []);
 
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') return;
-      try {
-        let loc = await Location.getCurrentPositionAsync({});
-        setLocation({ lat: loc.coords.latitude, lng: loc.coords.longitude });
-      } catch (err) {
-        console.error('Location error', err);
-      }
+      try { let loc = await Location.getCurrentPositionAsync({}); setLocation({ lat: loc.coords.latitude, lng: loc.coords.longitude }); }
+      catch (err) { console.error('Location error', err); }
     })();
   }, []);
 
@@ -59,181 +48,101 @@ export default function SearchScreen() {
     setLoading(true);
     try {
       const payload: any = { query, category, sort, limit: 50 };
-      if (location) {
-        payload.lat = location.lat;
-        payload.lng = location.lng;
-      }
+      if (location) { payload.lat = location.lat; payload.lng = location.lng; }
       const res = await trainerAPI.getAll(payload);
       setTrainers(res.data.data || []);
     } catch { setTrainers([]); }
-    setLoading(false);
+    finally { setLoading(false); setRefreshing(false); }
   };
 
   useEffect(() => { search(); }, [category, sort, location]);
+  useEffect(() => { const t = setTimeout(search, 400); return () => clearTimeout(t); }, [query]);
+  const onRefresh = () => { setRefreshing(true); search(); };
 
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      search();
-    }, 400);
-    return () => clearTimeout(delayDebounceFn);
-  }, [query]);
-
-  const initials = (name: string) => name.split(' ').map((n) => n[0]).join('').slice(0, 2);
-  const colors = ['#4CAF50', '#E91E63', '#F44336', '#B388FF', '#FF9800', '#2196F3', '#00BCD4', '#7C4DFF'];
+  const renderItem = useCallback(({ item, index }: { item: Trainer; index: number }) => (
+    <Animated.View entering={FadeInDown.duration(250).delay(index * 40)}>
+      <Card onPress={() => router.push({ pathname: '/(user)/trainer/[id]', params: { id: item._id } })} style={styles.trainerCard}>
+        <Avatar uri={item.profilePhoto || (item as any).profileImage} name={item.fullName} size="md" />
+        <View style={styles.info}>
+          <Text style={styles.name}>{item.fullName}</Text>
+          <Text style={styles.meta}>{item.category?.replace('-', ' ')} • {item.experience}yr Exp</Text>
+          <View style={styles.row}>
+            <View style={styles.ratingRow}>
+              <Star size={13} color={theme.status.warning} fill={theme.status.warning} />
+              <Text style={styles.ratingText}>{item.rating}</Text>
+              <Text style={styles.reviewCount}>({item.totalReviews || 0})</Text>
+            </View>
+            <Text style={styles.price}>₹{item.pricing}/hr</Text>
+          </View>
+        </View>
+      </Card>
+    </Animated.View>
+  ), [router]);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.contentWrapper}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Explore</Text>
-          <View style={styles.searchBar}>
-            <Text style={styles.searchIcon}>🔍</Text>
-            <TextInput 
-              style={styles.searchInput} 
-              placeholder="Search trainers..." 
-              placeholderTextColor="#666" 
-              value={query} 
-              onChangeText={setQuery} 
-              onSubmitEditing={search} 
-              returnKeyType="search" 
-            />
-          </View>
-        </View>
+    <ScreenWrapper scroll={false}>
+      <Text style={styles.title}>Explore</Text>
 
-        <View style={styles.filterSection}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.catRowContainer}>
-            <TouchableOpacity style={[styles.chip, !category && styles.chipActive]} onPress={() => setCategory('')}>
-              <Text style={[styles.chipText, !category && styles.chipTextActive]}>All</Text>
-            </TouchableOpacity>
-            {categories.map((c) => (
-              <TouchableOpacity key={c.slug} style={[styles.chip, category === c.slug && styles.chipActive]} onPress={() => setCategory(c.slug === category ? '' : c.slug)}>
-                <Text style={[styles.chipText, category === c.slug && styles.chipTextActive]}>{c.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-
-          <View style={styles.sortRow}>
-            <Text style={styles.resultCount}>{trainers.length} trainers found</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.sortRowContainer}>
-              {[{ k: '', l: 'Relevance' }, { k: 'price_low', l: '₹ Low' }, { k: 'price_high', l: '₹ High' }, { k: 'experience', l: 'Experience' }].map((s) => (
-                <TouchableOpacity key={s.k} style={[styles.sortChip, sort === s.k && styles.sortChipActive]} onPress={() => setSort(s.k)}>
-                  <Text style={[styles.sortText, sort === s.k && styles.sortTextActive]}>{s.l}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        </View>
-
-        {loading ? (
-          <ActivityIndicator size="large" color="#B388FF" style={{ marginTop: 40 }} />
-        ) : (
-          <FlatList
-            data={trainers}
-            contentContainerStyle={styles.list}
-            initialNumToRender={10}
-            maxToRenderPerBatch={10}
-            windowSize={5}
-            removeClippedSubviews={true}
-            renderItem={({ item }) => (
-              <TouchableOpacity style={styles.card} onPress={() => router.push({ pathname: '/(user)/trainer/[id]', params: { id: item._id } })}>
-                <Avatar 
-                  uri={item.profilePhoto || (item as any).profileImage} 
-                  style={styles.avatarImage}
-                  containerStyle={[styles.avatar, { backgroundColor: colors[item.fullName.length % colors.length] }]}
-                  fallbackText={initials(item.fullName)}
-                />
-                <View style={styles.info}>
-                  <Text style={styles.name}>{item.fullName}</Text>
-                  <Text style={styles.meta}>{item.category?.replace('-', ' ')} • {item.experience}yr Exp</Text>
-                  <View style={styles.row}>
-                    <Text style={styles.rating}>⭐ {item.rating} <Text style={{ color: '#666', fontSize: 12 }}>({item.totalReviews || 0} reviews)</Text></Text>
-                    <Text style={styles.price}>₹{item.pricing}</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item) => item._id}
-            ListEmptyComponent={<Text style={styles.empty}>No trainers found. Try a different search.</Text>}
-          />
-        )}
+      {/* Search Bar */}
+      <View style={styles.searchBar}>
+        <SearchIcon size={18} color={theme.text.muted} />
+        <TextInput style={styles.searchInput} placeholder="Search trainers..." placeholderTextColor={theme.text.muted} value={query} onChangeText={setQuery} onSubmitEditing={search} returnKeyType="search" />
       </View>
-    </View>
+
+      {/* Category Chips */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.catScroll} contentContainerStyle={styles.catContent}>
+        <Chip label="All" selected={!category} onPress={() => setCategory('')} size="sm" />
+        {categories.map((c) => (
+          <View key={c.slug} style={{ marginLeft: spacing.sm }}>
+            <Chip label={c.name} selected={category === c.slug} onPress={() => setCategory(c.slug === category ? '' : c.slug)} size="sm" />
+          </View>
+        ))}
+      </ScrollView>
+
+      {/* Sort & Count */}
+      <View style={styles.sortRow}>
+        <Text style={styles.resultCount}>{trainers.length} trainers</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ alignItems: 'center' }}>
+          {[{ k: '', l: 'Relevance' }, { k: 'price_low', l: '₹ Low' }, { k: 'price_high', l: '₹ High' }, { k: 'experience', l: 'Experience' }].map((s) => (
+            <View key={s.k} style={{ marginLeft: spacing.xs }}>
+              <Chip label={s.l} selected={sort === s.k} onPress={() => setSort(s.k)} size="sm" />
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* Results */}
+      {loading && trainers.length === 0 ? (
+        <View style={{ padding: spacing.lg }}><SkeletonLoader variant="list-item" count={5} /></View>
+      ) : (
+        <FlatList
+          data={trainers} renderItem={renderItem} keyExtractor={(item) => item._id}
+          initialNumToRender={10} maxToRenderPerBatch={10} windowSize={5} removeClippedSubviews={true}
+          contentContainerStyle={styles.list}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.accent.purple} />}
+          ListEmptyComponent={<EmptyState icon={<SearchIcon size={40} color={theme.text.muted} />} title="No trainers found" subtitle="Try a different search or category" />}
+        />
+      )}
+    </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#141414', alignItems: isWeb ? 'center' : 'stretch' },
-  contentWrapper: { width: '100%', maxWidth: 1000, flex: 1 },
-  
-  header: { paddingHorizontal: 16, paddingTop: Platform.OS === 'web' ? 40 : 50, paddingBottom: 8 },
-  title: { fontSize: 24, fontWeight: '700', color: '#fff', marginBottom: 12 },
-  
-  searchBar: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    backgroundColor: '#0A0A0A', 
-    borderRadius: 16, 
-    paddingHorizontal: 12,
-    borderWidth: 1, 
-    borderColor: 'rgba(255,255,255,0.04)' 
-  },
-  searchIcon: { fontSize: 12, marginRight: 8 },
-  searchInput: { flex: 1, paddingVertical: 12, color: '#fff', fontSize: 12, ...Platform.select({ web: { outlineStyle: 'none' as any }, default: {} }) },
-  
-  filterSection: {
-    paddingHorizontal: 16,
-    marginBottom: 8,
-    zIndex: 10,
-  },
-  catRowContainer: { paddingBottom: 8 },
-  chip: { 
-    paddingHorizontal: 12, 
-    paddingVertical: 6, 
-    borderRadius: 16, 
-    backgroundColor: '#0A0A0A', 
-    marginRight: 6, 
-    borderWidth: 1, 
-    borderColor: 'rgba(255,255,255,0.04)' 
-  },
-  chipActive: { backgroundColor: 'rgba(179,136,255,0.15)', borderColor: '#B388FF' },
-  chipText: { color: '#A1A1AA', fontSize: 12, textTransform: 'capitalize' },
-  chipTextActive: { color: '#B388FF', fontWeight: '600' },
-  
-  sortRow: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
-  sortRowContainer: { alignItems: 'center' },
-  resultCount: { color: '#666', fontSize: 12, marginRight: 12 },
-  sortChip: { 
-    paddingHorizontal: 12, 
-    paddingVertical: 6, 
-    borderRadius: 12, 
-    marginRight: 8, 
-    backgroundColor: '#0A0A0A',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.04)'
-  },
-  sortChipActive: { backgroundColor: '#B388FF', borderColor: '#B388FF' },
-  sortText: { color: '#A1A1AA', fontSize: 12 },
-  sortTextActive: { color: '#fff', fontWeight: '600' },
-  
-  list: { padding: 16, paddingBottom: 100 },
-  card: { 
-    flexDirection: 'row', 
-    backgroundColor: '#0A0A0A', 
-    borderRadius: 16, 
-    padding: 12, 
-    marginBottom: 8, 
-    borderWidth: 1, 
-    borderColor: 'rgba(255,255,255,0.04)' 
-  },
-  avatar: { width: 56, height: 56, borderRadius: 14, justifyContent: 'center', alignItems: 'center' },
-  avatarImage: { width: '100%', height: '100%', borderRadius: 14 },
-  avatarText: { color: '#fff', fontSize: 12, fontWeight: '700' },
-  info: { flex: 1, marginLeft: 12, justifyContent: 'center' },
-  name: { fontSize: 12, fontWeight: '600', color: '#fff', marginBottom: 2 },
-  meta: { fontSize: 11, color: '#A1A1AA', marginBottom: 6, textTransform: 'capitalize' },
+  title: { ...typography.h1, color: theme.text.primary, marginBottom: spacing.md },
+  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: theme.bg.card, borderRadius: radius.lg, paddingHorizontal: spacing.md, borderWidth: 1, borderColor: theme.border.subtle, marginBottom: spacing.md },
+  searchInput: { flex: 1, paddingVertical: spacing.md, color: theme.text.primary, ...typography.body, marginLeft: spacing.sm, ...Platform.select({ web: { outlineStyle: 'none' as any }, default: {} }) },
+  catScroll: { marginBottom: spacing.sm },
+  catContent: { paddingBottom: spacing.xs },
+  sortRow: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md },
+  resultCount: { ...typography.caption, color: theme.text.muted, marginRight: spacing.md },
+  list: { paddingBottom: spacing['5xl'] },
+  trainerCard: { flexDirection: 'row', marginBottom: spacing.sm, padding: spacing.md },
+  info: { flex: 1, marginLeft: spacing.md, justifyContent: 'center' },
+  name: { ...typography.bodyMedium, color: theme.text.primary, marginBottom: spacing.xs },
+  meta: { ...typography.caption, color: theme.text.secondary, marginBottom: spacing.sm, textTransform: 'capitalize' },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  rating: { color: '#FFC107', fontSize: 12, fontWeight: '500' },
-  price: { color: '#B388FF', fontSize: 12, fontWeight: '600' },
-  
-  empty: { color: '#666', textAlign: 'center', marginTop: 40, fontSize: 12 },
+  ratingRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
+  ratingText: { ...typography.bodySmall, color: theme.status.warning, fontWeight: '600' },
+  reviewCount: { ...typography.caption, color: theme.text.muted },
+  price: { ...typography.bodyMedium, color: theme.accent.purple, fontWeight: '600' },
 });

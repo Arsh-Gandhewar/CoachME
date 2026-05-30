@@ -1,13 +1,25 @@
 import { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Modal, TextInput, Alert, Platform } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, TextInput, Alert, Platform, RefreshControl } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+import { CalendarDays, Clock, Star } from 'lucide-react-native';
 import { bookingAPI } from '../../../services/endpoints';
 import { Booking } from '../../../types';
 import api from '../../../services/api';
+import { theme } from '../../../constants/colors';
+import { typography } from '../../../constants/typography';
+import { spacing, radius } from '../../../constants/spacing';
+import ScreenWrapper from '../../../components/ScreenWrapper';
+import Card from '../../../components/Card';
+import Chip from '../../../components/Chip';
+import EmptyState from '../../../components/EmptyState';
+import SkeletonLoader from '../../../components/SkeletonLoader';
+import Button from '../../../components/Button';
 
 export default function BookingsScreen() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [tab, setTab] = useState<'upcoming' | 'completed' | 'cancelled'>('upcoming');
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   // Review Modal State
   const [reviewModal, setReviewModal] = useState<{ visible: boolean; trainerId: string; bookingId: string }>({ visible: false, trainerId: '', bookingId: '' });
@@ -15,15 +27,13 @@ export default function BookingsScreen() {
   const [comment, setComment] = useState('');
   const [submittingReview, setSubmittingReview] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await bookingAPI.getUserBookings();
-        setBookings(res.data.data || []);
-      } catch {}
-      setLoading(false);
-    })();
-  }, []);
+  const fetchBookings = async () => {
+    try { const res = await bookingAPI.getUserBookings(); setBookings(res.data.data || []); } catch {}
+    finally { setLoading(false); setRefreshing(false); }
+  };
+
+  useEffect(() => { fetchBookings(); }, []);
+  const onRefresh = () => { setRefreshing(true); fetchBookings(); };
 
   const filtered = bookings.filter((b) => {
     if (tab === 'upcoming') return ['pending', 'confirmed'].includes(b.bookingStatus);
@@ -33,75 +43,74 @@ export default function BookingsScreen() {
 
   const submitReview = async () => {
     if (!comment.trim()) {
-      Alert.alert('Error', 'Please enter a review comment');
+      if (Platform.OS === 'web') window.alert('Please enter a review comment');
+      else Alert.alert('Error', 'Please enter a review comment');
       return;
     }
     setSubmittingReview(true);
     try {
-      await api.post('/users/reviews', {
-        trainerId: reviewModal.trainerId,
-        bookingId: reviewModal.bookingId,
-        rating,
-        comment
-      });
-      Alert.alert('Success', 'Review submitted! Thank you for your feedback.');
+      await api.post('/users/reviews', { trainerId: reviewModal.trainerId, bookingId: reviewModal.bookingId, rating, comment });
+      if (Platform.OS === 'web') window.alert('Review submitted! Thank you for your feedback.');
+      else Alert.alert('Success', 'Review submitted! Thank you for your feedback.');
       setReviewModal({ visible: false, trainerId: '', bookingId: '' });
-      setComment('');
-      setRating(5);
+      setComment(''); setRating(5);
     } catch (err: any) {
-      Alert.alert('Error', err.response?.data?.message || 'Failed to submit review');
-    } finally {
-      setSubmittingReview(false);
-    }
+      const msg = err.response?.data?.message || 'Failed to submit review';
+      if (Platform.OS === 'web') window.alert(msg); else Alert.alert('Error', msg);
+    } finally { setSubmittingReview(false); }
   };
 
-  const statusColor: Record<string, string> = { pending: '#FFC107', confirmed: '#4CAF50', completed: '#2196F3', cancelled: '#F44336' };
+  const statusColor: Record<string, string> = { pending: theme.status.warning, confirmed: theme.status.success, completed: theme.status.info, cancelled: theme.status.error };
 
-  const renderItem = useCallback(({ item }: any) => {
+  const renderItem = useCallback(({ item, index }: any) => {
     const trainer = item.trainerId as any;
     return (
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <Text style={styles.trainerName}>{trainer?.fullName || 'Trainer'}</Text>
-          <Text style={[styles.status, { color: statusColor[item.bookingStatus] }]}>{item.bookingStatus}</Text>
-        </View>
-        <Text style={styles.detail}>📅 {new Date(item.bookingDate).toLocaleDateString()} • 🕐 {item.timeSlot}</Text>
-        <Text style={styles.detail}>🏷️ {item.sessionType} • ₹{item.price}</Text>
+      <Animated.View entering={FadeInDown.duration(300).delay(index * 50)}>
+        <Card style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Text style={styles.trainerName}>{trainer?.fullName || 'Trainer'}</Text>
+            <View style={[styles.statusBadge, { backgroundColor: `${statusColor[item.bookingStatus]}20` }]}>
+              <Text style={[styles.statusText, { color: statusColor[item.bookingStatus] }]}>{item.bookingStatus}</Text>
+            </View>
+          </View>
+          <View style={styles.metaRow}>
+            <CalendarDays size={14} color={theme.text.muted} />
+            <Text style={styles.detail}>{new Date(item.bookingDate).toLocaleDateString()} • {item.timeSlot}</Text>
+          </View>
+          <View style={styles.metaRow}>
+            <Clock size={14} color={theme.text.muted} />
+            <Text style={styles.detail}>{item.sessionType} • <Text style={{ color: theme.accent.purple, fontWeight: '600' }}>₹{item.price}</Text></Text>
+          </View>
 
-        {item.bookingStatus === 'completed' && (
-          <TouchableOpacity 
-            style={styles.reviewBtn}
-            onPress={() => setReviewModal({ visible: true, trainerId: trainer._id, bookingId: item._id })}
-          >
-            <Text style={styles.reviewBtnText}>⭐ Leave a Review</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+          {item.bookingStatus === 'completed' && (
+            <TouchableOpacity style={styles.reviewBtn} onPress={() => setReviewModal({ visible: true, trainerId: trainer._id, bookingId: item._id })}>
+              <Star size={14} color={theme.status.warning} fill={theme.status.warning} />
+              <Text style={styles.reviewBtnText}>Leave a Review</Text>
+            </TouchableOpacity>
+          )}
+        </Card>
+      </Animated.View>
     );
-  }, [statusColor]);
+  }, []);
 
   return (
-    <View style={styles.container}>
+    <ScreenWrapper scroll={false}>
       <Text style={styles.title}>My Bookings</Text>
       <View style={styles.tabs}>
         {(['upcoming', 'completed', 'cancelled'] as const).map((t) => (
-          <TouchableOpacity key={t} style={[styles.tab, tab === t && styles.tabActive]} onPress={() => setTab(t)}>
-            <Text style={[styles.tabText, tab === t && styles.tabTextActive]}>{t}</Text>
-          </TouchableOpacity>
+          <Chip key={t} label={t.charAt(0).toUpperCase() + t.slice(1)} selected={tab === t} onPress={() => setTab(t)} size="sm" />
         ))}
       </View>
 
-      {loading ? <ActivityIndicator color="#B388FF" size="large" style={{ marginTop: 40 }} /> : (
+      {loading ? (
+        <View style={{ padding: spacing.lg }}><SkeletonLoader variant="card" count={3} /></View>
+      ) : (
         <FlatList
-          data={filtered}
-          renderItem={renderItem}
-          initialNumToRender={10}
-          maxToRenderPerBatch={10}
-          windowSize={5}
-          removeClippedSubviews={true}
-          keyExtractor={(item) => item._id}
+          data={filtered} renderItem={renderItem} keyExtractor={(item) => item._id}
+          initialNumToRender={10} maxToRenderPerBatch={10} windowSize={5} removeClippedSubviews={true}
           contentContainerStyle={styles.list}
-          ListEmptyComponent={<Text style={styles.empty}>No {tab} bookings found.</Text>}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.accent.purple} />}
+          ListEmptyComponent={<EmptyState icon={<CalendarDays size={40} color={theme.text.muted} />} title={`No ${tab} bookings`} subtitle="Your bookings will appear here" />}
         />
       )}
 
@@ -110,79 +119,46 @@ export default function BookingsScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Rate Your Trainer</Text>
-            
             <View style={styles.starRow}>
               {[1, 2, 3, 4, 5].map((star) => (
                 <TouchableOpacity key={star} onPress={() => setRating(star)}>
-                  <Text style={[styles.star, { opacity: star <= rating ? 1 : 0.3 }]}>⭐</Text>
+                  <Star size={36} color={theme.status.warning} fill={star <= rating ? theme.status.warning : 'transparent'} />
                 </TouchableOpacity>
               ))}
             </View>
-
-            <TextInput
-              style={styles.reviewInput}
-              placeholder="Write your review here..."
-              placeholderTextColor="#666"
-              multiline
-              numberOfLines={4}
-              value={comment}
-              onChangeText={setComment}
-            />
-
+            <TextInput style={styles.reviewInput} placeholder="Write your review here..." placeholderTextColor={theme.text.muted} multiline numberOfLines={4} value={comment} onChangeText={setComment} />
             <View style={styles.modalActions}>
-              <TouchableOpacity 
-                style={styles.cancelBtn} 
-                onPress={() => setReviewModal({ visible: false, trainerId: '', bookingId: '' })}
-              >
-                <Text style={styles.cancelBtnText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={styles.submitBtn} 
-                onPress={submitReview}
-                disabled={submittingReview}
-              >
-                {submittingReview ? (
-                  <ActivityIndicator color="#fff" size="small" />
-                ) : (
-                  <Text style={styles.submitBtnText}>Submit</Text>
-                )}
-              </TouchableOpacity>
+              <View style={{ flex: 1, marginRight: spacing.sm }}>
+                <Button title="Cancel" variant="ghost" onPress={() => setReviewModal({ visible: false, trainerId: '', bookingId: '' })} fullWidth />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Button title="Submit" onPress={submitReview} loading={submittingReview} disabled={submittingReview} fullWidth />
+              </View>
             </View>
           </View>
         </View>
       </Modal>
-    </View>
+    </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000000', paddingTop: Platform.OS === 'web' ? 40 : 50 },
-  title: { fontSize: 24, fontWeight: '700', color: '#fff', paddingHorizontal: 20, marginBottom: 16 },
-  tabs: { flexDirection: 'row', paddingHorizontal: 20, marginBottom: 16 },
-  tab: { paddingHorizontal: 18, paddingVertical: 8, borderRadius: 20, backgroundColor: '#0A0A0A', marginRight: 8 },
-  tabActive: { backgroundColor: '#B388FF' },
-  tabText: { color: '#A1A1AA', fontSize: 12, fontWeight: '500', textTransform: 'capitalize' },
-  tabTextActive: { color: '#fff' },
-  list: { paddingHorizontal: 20 },
-  card: { backgroundColor: '#0A0A0A', borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
-  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  trainerName: { fontSize: 12, fontWeight: '600', color: '#fff' },
-  status: { fontSize: 12, fontWeight: '600', textTransform: 'capitalize' },
-  detail: { fontSize: 12, color: '#A1A1AA', marginTop: 4 },
-  empty: { color: '#666', textAlign: 'center', marginTop: 60, fontSize: 12 },
-  
-  reviewBtn: { marginTop: 16, backgroundColor: 'rgba(255, 193, 7, 0.1)', borderWidth: 1, borderColor: '#FFC107', paddingVertical: 10, borderRadius: 12, alignItems: 'center' },
-  reviewBtnText: { color: '#FFC107', fontSize: 12, fontWeight: '600' },
-  
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center', padding: 20 },
-  modalContent: { width: '100%', maxWidth: 400, backgroundColor: '#0A0A0A', borderRadius: 24, padding: 24 },
-  modalTitle: { fontSize: 12, fontWeight: '700', color: '#fff', textAlign: 'center', marginBottom: 20 },
-  starRow: { flexDirection: 'row', justifyContent: 'center', marginBottom: 24, gap: 12 },
-  star: { fontSize: 38 },
-  reviewInput: { backgroundColor: '#000000', color: '#fff', borderRadius: 12, padding: 16, height: 120, textAlignVertical: 'top', fontSize: 12, marginBottom: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
-  modalActions: { flexDirection: 'row', gap: 12 },
-  cancelBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, backgroundColor: '#2a2a2a', alignItems: 'center' },
-  cancelBtnText: { color: '#A1A1AA', fontSize: 12, fontWeight: '600' },
-  submitBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, backgroundColor: '#B388FF', alignItems: 'center' },
-  submitBtnText: { color: '#fff', fontSize: 12, fontWeight: '600' },
+  title: { ...typography.h1, color: theme.text.primary, marginBottom: spacing.lg },
+  tabs: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.lg },
+  list: { paddingBottom: spacing['4xl'] },
+  card: { marginBottom: spacing.md },
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md },
+  trainerName: { ...typography.bodyMedium, color: theme.text.primary },
+  statusBadge: { paddingHorizontal: spacing.sm, paddingVertical: spacing.xs, borderRadius: radius.full },
+  statusText: { ...typography.caption, fontWeight: '600', textTransform: 'capitalize' },
+  metaRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, marginBottom: spacing.xs },
+  detail: { ...typography.bodySmall, color: theme.text.secondary },
+  reviewBtn: { marginTop: spacing.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, backgroundColor: `${theme.status.warning}15`, borderWidth: 1, borderColor: theme.status.warning, paddingVertical: spacing.sm, borderRadius: radius.md },
+  reviewBtnText: { ...typography.bodySmall, color: theme.status.warning, fontWeight: '600' },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center', padding: spacing.xl },
+  modalContent: { width: '100%', maxWidth: 400, backgroundColor: theme.bg.card, borderRadius: radius.xl, padding: spacing['2xl'] },
+  modalTitle: { ...typography.h2, color: theme.text.primary, textAlign: 'center', marginBottom: spacing.xl },
+  starRow: { flexDirection: 'row', justifyContent: 'center', marginBottom: spacing['2xl'], gap: spacing.md },
+  reviewInput: { backgroundColor: theme.bg.primary, color: theme.text.primary, borderRadius: radius.md, padding: spacing.lg, height: 120, textAlignVertical: 'top', ...typography.body, marginBottom: spacing['2xl'], borderWidth: 1, borderColor: theme.border.subtle },
+  modalActions: { flexDirection: 'row' },
 });
