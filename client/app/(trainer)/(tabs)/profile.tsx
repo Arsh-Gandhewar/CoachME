@@ -1,76 +1,96 @@
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, Platform, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image, Platform } from 'react-native';
+import { useRouter } from 'expo-router';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+import { Star, Briefcase, DollarSign, LogOut, Edit2 } from 'lucide-react-native';
 import { useAuthStore } from '../../../store/authStore';
+import { theme } from '../../../constants/colors';
+import { typography } from '../../../constants/typography';
+import { spacing, radius } from '../../../constants/spacing';
+import ScreenWrapper from '../../../components/ScreenWrapper';
+import Avatar from '../../../components/Avatar';
+import Card from '../../../components/Card';
+import Chip from '../../../components/Chip';
+import Button from '../../../components/Button';
 
 export default function TrainerProfileScreen() {
   const { user, logout } = useAuthStore();
+  const router = useRouter();
   const trainer = user as any;
-  const initials = (trainer?.fullName || 'T').split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
+
+  const handleLogout = () => {
+    if (Platform.OS === 'web') {
+      if (window.confirm('Are you sure you want to log out?')) { logout(); router.replace('/(auth)/login'); }
+    } else { logout(); router.replace('/(auth)/login'); }
+  };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        {trainer?.profilePhoto ? (
-          <Image source={{ uri: trainer.profilePhoto }} style={styles.avatarImage} />
-        ) : (
-          <View style={styles.avatar}><Text style={styles.avatarText}>{initials}</Text></View>
-        )}
+    <ScreenWrapper>
+      <Animated.View entering={FadeInDown.duration(400).delay(100)} style={styles.header}>
+        <Avatar uri={trainer?.profilePhoto} name={trainer?.fullName || 'Trainer'} size="xl" />
         <Text style={styles.name}>{trainer?.fullName || 'Trainer'}</Text>
         <Text style={styles.email}>{trainer?.email || ''}</Text>
+
         <View style={styles.statRow}>
-          <View style={styles.stat}><Text style={styles.statVal}>⭐ {trainer?.rating || 0}</Text><Text style={styles.statLbl}>Rating</Text></View>
-          <View style={styles.stat}><Text style={styles.statVal}>{trainer?.experience || 0}yr</Text><Text style={styles.statLbl}>Exp</Text></View>
-          <View style={styles.stat}><Text style={styles.statVal}>₹{trainer?.pricing || 0}</Text><Text style={styles.statLbl}>Price</Text></View>
+          <Card style={styles.statCard}>
+            <Star size={18} color={theme.accent.orange} />
+            <Text style={styles.statVal}>{trainer?.rating || 0}</Text>
+            <Text style={styles.statLbl}>Rating</Text>
+          </Card>
+          <Card style={styles.statCard}>
+            <Briefcase size={18} color={theme.accent.cyan} />
+            <Text style={styles.statVal}>{trainer?.experience || 0}yr</Text>
+            <Text style={styles.statLbl}>Experience</Text>
+          </Card>
+          <Card style={styles.statCard}>
+            <DollarSign size={18} color={theme.status.success} />
+            <Text style={styles.statVal}>₹{trainer?.pricing || 0}</Text>
+            <Text style={styles.statLbl}>Per Hour</Text>
+          </Card>
         </View>
-      </View>
+      </Animated.View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Specializations</Text>
-        <View style={styles.tags}>
-          {trainer?.specializations?.map((s: string, i: number) => (
-            <View key={i} style={styles.tag}><Text style={styles.tagText}>{s}</Text></View>
-          ))}
-        </View>
-      </View>
+      {trainer?.specializations?.length > 0 && (
+        <Animated.View entering={FadeInDown.duration(400).delay(250)} style={styles.section}>
+          <Text style={styles.sectionTitle}>Specializations</Text>
+          <View style={styles.tags}>
+            {trainer.specializations.map((s: string, i: number) => (
+              <Chip key={i} label={s} selected={false} onPress={() => {}} size="sm" />
+            ))}
+          </View>
+        </Animated.View>
+      )}
 
-      {trainer?.portfolioImages && trainer.portfolioImages.length > 0 && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Portfolio Gallery</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.portfolioScroll}>
+      {trainer?.portfolioImages?.length > 0 && (
+        <Animated.View entering={FadeInDown.duration(400).delay(350)} style={styles.section}>
+          <Text style={styles.sectionTitle}>Portfolio</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {trainer.portfolioImages.map((img: string, i: number) => (
               <Image key={i} source={{ uri: img }} style={styles.portfolioImg} />
             ))}
           </ScrollView>
-        </View>
+        </Animated.View>
       )}
 
-      <TouchableOpacity style={styles.logoutBtn} onPress={() => Alert.alert('Logout', 'Are you sure?', [{ text: 'Cancel' }, { text: 'Logout', style: 'destructive', onPress: logout }])}>
-        <Text style={styles.logoutText}>🚪 Logout</Text>
-      </TouchableOpacity>
-
-      <View style={{ height: 100 }} />
-    </ScrollView>
+      <Animated.View entering={FadeInDown.duration(400).delay(450)} style={styles.actions}>
+        <Button title="Edit Profile" variant="secondary" onPress={() => router.push('/(user)/edit-profile')} fullWidth icon={<Edit2 size={16} color={theme.accent.purple} />} />
+        <View style={{ height: spacing.md }} />
+        <Button title="Log Out" variant="danger" onPress={handleLogout} fullWidth icon={<LogOut size={16} color="#fff" />} />
+      </Animated.View>
+    </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000000' },
-  header: { alignItems: 'center', paddingTop: Platform.OS === 'web' ? 40 : 50, paddingBottom: 20 },
-  avatar: { width: 80, height: 80, borderRadius: 24, backgroundColor: '#7C4DFF', justifyContent: 'center', alignItems: 'center', marginBottom: 12 },
-  avatarImage: { width: 80, height: 80, borderRadius: 24, marginBottom: 12 },
-  avatarText: { color: '#fff', fontSize: 24, fontWeight: '700' },
-  name: { fontSize: 12, fontWeight: '700', color: '#fff' },
-  email: { fontSize: 12, color: '#A1A1AA', marginTop: 4 },
-  statRow: { flexDirection: 'row', marginTop: 20, gap: 20 },
-  stat: { alignItems: 'center' },
-  statVal: { fontSize: 12, fontWeight: '700', color: '#fff' },
-  statLbl: { fontSize: 12, color: '#A1A1AA', marginTop: 2 },
-  section: { paddingHorizontal: 20, marginTop: 24 },
-  sectionTitle: { fontSize: 12, fontWeight: '700', color: '#fff', marginBottom: 12 },
-  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  tag: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20, backgroundColor: '#141414' },
-  tagText: { color: '#fff', fontSize: 12 },
-  portfolioScroll: { flexDirection: 'row', marginTop: 8 },
-  portfolioImg: { width: 120, height: 120, borderRadius: 16, marginRight: 12 },
-  logoutBtn: { marginHorizontal: 20, marginTop: 30, backgroundColor: '#0A0A0A', borderRadius: 16, padding: 16, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(179,136,255,0.2)' },
-  logoutText: { color: '#F44336', fontSize: 12, fontWeight: '600' },
+  header: { alignItems: 'center', paddingTop: spacing['2xl'], marginBottom: spacing.xl },
+  name: { ...typography.h2, color: theme.text.primary, marginTop: spacing.lg },
+  email: { ...typography.bodySmall, color: theme.text.secondary, marginTop: spacing.xs },
+  statRow: { flexDirection: 'row', marginTop: spacing['2xl'], gap: spacing.sm },
+  statCard: { alignItems: 'center', flex: 1, paddingVertical: spacing.lg },
+  statVal: { ...typography.h3, color: theme.text.primary, marginTop: spacing.sm },
+  statLbl: { ...typography.caption, color: theme.text.muted, marginTop: spacing.xs },
+  section: { marginBottom: spacing.xl },
+  sectionTitle: { ...typography.h3, color: theme.text.primary, marginBottom: spacing.md },
+  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  portfolioImg: { width: 120, height: 120, borderRadius: radius.lg, marginRight: spacing.md },
+  actions: { marginTop: spacing.xl, paddingBottom: spacing['4xl'] },
 });

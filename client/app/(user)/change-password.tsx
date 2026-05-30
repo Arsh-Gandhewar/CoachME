@@ -1,10 +1,18 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, TextInput, Alert } from 'react-native';
+import { View, StyleSheet, Alert, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+import { Lock } from 'lucide-react-native';
+import { theme } from '../../constants/colors';
+import { typography } from '../../constants/typography';
+import { spacing } from '../../constants/spacing';
+import ScreenWrapper from '../../components/ScreenWrapper';
+import Header from '../../components/Header';
+import Input from '../../components/Input';
+import Button from '../../components/Button';
 
 export default function ChangePasswordScreen() {
   const router = useRouter();
-  
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -21,12 +29,10 @@ export default function ChangePasswordScreen() {
       else Alert.alert('Error', 'New passwords do not match');
       return;
     }
-    
     setLoading(true);
     try {
       const api = require('../../services/api').default;
       await api.post('/auth/change-password', { currentPassword, newPassword });
-      
       if (Platform.OS === 'web') window.alert('Password updated successfully!');
       else Alert.alert('Success', 'Password updated successfully!');
       router.back();
@@ -34,75 +40,25 @@ export default function ChangePasswordScreen() {
       const msg = err.response?.data?.message || 'Failed to update password';
       if (Platform.OS === 'web') window.alert(msg);
       else Alert.alert('Error', msg);
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 60 }}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.canGoBack() ? router.back() : router.push('/(user)/(tabs)/profile')}>
-          <Text style={styles.backText}>{'<'} Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>Change Password</Text>
-        <View style={{ width: 60 }} />
-      </View>
-
-      <View style={styles.form}>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Current Password</Text>
-          <TextInput 
-            style={styles.input} 
-            value={currentPassword} 
-            onChangeText={setCurrentPassword} 
-            secureTextEntry 
-            placeholderTextColor="#666" 
-          />
-        </View>
-        
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>New Password</Text>
-          <TextInput 
-            style={styles.input} 
-            value={newPassword} 
-            onChangeText={setNewPassword} 
-            secureTextEntry 
-            placeholderTextColor="#666" 
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Confirm New Password</Text>
-          <TextInput 
-            style={styles.input} 
-            value={confirmPassword} 
-            onChangeText={setConfirmPassword} 
-            secureTextEntry 
-            placeholderTextColor="#666" 
-          />
-        </View>
-
-        <TouchableOpacity style={[styles.saveBtn, loading && { opacity: 0.7 }]} onPress={handleSave} disabled={loading}>
-          <Text style={styles.saveBtnText}>{loading ? 'Updating...' : 'Update Password'}</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+    <ScreenWrapper>
+      <Header title="Change Password" onBack={() => router.canGoBack() ? router.back() : router.push('/(user)/(tabs)/profile')} />
+      <Animated.View entering={FadeInDown.duration(400).delay(100)} style={styles.form}>
+        <Input label="Current Password" value={currentPassword} onChangeText={setCurrentPassword} secureTextEntry icon={<Lock size={18} color={theme.text.muted} />} />
+        <View style={{ height: spacing.lg }} />
+        <Input label="New Password" value={newPassword} onChangeText={setNewPassword} secureTextEntry icon={<Lock size={18} color={theme.text.muted} />} />
+        <View style={{ height: spacing.lg }} />
+        <Input label="Confirm New Password" value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry icon={<Lock size={18} color={theme.text.muted} />} />
+        <View style={{ height: spacing['2xl'] }} />
+        <Button title={loading ? 'Updating...' : 'Update Password'} onPress={handleSave} loading={loading} disabled={loading} fullWidth />
+      </Animated.View>
+    </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#141414' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
-  backBtn: { width: 60 },
-  backText: { color: '#A1A1AA', fontSize: 12 },
-  title: { color: '#fff', fontSize: 12, fontWeight: '700' },
-  
-  form: { padding: 20, marginTop: 20 },
-  inputGroup: { marginBottom: 20 },
-  label: { color: '#A1A1AA', fontSize: 12, marginBottom: 8, fontWeight: '500' },
-  input: { backgroundColor: '#0A0A0A', borderRadius: 12, padding: 16, color: '#fff', fontSize: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
-  
-  saveBtn: { backgroundColor: '#B388FF', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 20 },
-  saveBtnText: { color: '#fff', fontSize: 12, fontWeight: '700' },
+  form: { marginTop: spacing.xl },
 });

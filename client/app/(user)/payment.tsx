@@ -1,10 +1,26 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+import { CreditCard, Plus, Trash2 } from 'lucide-react-native';
 import { paymentAPI } from '../../services/endpoints';
-import RazorpayCheckout from 'react-native-razorpay';
 import { useAuthStore } from '../../store/authStore';
 import Constants from 'expo-constants';
+import { theme } from '../../constants/colors';
+import { typography } from '../../constants/typography';
+import { spacing, radius } from '../../constants/spacing';
+import ScreenWrapper from '../../components/ScreenWrapper';
+import Header from '../../components/Header';
+import Card from '../../components/Card';
+import EmptyState from '../../components/EmptyState';
+import SkeletonLoader from '../../components/SkeletonLoader';
+import Button from '../../components/Button';
+
+// Guard RazorpayCheckout for web
+let RazorpayCheckout: any = null;
+if (Platform.OS !== 'web') {
+  try { RazorpayCheckout = require('react-native-razorpay').default; } catch {}
+}
 
 export default function PaymentScreen() {
   const router = useRouter();
@@ -13,151 +29,84 @@ export default function PaymentScreen() {
   const [loading, setLoading] = useState(true);
 
   const fetchMethods = async () => {
-    try {
-      setLoading(true);
-      const res = await paymentAPI.getMethods();
-      if (res.data?.data?.items) {
-        setMethods(res.data.data.items);
-      }
-    } catch (error) {
-      console.error('Fetch methods error', error);
-    } finally {
-      setLoading(false);
-    }
+    try { setLoading(true); const res = await paymentAPI.getMethods(); if (res.data?.data?.items) setMethods(res.data.data.items); }
+    catch (error) { console.error('Fetch methods error', error); }
+    finally { setLoading(false); }
   };
 
-  useEffect(() => {
-    fetchMethods();
-  }, []);
+  useEffect(() => { fetchMethods(); }, []);
 
   const handleAddMethod = async () => {
-    if (Platform.OS === 'web') {
-      window.alert('Razorpay Checkout requires a native device build.');
-      return;
-    }
-    
+    if (Platform.OS === 'web') { window.alert('Razorpay Checkout requires a native device build.'); return; }
+    if (!RazorpayCheckout) { Alert.alert('Error', 'Razorpay not available'); return; }
     try {
       setLoading(true);
-      // 1. Create a 1 INR setup order on backend
       const res = await paymentAPI.setupCard();
       const { orderId, customerId } = res.data.data;
-
-      // 2. Open Razorpay Checkout to vault card
       const options = {
-        description: 'Card Vault Verification',
-        image: 'https://i.imgur.com/3g7nmJC.png',
-        currency: 'INR',
-        key: Constants.expoConfig?.extra?.razorpayKeyId || 'rzp_test_SsFnemBCyZjsKV',
-        amount: '100', // 1 INR
-        name: 'CoachME',
-        order_id: orderId,
-        customer_id: customerId,
-        prefill: {
-          email: (user as any)?.email || '',
-          contact: (user as any)?.mobile || '9999999999',
-          name: (user as any)?.name || (user as any)?.fullName || ''
-        },
-        theme: { color: '#B388FF' }
+        description: 'Card Vault Verification', image: 'https://i.imgur.com/3g7nmJC.png', currency: 'INR',
+        key: Constants.expoConfig?.extra?.razorpayKeyId || 'rzp_test_SsFnemBCyZjsKV', amount: '100', name: 'CoachME',
+        order_id: orderId, customer_id: customerId,
+        prefill: { email: (user as any)?.email || '', contact: (user as any)?.mobile || '9999999999', name: (user as any)?.name || (user as any)?.fullName || '' },
+        theme: { color: '#7C4DFF' }
       };
-
-      RazorpayCheckout.open(options).then((data: any) => {
-        // Card saved successfully
-        Alert.alert('Success', 'Payment method saved successfully.');
-        fetchMethods();
-      }).catch((error: any) => {
-        // Handled or dismissed
-        console.error('Checkout Error:', error);
-      });
-    } catch (error) {
-      console.error('Setup Card error', error);
-      Alert.alert('Error', 'Failed to initialize setup.');
-    } finally {
-      setLoading(false);
-    }
+      RazorpayCheckout.open(options).then(() => { Alert.alert('Success', 'Payment method saved successfully.'); fetchMethods(); }).catch((error: any) => console.error('Checkout Error:', error));
+    } catch (error) { console.error('Setup Card error', error); Alert.alert('Error', 'Failed to initialize setup.'); }
+    finally { setLoading(false); }
   };
 
   const handleRemove = async (tokenId: string) => {
-    try {
-      setLoading(true);
-      await paymentAPI.deleteMethod(tokenId);
-      setMethods(prev => prev.filter(m => m.id !== tokenId));
-    } catch (error) {
-      console.error('Delete method error', error);
-      Alert.alert('Error', 'Failed to remove method');
-    } finally {
-      setLoading(false);
-    }
+    try { setLoading(true); await paymentAPI.deleteMethod(tokenId); setMethods(prev => prev.filter(m => m.id !== tokenId)); }
+    catch (error) { console.error('Delete method error', error); Alert.alert('Error', 'Failed to remove method'); }
+    finally { setLoading(false); }
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.canGoBack() ? router.back() : router.push('/(user)/(tabs)/profile')}>
-          <Text style={styles.backText}>{'<'} Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>Payment Methods</Text>
-        <View style={{ width: 60 }} />
-      </View>
+    <ScreenWrapper>
+      <Header title="Payment Methods" onBack={() => router.canGoBack() ? router.back() : router.push('/(user)/(tabs)/profile')} />
 
-      <View style={styles.content}>
-        {loading && methods.length === 0 ? (
-          <ActivityIndicator size="large" color="#B388FF" style={{ marginTop: 40 }} />
-        ) : methods.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>No saved payment methods</Text>
-          </View>
-        ) : (
-          methods.map((method) => {
-            const card = method.card || {};
-            return (
-              <View key={method.id} style={styles.card}>
-                <View style={styles.cardHeader}>
-                  <Text style={styles.cardTitle}>{card.network || 'Card'} ending in {card.last4 || '****'}</Text>
+      {loading && methods.length === 0 ? (
+        <SkeletonLoader variant="card" count={2} />
+      ) : methods.length === 0 ? (
+        <EmptyState icon={<CreditCard size={40} color={theme.text.muted} />} title="No saved payment methods" subtitle="Add a card to enable quick bookings" />
+      ) : (
+        methods.map((method, i) => {
+          const card = method.card || {};
+          return (
+            <Animated.View key={method.id} entering={FadeInDown.duration(300).delay(i * 80)}>
+              <Card style={styles.cardItem}>
+                <View style={styles.cardRow}>
+                  <View style={styles.cardIconWrap}><CreditCard size={20} color={theme.accent.purple} /></View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.cardTitle}>{card.network || 'Card'} •••• {card.last4 || '****'}</Text>
+                    <Text style={styles.cardExpiry}>Expires {card.expiry_month}/{card.expiry_year}</Text>
+                  </View>
+                  <TouchableOpacity onPress={() => handleRemove(method.id)} style={styles.removeBtn}>
+                    <Trash2 size={18} color={theme.status.error} />
+                  </TouchableOpacity>
                 </View>
-                <Text style={styles.expiry}>Expires {card.expiry_month}/{card.expiry_year}</Text>
-                <TouchableOpacity style={styles.removeBtn} onPress={() => handleRemove(method.id)}>
-                  <Text style={styles.removeText}>Remove</Text>
-                </TouchableOpacity>
-              </View>
-            );
-          })
-        )}
+              </Card>
+            </Animated.View>
+          );
+        })
+      )}
 
-        <TouchableOpacity style={styles.addBtn} onPress={handleAddMethod} disabled={loading}>
-          {loading && methods.length > 0 ? (
-            <ActivityIndicator size="small" color="#B388FF" />
-          ) : (
-            <>
-              <Text style={styles.addIcon}>+</Text>
-              <Text style={styles.addText}>Add New Payment Method</Text>
-            </>
-          )}
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      <View style={{ height: spacing.xl }} />
+      <TouchableOpacity style={styles.addBtn} onPress={handleAddMethod} disabled={loading} activeOpacity={0.7}>
+        <Plus size={20} color={theme.accent.purple} />
+        <Text style={styles.addText}>Add New Payment Method</Text>
+      </TouchableOpacity>
+    </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#141414' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, paddingTop: Platform.OS === 'web' ? 40 : 60, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
-  backBtn: { width: 60 },
-  backText: { color: '#A1A1AA', fontSize: 12 },
-  title: { color: '#fff', fontSize: 12, fontWeight: '700' },
-  
-  content: { padding: 20 },
-  
-  emptyState: { padding: 40, alignItems: 'center' },
-  emptyText: { color: '#666', fontSize: 12 },
-
-  card: { backgroundColor: '#1E1E1E', borderRadius: 16, padding: 20, marginBottom: 20, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
-  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
-  cardTitle: { color: '#fff', fontSize: 12, fontWeight: '600' },
-  expiry: { color: '#A1A1AA', fontSize: 12, marginBottom: 16 },
-  removeBtn: { alignSelf: 'flex-start' },
-  removeText: { color: '#F44336', fontSize: 12, fontWeight: '500' },
-
-  addBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 16, borderRadius: 16, borderWidth: 1, borderColor: '#B388FF', borderStyle: 'dashed' },
-  addIcon: { color: '#B388FF', fontSize: 12, marginRight: 8, marginTop: -4 },
-  addText: { color: '#B388FF', fontSize: 12, fontWeight: '600' },
+  cardItem: { marginBottom: spacing.md },
+  cardRow: { flexDirection: 'row', alignItems: 'center' },
+  cardIconWrap: { width: 44, height: 44, borderRadius: radius.md, backgroundColor: theme.accent.purpleLight, alignItems: 'center', justifyContent: 'center', marginRight: spacing.md },
+  cardTitle: { ...typography.bodyMedium, color: theme.text.primary },
+  cardExpiry: { ...typography.caption, color: theme.text.muted, marginTop: spacing.xs },
+  removeBtn: { padding: spacing.sm },
+  addBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: spacing.lg, borderRadius: radius.lg, borderWidth: 1, borderColor: theme.accent.purple, borderStyle: 'dashed', gap: spacing.sm },
+  addText: { ...typography.bodyMedium, color: theme.accent.purple },
 });
