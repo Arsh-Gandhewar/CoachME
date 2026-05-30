@@ -1,63 +1,111 @@
+/**
+ * Avatar — Profile image with initials fallback & online indicator
+ *
+ * Sizes: sm (32), md (44), lg (64), xl (80).
+ * Falls back to two-letter initials on the theme elevated background.
+ */
+
 import React, { useState } from 'react';
-import { Image, View, Text, StyleSheet, StyleProp, ViewStyle, ImageStyle } from 'react-native';
+import { Image, View, Text, StyleSheet } from 'react-native';
+import { theme } from '../constants/colors';
+import { radius as r } from '../constants/spacing';
 
 interface AvatarProps {
   uri?: string | null;
-  style?: StyleProp<ImageStyle>;
-  containerStyle?: StyleProp<ViewStyle>;
-  fallbackIcon?: string;
-  fallbackText?: string;
+  name: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  showOnline?: boolean;
+  borderColor?: string;
 }
 
-export function Avatar({ uri, style, containerStyle, fallbackIcon = '👤', fallbackText }: AvatarProps) {
-  const [error, setError] = useState(false);
+// ── Size look-up tables ──────────────────────────────────
+const SIZES = { sm: 32, md: 44, lg: 64, xl: 80 } as const;
+const FONT_SIZES = { sm: 11, md: 14, lg: 18, xl: 22 } as const;
+const DOT_SIZES = { sm: 8, md: 10, lg: 14, xl: 16 } as const;
+const DOT_BORDER = { sm: 1.5, md: 2, lg: 2.5, xl: 3 } as const;
 
-  if (!uri || error) {
-    return (
-      <View style={[styles.fallbackContainer, containerStyle, style as any]}>
-        {fallbackText ? (
-          <Text style={styles.fallbackText}>{fallbackText}</Text>
-        ) : (
-          <Text style={styles.fallbackIcon}>{fallbackIcon}</Text>
-        )}
-      </View>
-    );
-  }
+const Avatar: React.FC<AvatarProps> = ({
+  uri,
+  name,
+  size = 'md',
+  showOnline = false,
+  borderColor,
+}) => {
+  const [imgError, setImgError] = useState(false);
 
-  if (containerStyle) {
-    return (
-      <View style={containerStyle}>
-        <Image 
-          source={{ uri }} 
-          style={style} 
-          onError={() => setError(true)}
-        />
-      </View>
-    );
-  }
+  const dim = SIZES[size];
+  const half = dim / 2;
+  const initials = name.slice(0, 2).toUpperCase();
+
+  const containerStyle = [
+    styles.container,
+    {
+      width: dim,
+      height: dim,
+      borderRadius: r.full,
+    },
+    borderColor
+      ? { borderWidth: 2, borderColor }
+      : undefined,
+  ];
 
   return (
-    <Image 
-      source={{ uri }} 
-      style={style} 
-      onError={() => setError(true)}
-    />
+    <View style={containerStyle}>
+      {uri && !imgError ? (
+        <Image
+          source={{ uri }}
+          style={{ width: dim, height: dim, borderRadius: half }}
+          onError={() => setImgError(true)}
+        />
+      ) : (
+        <View style={[styles.fallback, { width: dim, height: dim, borderRadius: half }]}>
+          <Text
+            style={{
+              fontSize: FONT_SIZES[size],
+              fontWeight: '700',
+              color: theme.accent.purple,
+            }}
+          >
+            {initials}
+          </Text>
+        </View>
+      )}
+
+      {/* ── Online dot ────────────────────────────────── */}
+      {showOnline && (
+        <View
+          style={[
+            styles.dot,
+            {
+              width: DOT_SIZES[size],
+              height: DOT_SIZES[size],
+              borderRadius: DOT_SIZES[size] / 2,
+              borderWidth: DOT_BORDER[size],
+            },
+          ]}
+        />
+      )}
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  fallbackContainer: {
+  container: {
+    position: 'relative',
+    overflow: 'visible',
+  },
+  fallback: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#1E1E1E',
-    overflow: 'hidden',
+    backgroundColor: theme.bg.elevated,
   },
-  fallbackIcon: {
-    fontSize: 24, // Will be overridden or scaled by container
+  dot: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: theme.status.success,
+    borderColor: theme.bg.primary,
   },
-  fallbackText: {
-    color: '#A1A1AA',
-    fontSize: 14,
-    fontWeight: 'bold',
-  }
 });
+
+export default Avatar;

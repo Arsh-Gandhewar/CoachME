@@ -1,12 +1,18 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, useWindowDimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, useWindowDimensions } from 'react-native';
 import { useRouter } from 'expo-router';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+import { Mail, Lock } from 'lucide-react-native';
 import { useAuthStore } from '../../store/authStore';
+import { theme } from '../../constants/colors';
+import { typography } from '../../constants/typography';
+import { spacing, radius } from '../../constants/spacing';
+import Input from '../../components/Input';
+import Button from '../../components/Button';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
@@ -23,8 +29,6 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       await login(email, password);
-      // After successful login, the AuthGate in _layout.tsx handles redirect.
-      // But on web, we also do an explicit push as a fallback.
       const role = useAuthStore.getState().role;
       if (role === 'trainer') {
         router.replace('/(trainer)/(tabs)/dashboard');
@@ -42,73 +46,62 @@ export default function LoginScreen() {
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView
-        contentContainerStyle={[
-          styles.scroll,
-          isWeb && { alignItems: 'center' },
-        ]}
+        contentContainerStyle={[styles.scroll, isWeb && { alignItems: 'center' as const }]}
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
         <View style={[styles.inner, isWeb && { maxWidth: 420, width: '100%' }]}>
-          <View style={styles.header}>
+          {/* Logo */}
+          <Animated.View entering={FadeInDown.duration(500).delay(100)} style={styles.header}>
             <Text style={styles.logo}>
               Coach<Text style={styles.logoAccent}>ME</Text>
             </Text>
             <Text style={styles.subtitle}>Discover & book the best trainers near you</Text>
-          </View>
+          </Animated.View>
 
-          <View style={styles.form}>
+          {/* Form Card */}
+          <Animated.View entering={FadeInDown.duration(500).delay(250)} style={styles.form}>
             <Text style={styles.title}>Welcome back</Text>
             <Text style={styles.desc}>Sign in to your account</Text>
 
             {error ? (
-              <View style={styles.errorBox}>
+              <Animated.View entering={FadeInDown.duration(300)} style={styles.errorBox}>
                 <Text style={styles.errorText}>⚠️ {error}</Text>
-              </View>
+              </Animated.View>
             ) : null}
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter your email"
-                placeholderTextColor="#666"
-                value={email}
-                onChangeText={(t) => { setEmail(t); setError(''); }}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            </View>
+            <Input
+              label="Email"
+              placeholder="Enter your email"
+              value={email}
+              onChangeText={(t) => { setEmail(t); setError(''); }}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              icon={<Mail size={18} color={theme.text.muted} />}
+            />
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Password</Text>
-              <View style={styles.passwordContainer}>
-                <TextInput
-                  style={[styles.input, { flex: 1, paddingRight: 60 }]}
-                  placeholder="Enter your password"
-                  placeholderTextColor="#666"
-                  value={password}
-                  onChangeText={(t) => { setPassword(t); setError(''); }}
-                  secureTextEntry={!showPassword}
-                  onSubmitEditing={handleLogin}
-                />
-                <TouchableOpacity style={styles.eyeBtn} onPress={() => setShowPassword(!showPassword)}>
-                  <Text style={styles.eyeText}>{showPassword ? 'Hide' : 'Show'}</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+            <View style={{ height: spacing.lg }} />
 
-            <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password')}>
+            <Input
+              label="Password"
+              placeholder="Enter your password"
+              value={password}
+              onChangeText={(t) => { setPassword(t); setError(''); }}
+              secureTextEntry
+              icon={<Lock size={18} color={theme.text.muted} />}
+            />
+
+            <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password')} style={styles.forgotWrap}>
               <Text style={styles.forgot}>Forgot Password?</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.btn, loading && styles.btnDisabled]}
+            <Button
+              title={loading ? 'Signing in...' : 'Sign In'}
               onPress={handleLogin}
+              loading={loading}
               disabled={loading}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.btnText}>{loading ? 'Signing in...' : 'Sign In'}</Text>
-            </TouchableOpacity>
+              fullWidth
+            />
 
             <View style={styles.footer}>
               <Text style={styles.footerText}>Don't have an account? </Text>
@@ -116,7 +109,7 @@ export default function LoginScreen() {
                 <Text style={styles.link}>Register</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </Animated.View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -124,29 +117,21 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000000' },
-  scroll: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 40 },
+  container: { flex: 1, backgroundColor: theme.bg.primary },
+  scroll: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: spacing['2xl'], paddingVertical: spacing['4xl'] },
   inner: { width: '100%' },
-  header: { alignItems: 'center', marginBottom: 40 },
-  logo: { fontSize: 38, fontWeight: '800', color: '#fff' },
-  logoAccent: { color: '#B388FF' },
-  subtitle: { fontSize: 12, color: '#A1A1AA', marginTop: 8, textAlign: 'center' },
-  form: { backgroundColor: '#0A0A0A', borderRadius: 20, padding: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
-  title: { fontSize: 12, fontWeight: '700', color: '#fff', marginBottom: 4 },
-  desc: { fontSize: 12, color: '#A1A1AA', marginBottom: 24 },
-  errorBox: { backgroundColor: 'rgba(244,67,54,0.1)', borderRadius: 12, padding: 12, marginBottom: 16, borderWidth: 1, borderColor: 'rgba(244,67,54,0.3)' },
-  errorText: { color: '#F44336', fontSize: 12, fontWeight: '500' },
-  inputGroup: { marginBottom: 16 },
-  label: { fontSize: 12, color: '#A1A1AA', marginBottom: 6, fontWeight: '500' },
-  input: { backgroundColor: '#141414', borderRadius: 12, padding: 14, fontSize: 12, color: '#fff', borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
-  passwordContainer: { flexDirection: 'row', alignItems: 'center', position: 'relative' },
-  eyeBtn: { position: 'absolute', right: 14, top: 14 },
-  eyeText: { color: '#B388FF', fontSize: 12, fontWeight: '600' },
-  forgot: { color: '#B388FF', fontSize: 12, textAlign: 'right', marginBottom: 20, fontWeight: '500' },
-  btn: { backgroundColor: '#B388FF', borderRadius: 14, padding: 16, alignItems: 'center', ...Platform.select({ web: { cursor: 'pointer' as any }, default: {} }) },
-  btnDisabled: { opacity: 0.6 },
-  btnText: { color: '#fff', fontSize: 12, fontWeight: '700' },
-  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 20 },
-  footerText: { color: '#A1A1AA', fontSize: 12 },
-  link: { color: '#B388FF', fontSize: 12, fontWeight: '600' },
+  header: { alignItems: 'center', marginBottom: spacing['4xl'] },
+  logo: { ...typography.hero, fontSize: 38, color: theme.text.primary },
+  logoAccent: { color: theme.accent.purple },
+  subtitle: { ...typography.bodySmall, color: theme.text.secondary, marginTop: spacing.sm, textAlign: 'center' },
+  form: { backgroundColor: theme.bg.card, borderRadius: radius.xl, padding: spacing['2xl'], borderWidth: 1, borderColor: theme.border.subtle },
+  title: { ...typography.h2, color: theme.text.primary, marginBottom: spacing.xs },
+  desc: { ...typography.bodySmall, color: theme.text.secondary, marginBottom: spacing['2xl'] },
+  errorBox: { backgroundColor: theme.status.errorLight, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.lg, borderWidth: 1, borderColor: 'rgba(244,67,54,0.3)' },
+  errorText: { color: theme.status.error, ...typography.bodySmall, fontWeight: '500' },
+  forgotWrap: { alignSelf: 'flex-end', marginBottom: spacing.xl, marginTop: spacing.sm },
+  forgot: { color: theme.accent.purple, ...typography.bodySmall, fontWeight: '600' },
+  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: spacing.xl },
+  footerText: { color: theme.text.secondary, ...typography.body },
+  link: { color: theme.accent.purple, ...typography.body, fontWeight: '600' },
 });

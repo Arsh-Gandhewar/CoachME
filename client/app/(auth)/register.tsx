@@ -1,9 +1,17 @@
 import { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, KeyboardAvoidingView, Platform, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView, KeyboardAvoidingView, Platform, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+import { Camera, Plus } from 'lucide-react-native';
 import { useAuthStore } from '../../store/authStore';
 import { trainerAPI, contentAPI } from '../../services/endpoints';
+import { theme } from '../../constants/colors';
+import { typography } from '../../constants/typography';
+import { spacing, radius } from '../../constants/spacing';
+import Input from '../../components/Input';
+import Button from '../../components/Button';
+import Chip from '../../components/Chip';
 
 export default function RegisterScreen() {
   const [role, setRole] = useState<'user' | 'trainer'>('user');
@@ -33,18 +41,14 @@ export default function RegisterScreen() {
   // File uploads
   const [photo, setPhoto] = useState<string | null>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
-
   const [portfolioImages, setPortfolioImages] = useState<string[]>([]);
   const [uploadingPortfolio, setUploadingPortfolio] = useState(false);
-
   const [categories, setCategories] = useState<{slug: string, name: string}[]>([]);
 
   useEffect(() => {
     trainerAPI.getCategories().then(res => {
-      if (res.data?.data) {
-        setCategories(res.data.data);
-      }
-    }).catch(err => { /* handle silently */ });
+      if (res.data?.data) setCategories(res.data.data);
+    }).catch(() => {});
   }, []);
 
   const [loading, setLoading] = useState(false);
@@ -54,19 +58,14 @@ export default function RegisterScreen() {
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.5,
+      allowsEditing: true, aspect: [1, 1], quality: 0.5,
     });
-
     if (!result.canceled && result.assets[0]) {
       const asset = result.assets[0];
       setPhoto(asset.uri);
-      
       setUploadingPhoto(true);
       try {
         let formData = new FormData();
-        
         if (Platform.OS === 'web') {
            const res = await fetch(asset.uri);
            const blob = await res.blob();
@@ -78,14 +77,10 @@ export default function RegisterScreen() {
            const type = match ? `image/${match[1]}` : `image`;
            formData.append('image', { uri: localUri, name: filename, type } as any);
         }
-
         const uploadRes = await contentAPI.uploadImage(formData);
-        if (uploadRes.data?.data?.url) {
-          setPhoto(uploadRes.data.data.url);
-        }
+        if (uploadRes.data?.data?.url) setPhoto(uploadRes.data.data.url);
       } catch (err) {
         console.error("Upload failed", err);
-        Alert.alert('Upload Failed', 'Could not upload image to cloud.');
       } finally {
         setUploadingPhoto(false);
       }
@@ -95,11 +90,8 @@ export default function RegisterScreen() {
   const pickPortfolioImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 0.7,
+      allowsEditing: true, aspect: [4, 3], quality: 0.7,
     });
-
     if (!result.canceled && result.assets[0]) {
       const asset = result.assets[0];
       setUploadingPortfolio(true);
@@ -117,9 +109,7 @@ export default function RegisterScreen() {
            formData.append('image', { uri: localUri, name: filename, type } as any);
         }
         const uploadRes = await contentAPI.uploadImage(formData);
-        if (uploadRes.data?.data?.url) {
-          setPortfolioImages(prev => [...prev, uploadRes.data.data.url]);
-        }
+        if (uploadRes.data?.data?.url) setPortfolioImages(prev => [...prev, uploadRes.data.data.url]);
       } catch (err) {
         Alert.alert('Upload Failed', 'Could not upload portfolio image.');
       } finally {
@@ -129,7 +119,7 @@ export default function RegisterScreen() {
   };
 
   const generateAvailability = () => {
-    const slots = [];
+    const slots: string[] = [];
     const current = new Date(`2000-01-01T${startTime.padStart(5, '0')}:00`);
     const end = new Date(`2000-01-01T${endTime.padStart(5, '0')}:00`);
     const duration = parseInt(slotDuration) || 60;
@@ -137,64 +127,33 @@ export default function RegisterScreen() {
       slots.push(current.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }));
       current.setMinutes(current.getMinutes() + duration);
     }
-    return {
-      monday: slots, tuesday: slots, wednesday: slots, 
-      thursday: slots, friday: slots, saturday: slots, sunday: []
-    };
+    return { monday: slots, tuesday: slots, wednesday: slots, thursday: slots, friday: slots, saturday: slots, sunday: [] };
   };
 
   const handleRegister = async () => {
     if (!name || !email || !password) {
-      if (Platform.OS === 'web') {
-        window.alert('Please fill in required fields (Name, Email, Password)');
-      } else {
-        Alert.alert('Error', 'Please fill in required fields (Name, Email, Password)');
-      }
+      if (Platform.OS === 'web') window.alert('Please fill in required fields (Name, Email, Password)');
+      else Alert.alert('Error', 'Please fill in required fields (Name, Email, Password)');
       return;
     }
     setLoading(true);
     try {
       await register({
-        name,
-        fullName: name,
-        email,
-        password,
-        mobile,
-        role,
-        city,
-        gender,
-        profileImage: photo,
-        profilePhoto: photo, // Trainer schema uses this
-        resume: resumeUrl,
+        name, fullName: name, email, password, mobile, role, city, gender,
+        profileImage: photo, profilePhoto: photo, resume: resumeUrl,
         ...(role === 'trainer' && {
-          category,
-          experience: parseInt(experience) || 0,
-          pricing: parseInt(pricing) || 0,
-          specializations,
-          certifications,
-          sessionTypes,
-          languages,
-          portfolioImages,
-          slotDuration: parseInt(slotDuration) || 60,
-          maxGroupCapacity: parseInt(maxGroupCapacity) || 10,
+          category, experience: parseInt(experience) || 0, pricing: parseInt(pricing) || 0,
+          specializations, certifications, sessionTypes, languages, portfolioImages,
+          slotDuration: parseInt(slotDuration) || 60, maxGroupCapacity: parseInt(maxGroupCapacity) || 10,
           availability: generateAvailability(),
         }),
       });
-      
-      // Explicitly push the user to their respective dashboard since AuthGate can have a race condition on web
-      if (role === 'trainer') {
-        router.replace('/(trainer)/(tabs)/dashboard');
-      } else {
-        router.replace('/(user)/(tabs)/home');
-      }
-
+      if (role === 'trainer') router.replace('/(trainer)/(tabs)/dashboard');
+      else router.replace('/(user)/(tabs)/home');
     } catch (error: any) {
       const msg = error.response?.data?.message || 'Something went wrong';
-      if (Platform.OS === 'web') {
-        window.alert(`Registration Failed: ${msg}`);
-      } else {
-        Alert.alert('Registration Failed', msg);
-      }
+      if (Platform.OS === 'web') window.alert(`Registration Failed: ${msg}`);
+      else Alert.alert('Registration Failed', msg);
     } finally {
       setLoading(false);
     }
@@ -202,21 +161,24 @@ export default function RegisterScreen() {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-        <Text style={styles.title}>Create Account</Text>
-        <Text style={styles.desc}>Join CoachME today</Text>
+      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+        <Animated.View entering={FadeInDown.duration(400).delay(100)}>
+          <Text style={styles.title}>Create Account</Text>
+          <Text style={styles.desc}>Join CoachME today</Text>
+        </Animated.View>
 
-        <View style={styles.roleToggle}>
+        {/* Role Toggle */}
+        <Animated.View entering={FadeInDown.duration(400).delay(200)} style={styles.roleToggle}>
           <TouchableOpacity style={[styles.roleBtn, role === 'user' && styles.roleBtnActive]} onPress={() => setRole('user')}>
             <Text style={[styles.roleText, role === 'user' && styles.roleTextActive]}>User</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.roleBtn, role === 'trainer' && styles.roleBtnActive]} onPress={() => setRole('trainer')}>
             <Text style={[styles.roleText, role === 'trainer' && styles.roleTextActive]}>Trainer</Text>
           </TouchableOpacity>
-        </View>
+        </Animated.View>
 
-        {/* Photo Upload for both User and Trainer */}
-        <View style={styles.photoContainer}>
+        {/* Photo Upload */}
+        <Animated.View entering={FadeInDown.duration(400).delay(300)} style={styles.photoContainer}>
           <TouchableOpacity style={styles.photoUploadBtn} onPress={pickImage}>
             {photo ? (
               <Image source={{ uri: photo }} style={styles.photoPreview} />
@@ -226,147 +188,117 @@ export default function RegisterScreen() {
                   <Text style={styles.photoText}>Uploading...</Text>
                 ) : (
                   <>
-                    <Text style={styles.photoIcon}>📷</Text>
+                    <Camera size={24} color={theme.text.muted} />
                     <Text style={styles.photoText}>Upload Photo</Text>
                   </>
                 )}
               </View>
             )}
           </TouchableOpacity>
+        </Animated.View>
+
+        {/* Form Fields */}
+        <Animated.View entering={FadeInDown.duration(400).delay(400)}>
+          <Input label="Full Name *" placeholder="Your full name" value={name} onChangeText={setName} />
+          <View style={{ height: spacing.md }} />
+          <Input label="Email *" placeholder="your@email.com" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
+          <View style={{ height: spacing.md }} />
+          <Input label="Mobile" placeholder="+91 XXXXXXXXXX" value={mobile} onChangeText={setMobile} keyboardType="phone-pad" />
+          <View style={{ height: spacing.md }} />
+          <Input label="Password *" placeholder="Min 6 characters" value={password} onChangeText={setPassword} secureTextEntry />
+          <View style={{ height: spacing.md }} />
+          <Input label="City" placeholder="Your city" value={city} onChangeText={setCity} />
+        </Animated.View>
+
+        {/* Gender */}
+        <View style={{ height: spacing.lg }} />
+        <Text style={styles.label}>Gender</Text>
+        <View style={styles.genderRow}>
+          {(['male', 'female', 'other'] as const).map(g => (
+            <Chip key={g} label={g.charAt(0).toUpperCase() + g.slice(1)} selected={gender === g} onPress={() => setGender(g)} size="md" />
+          ))}
         </View>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Full Name *</Text>
-          <TextInput style={styles.input} placeholder="Your full name" placeholderTextColor="#666" value={name} onChangeText={setName} />
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Email *</Text>
-          <TextInput style={styles.input} placeholder="your@email.com" placeholderTextColor="#666" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Mobile</Text>
-          <TextInput style={styles.input} placeholder="+91 XXXXXXXXXX" placeholderTextColor="#666" value={mobile} onChangeText={setMobile} keyboardType="phone-pad" />
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Password *</Text>
-          <TextInput style={styles.input} placeholder="Min 6 characters" placeholderTextColor="#666" value={password} onChangeText={setPassword} secureTextEntry />
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>City</Text>
-          <TextInput style={styles.input} placeholder="Your city" placeholderTextColor="#666" value={city} onChangeText={setCity} />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Gender</Text>
-          <View style={styles.genderToggle}>
-            <TouchableOpacity style={[styles.genderBtn, gender === 'male' && styles.genderBtnActive]} onPress={() => setGender('male')}>
-              <Text style={[styles.genderText, gender === 'male' && styles.genderTextActive]}>Male</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.genderBtn, gender === 'female' && styles.genderBtnActive]} onPress={() => setGender('female')}>
-              <Text style={[styles.genderText, gender === 'female' && styles.genderTextActive]}>Female</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.genderBtn, gender === 'other' && styles.genderBtnActive]} onPress={() => setGender('other')}>
-              <Text style={[styles.genderText, gender === 'other' && styles.genderTextActive]}>Other</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
+        {/* Trainer-specific fields */}
         {role === 'trainer' && (
           <>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Category</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.catScroll}>
-                {categories.map((c) => (
-                  <TouchableOpacity key={c.slug} style={[styles.catChip, category === c.slug && styles.catChipActive]} onPress={() => setCategory(c.slug)}>
-                    <Text style={[styles.catText, category === c.slug && styles.catTextActive]}>{c.name}</Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Professional Details</Text>
             </View>
-            
+
+            <Text style={styles.label}>Category</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: spacing.lg }}>
+              {categories.map((c) => (
+                <View key={c.slug} style={{ marginRight: spacing.sm }}>
+                  <Chip label={c.name} selected={category === c.slug} onPress={() => setCategory(c.slug)} />
+                </View>
+              ))}
+            </ScrollView>
+
             <View style={styles.row}>
-              <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
-                <Text style={styles.label}>Experience (yrs)</Text>
-                <TextInput style={styles.input} placeholder="0" placeholderTextColor="#666" value={experience} onChangeText={setExperience} keyboardType="numeric" />
+              <View style={{ flex: 1, marginRight: spacing.sm }}>
+                <Input label="Experience (yrs)" placeholder="0" value={experience} onChangeText={setExperience} keyboardType="numeric" />
               </View>
-              <View style={[styles.inputGroup, { flex: 1 }]}>
-                <Text style={styles.label}>Pricing (₹/hr)</Text>
-                <TextInput style={styles.input} placeholder="0" placeholderTextColor="#666" value={pricing} onChangeText={setPricing} keyboardType="numeric" />
+              <View style={{ flex: 1 }}>
+                <Input label="Pricing (₹/hr)" placeholder="0" value={pricing} onChangeText={setPricing} keyboardType="numeric" />
               </View>
             </View>
+            <View style={{ height: spacing.md }} />
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Specializations (comma separated)</Text>
-              <TextInput style={styles.input} placeholder="Yoga, Pilates, HIIT" placeholderTextColor="#666" value={specializations} onChangeText={setSpecializations} />
-            </View>
+            <Input label="Specializations (comma separated)" placeholder="Yoga, Pilates, HIIT" value={specializations} onChangeText={setSpecializations} />
+            <View style={{ height: spacing.md }} />
+            <Input label="Certifications (comma separated)" placeholder="NASM, ACE" value={certifications} onChangeText={setCertifications} />
+            <View style={{ height: spacing.md }} />
+            <Input label="Session Types (comma separated)" placeholder="1-on-1, Group, Online" value={sessionTypes} onChangeText={setSessionTypes} />
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Certifications (comma separated)</Text>
-              <TextInput style={styles.input} placeholder="NASM, ACE" placeholderTextColor="#666" value={certifications} onChangeText={setCertifications} />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Session Types (comma separated)</Text>
-              <TextInput style={styles.input} placeholder="1-on-1, Group, Online" placeholderTextColor="#666" value={sessionTypes} onChangeText={setSessionTypes} />
-            </View>
-
-            <View style={{ marginTop: 24, marginBottom: 16 }}>
-              <Text style={{ color: '#fff', fontSize: 16, fontWeight: '700' }}>Schedule & Capacity</Text>
+            {/* Schedule & Capacity */}
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Schedule & Capacity</Text>
             </View>
 
             <View style={styles.row}>
-              <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
-                <Text style={styles.label}>Start Time (e.g. 09:00)</Text>
-                <TextInput style={styles.input} placeholder="09:00" placeholderTextColor="#666" value={startTime} onChangeText={setStartTime} />
+              <View style={{ flex: 1, marginRight: spacing.sm }}>
+                <Input label="Start Time" placeholder="09:00" value={startTime} onChangeText={setStartTime} />
               </View>
-              <View style={[styles.inputGroup, { flex: 1 }]}>
-                <Text style={styles.label}>End Time (e.g. 17:00)</Text>
-                <TextInput style={styles.input} placeholder="17:00" placeholderTextColor="#666" value={endTime} onChangeText={setEndTime} />
+              <View style={{ flex: 1 }}>
+                <Input label="End Time" placeholder="17:00" value={endTime} onChangeText={setEndTime} />
               </View>
             </View>
-            
+            <View style={{ height: spacing.md }} />
             <View style={styles.row}>
-              <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
-                <Text style={styles.label}>Slot Duration (mins)</Text>
-                <TextInput style={styles.input} placeholder="60" placeholderTextColor="#666" value={slotDuration} onChangeText={setSlotDuration} keyboardType="numeric" />
+              <View style={{ flex: 1, marginRight: spacing.sm }}>
+                <Input label="Slot Duration (mins)" placeholder="60" value={slotDuration} onChangeText={setSlotDuration} keyboardType="numeric" />
               </View>
-              <View style={[styles.inputGroup, { flex: 1 }]}>
-                <Text style={styles.label}>Max Group Capacity</Text>
-                <TextInput style={styles.input} placeholder="10" placeholderTextColor="#666" value={maxGroupCapacity} onChangeText={setMaxGroupCapacity} keyboardType="numeric" />
+              <View style={{ flex: 1 }}>
+                <Input label="Max Group Capacity" placeholder="10" value={maxGroupCapacity} onChangeText={setMaxGroupCapacity} keyboardType="numeric" />
               </View>
             </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Portfolio Gallery</Text>
-              <ScrollView horizontal style={styles.portfolioScroll}>
-                {portfolioImages.map((img, i) => (
-                  <Image key={i} source={{ uri: img }} style={styles.portfolioImg} />
-                ))}
-                <TouchableOpacity style={styles.addPortfolioBtn} onPress={pickPortfolioImage} disabled={uploadingPortfolio}>
-                  {uploadingPortfolio ? (
-                    <Text style={styles.addPortfolioText}>...</Text>
-                  ) : (
-                    <Text style={styles.addPortfolioText}>+ Add</Text>
-                  )}
-                </TouchableOpacity>
-              </ScrollView>
-            </View>
+            {/* Portfolio */}
+            <View style={{ height: spacing.lg }} />
+            <Text style={styles.label}>Portfolio Gallery</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.portfolioScroll}>
+              {portfolioImages.map((img, i) => (
+                <Image key={i} source={{ uri: img }} style={styles.portfolioImg} />
+              ))}
+              <TouchableOpacity style={styles.addPortfolioBtn} onPress={pickPortfolioImage} disabled={uploadingPortfolio}>
+                {uploadingPortfolio ? (
+                  <Text style={styles.addPortfolioText}>...</Text>
+                ) : (
+                  <Plus size={24} color={theme.text.muted} />
+                )}
+              </TouchableOpacity>
+            </ScrollView>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Languages (comma separated)</Text>
-              <TextInput style={styles.input} placeholder="English, Hindi" placeholderTextColor="#666" value={languages} onChangeText={setLanguages} />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Resume Link (PDF/Drive URL)</Text>
-              <TextInput style={styles.input} placeholder="https://..." placeholderTextColor="#666" value={resumeUrl} onChangeText={setResumeUrl} autoCapitalize="none" />
-            </View>
+            <View style={{ height: spacing.md }} />
+            <Input label="Languages (comma separated)" placeholder="English, Hindi" value={languages} onChangeText={setLanguages} />
+            <View style={{ height: spacing.md }} />
+            <Input label="Resume Link (PDF/Drive URL)" placeholder="https://..." value={resumeUrl} onChangeText={setResumeUrl} autoCapitalize="none" />
           </>
         )}
 
-        <TouchableOpacity style={[styles.btn, loading && styles.btnDisabled]} onPress={handleRegister} disabled={loading}>
-          <Text style={styles.btnText}>{loading ? 'Creating Account...' : 'Create Account'}</Text>
-        </TouchableOpacity>
+        <View style={{ height: spacing['2xl'] }} />
+        <Button title={loading ? 'Creating Account...' : 'Create Account'} onPress={handleRegister} loading={loading} disabled={loading} fullWidth />
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>Already have an account? </Text>
@@ -380,54 +312,36 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000000' },
-  scroll: { paddingHorizontal: 24, paddingVertical: 60 },
-  title: { fontSize: 12, fontWeight: '800', color: '#fff' },
-  desc: { fontSize: 12, color: '#A1A1AA', marginBottom: 24, marginTop: 4 },
+  container: { flex: 1, backgroundColor: theme.bg.primary },
+  scroll: { paddingHorizontal: spacing['2xl'], paddingVertical: spacing['5xl'] },
+  title: { ...typography.h1, color: theme.text.primary },
+  desc: { ...typography.body, color: theme.text.secondary, marginBottom: spacing['2xl'], marginTop: spacing.xs },
   
-  roleToggle: { flexDirection: 'row', backgroundColor: '#0A0A0A', borderRadius: 14, padding: 4, marginBottom: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
-  roleBtn: { flex: 1, paddingVertical: 12, borderRadius: 12, alignItems: 'center' },
-  roleBtnActive: { backgroundColor: '#B388FF' },
-  roleText: { color: '#A1A1AA', fontWeight: '600', fontSize: 12 },
-  roleTextActive: { color: '#fff' },
+  roleToggle: { flexDirection: 'row', backgroundColor: theme.bg.card, borderRadius: radius.lg, padding: spacing.xs, marginBottom: spacing['2xl'], borderWidth: 1, borderColor: theme.border.subtle },
+  roleBtn: { flex: 1, paddingVertical: spacing.md, borderRadius: radius.md, alignItems: 'center' },
+  roleBtnActive: { backgroundColor: theme.accent.purple },
+  roleText: { color: theme.text.secondary, ...typography.bodyMedium },
+  roleTextActive: { color: '#FFFFFF' },
   
-  genderToggle: { flexDirection: 'row', backgroundColor: '#0A0A0A', borderRadius: 12, padding: 4, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
-  genderBtn: { flex: 1, paddingVertical: 10, borderRadius: 8, alignItems: 'center' },
-  genderBtnActive: { backgroundColor: 'rgba(255,255,255,0.1)' },
-  genderText: { color: '#A1A1AA', fontWeight: '500', fontSize: 12 },
-  genderTextActive: { color: '#fff' },
+  label: { ...typography.label, color: theme.text.secondary, marginBottom: spacing.sm },
+  genderRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.lg },
   
-  photoContainer: { alignItems: 'center', marginBottom: 24 },
-  photoUploadBtn: { width: 100, height: 100, borderRadius: 50, backgroundColor: '#0A0A0A', borderWidth: 2, borderColor: 'rgba(255,255,255,0.06)', borderStyle: 'dashed', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' },
+  photoContainer: { alignItems: 'center', marginBottom: spacing['2xl'] },
+  photoUploadBtn: { width: 100, height: 100, borderRadius: radius.full, backgroundColor: theme.bg.card, borderWidth: 2, borderColor: theme.border.default, borderStyle: 'dashed', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' },
   photoPreview: { width: '100%', height: '100%' },
-  photoPlaceholder: { alignItems: 'center' },
-  photoIcon: { fontSize: 12, marginBottom: 4 },
-  photoText: { color: '#666', fontSize: 12, fontWeight: '600' },
-
-  resumeUploadBtn: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#0A0A0A', borderRadius: 12, padding: 14, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)', borderStyle: 'dashed' },
-  resumeIcon: { fontSize: 12, marginRight: 10 },
-  resumeText: { color: '#B388FF', fontSize: 12, flex: 1 },
-
-  inputGroup: { marginBottom: 14 },
-  label: { fontSize: 12, color: '#A1A1AA', marginBottom: 6, fontWeight: '500' },
-  input: { backgroundColor: '#0A0A0A', borderRadius: 12, padding: 14, fontSize: 12, color: '#fff', borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
+  photoPlaceholder: { alignItems: 'center', gap: spacing.xs },
+  photoText: { color: theme.text.muted, ...typography.caption, fontWeight: '600' },
+  
+  sectionHeader: { marginTop: spacing['2xl'], marginBottom: spacing.lg },
+  sectionTitle: { ...typography.h3, color: theme.text.primary },
   row: { flexDirection: 'row' },
-  catScroll: { marginBottom: 4 },
-  catChip: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: '#0A0A0A', marginRight: 8, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
-  catChipActive: { backgroundColor: 'rgba(179,136,255,0.15)', borderColor: '#B388FF' },
-  catText: { color: '#A1A1AA', fontSize: 12, textTransform: 'capitalize' },
-  catTextActive: { color: '#B388FF' },
   
-  btn: { backgroundColor: '#B388FF', borderRadius: 14, padding: 16, alignItems: 'center', marginTop: 16 },
-  btnDisabled: { opacity: 0.6 },
-  btnText: { color: '#fff', fontSize: 12, fontWeight: '700' },
-  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 24, paddingBottom: 20 },
-  footerText: { color: '#A1A1AA', fontSize: 12 },
-  link: { color: '#B388FF', fontSize: 12, fontWeight: '700' },
+  portfolioScroll: { flexDirection: 'row', marginTop: spacing.sm, marginBottom: spacing.lg },
+  portfolioImg: { width: 80, height: 80, borderRadius: radius.md, marginRight: spacing.md },
+  addPortfolioBtn: { width: 80, height: 80, borderRadius: radius.md, backgroundColor: theme.bg.input, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: theme.border.default, borderStyle: 'dashed' },
+  addPortfolioText: { color: theme.text.muted, ...typography.body, fontWeight: '600' },
   
-  // Portfolio
-  portfolioScroll: { flexDirection: 'row', marginTop: 8 },
-  portfolioImg: { width: 80, height: 80, borderRadius: 12, marginRight: 12 },
-  addPortfolioBtn: { width: 80, height: 80, borderRadius: 12, backgroundColor: '#1A1A1A', justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#333', borderStyle: 'dashed' },
-  addPortfolioText: { color: '#A1A1AA', fontSize: 12, fontWeight: '600' }
+  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: spacing['2xl'], paddingBottom: spacing.xl },
+  footerText: { color: theme.text.secondary, ...typography.body },
+  link: { color: theme.accent.purple, ...typography.body, fontWeight: '700' },
 });
