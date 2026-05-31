@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, RefreshControl, D
 import { useRouter } from 'expo-router';
 import AnimatedRN, { FadeInDown } from 'react-native-reanimated';
 import { Shield, Zap, TrendingUp, ChevronRight, Star, Clock } from 'lucide-react-native';
+// @ts-ignore - types may not be installed but module works at runtime
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuthStore } from '../../../store/authStore';

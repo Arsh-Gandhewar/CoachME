@@ -27,7 +27,7 @@ import { springs } from '../constants/animations';
 
 interface Tab {
   name: string;
-  icon: ReactNode | ((color: string, size: number) => ReactNode);
+  icon: ReactNode | React.ComponentType<any> | ((color: string, size: number) => ReactNode);
   label: string;
 }
 
@@ -89,9 +89,11 @@ const TabBar: React.FC<TabBarProps> = ({ tabs, activeTab, onTabPress }) => {
             activeOpacity={0.7}
             onPress={() => handlePress(tab.name)}
           >
-            {/* Render icon — supports both ReactNode and render-function */}
+            {/* Render icon — supports ReactNode, render-function, and component */}
             {typeof tab.icon === 'function'
-              ? tab.icon(color, ICON_SIZE)
+              ? (tab.icon.prototype && tab.icon.prototype.isReactComponent) || tab.icon.length === 0 || (tab.icon as any).$$typeof
+                ? React.createElement(tab.icon as React.ComponentType<any>, { color, size: ICON_SIZE })
+                : (tab.icon as (color: string, size: number) => ReactNode)(color, ICON_SIZE)
               : tab.icon}
 
             <Text

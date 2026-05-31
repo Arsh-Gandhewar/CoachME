@@ -19,10 +19,10 @@ import { theme } from '../constants/colors';
 import { typography } from '../constants/typography';
 import { spacing, radius } from '../constants/spacing';
 
-interface InputProps {
+export interface InputProps {
   label: string;
   value: string;
-  onChangeText: (text: string) => void;
+  onChangeText?: (text: string) => void;
   placeholder?: string;
   secureTextEntry?: boolean;
   keyboardType?: KeyboardTypeOptions;
@@ -30,6 +30,7 @@ interface InputProps {
   multiline?: boolean;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   icon?: ReactNode;
+  editable?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -43,6 +44,7 @@ const Input: React.FC<InputProps> = ({
   multiline = false,
   autoCapitalize,
   icon,
+  editable = true,
 }) => {
   const [focused, setFocused] = useState(false);
   const [hidden, setHidden] = useState(secureTextEntry);
@@ -85,6 +87,7 @@ const Input: React.FC<InputProps> = ({
           keyboardType={keyboardType}
           multiline={multiline}
           autoCapitalize={autoCapitalize}
+          editable={editable}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
         />

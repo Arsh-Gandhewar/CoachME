@@ -25,7 +25,7 @@ import { spacing, radius } from '../constants/spacing';
 import { springs } from '../constants/animations';
 
 // ─── Types ──────────────────────────────────────────────
-interface ButtonProps {
+export interface ButtonProps {
   title: string;
   onPress: () => void;
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -34,6 +34,7 @@ interface ButtonProps {
   disabled?: boolean;
   icon?: React.ReactNode;
   fullWidth?: boolean;
+  style?: ViewStyle;
 }
 
 // ─── Size map ───────────────────────────────────────────
@@ -78,6 +79,7 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   icon,
   fullWidth = false,
+  style: customStyle,
 }) => {
   const scale = useSharedValue(1);
   const cfg = SIZE_CONFIG[size];
@@ -112,6 +114,7 @@ const Button: React.FC<ButtonProps> = ({
         variantStyles(variant),
         fullWidth && styles.fullWidth,
         disabled && styles.disabled,
+        customStyle,
         animatedStyle,
       ]}
     >
