@@ -11,7 +11,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated';
-import * as Haptics from 'expo-haptics';
+import { hapticLight } from '../utils/haptics';
 import { theme } from '../constants/colors';
 import { typography } from '../constants/typography';
 import { spacing, radius } from '../constants/spacing';
@@ -49,7 +49,7 @@ const Chip: React.FC<ChipProps> = ({
   };
 
   const handlePress = () => {
-    Haptics.selectionAsync();
+    hapticLight();
     onPress();
   };
 
