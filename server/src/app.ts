@@ -31,7 +31,10 @@ const server = http.createServer(app);
 initializeSocket(server);
 
 // Middleware
-app.use(cors());
+const allowedOrigins = env.NODE_ENV === 'production' 
+  ? ['https://coachme.app', 'https://www.coachme.app'] 
+  : '*';
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(helmet());
 app.use(compression());
 app.use(morgan('dev'));

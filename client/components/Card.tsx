@@ -12,7 +12,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import { BlurView } from 'expo-blur';
-import * as Haptics from 'expo-haptics';
+import { hapticLight } from '../utils/haptics';
 
 import { theme } from '../constants/colors';
 import { spacing, radius } from '../constants/spacing';
@@ -51,7 +51,7 @@ const Card: React.FC<CardProps> = ({
 
   const handlePress = () => {
     if (!onPress) return;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    hapticLight();
     onPress();
   };
 

@@ -7,7 +7,7 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { ChevronLeft } from 'lucide-react-native';
-import * as Haptics from 'expo-haptics';
+import { hapticLight } from '../utils/haptics';
 
 import { theme } from '../constants/colors';
 import { typography } from '../constants/typography';
@@ -30,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({
   transparent = false,
 }) => {
   const handleBack = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    hapticLight();
     onBack?.();
   };
 

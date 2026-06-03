@@ -77,13 +77,26 @@ export const updateBookingStatus = asyncHandler(async (req: AuthRequest, res: Re
   const booking = await Booking.findById(req.params.id);
   if (!booking) throw ApiError.notFound('Booking not found');
 
+  if (req.userRole === 'trainer') {
+    if (booking.trainerId.toString() !== req.user._id.toString()) {
+      throw ApiError.forbidden('You are not authorized to update this booking');
+    }
+  } else {
+    if (booking.userId.toString() !== req.user._id.toString()) {
+      throw ApiError.forbidden('You are not authorized to update this booking');
+    }
+    if (status !== 'cancelled') {
+      throw ApiError.forbidden('Users can only cancel bookings');
+    }
+  }
+
   booking.bookingStatus = status;
   await booking.save();
 
   // Notify user
   await Notification.create({
-    userId: booking.userId,
-    userModel: 'User',
+    userId: req.userRole === 'trainer' ? booking.userId : booking.trainerId,
+    userModel: req.userRole === 'trainer' ? 'User' : 'Trainer',
     title: `Booking ${status}`,
     message: `Your booking has been ${status}`,
     type: 'booking',
@@ -97,6 +110,10 @@ export const rescheduleBooking = asyncHandler(async (req: AuthRequest, res: Resp
   const { bookingDate, timeSlot } = req.body;
   const booking = await Booking.findById(req.params.id);
   if (!booking) throw ApiError.notFound('Booking not found');
+
+  if (booking.userId.toString() !== req.user._id.toString() && booking.trainerId.toString() !== req.user._id.toString()) {
+    throw ApiError.forbidden('You are not authorized to reschedule this booking');
+  }
 
   booking.bookingDate = bookingDate;
   booking.timeSlot = timeSlot;

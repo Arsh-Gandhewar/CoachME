@@ -96,10 +96,16 @@ export const deleteSavedMethod = asyncHandler(async (req: AuthRequest, res: Resp
 });
 
 export const createOrder = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const { bookingId, amount } = req.body;
+  const { bookingId } = req.body;
 
   const booking = await Booking.findById(bookingId);
   if (!booking) throw ApiError.notFound('Booking not found');
+  
+  if (booking.userId.toString() !== req.user._id.toString()) {
+    throw ApiError.forbidden('You are not authorized to pay for this booking');
+  }
+
+  const amount = booking.price;
 
   const options = {
     amount: amount * 100, 

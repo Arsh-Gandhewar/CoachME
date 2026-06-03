@@ -65,6 +65,7 @@ const UserSchema = new Schema<IUser>(
 );
 
 UserSchema.index({ location: '2dsphere' });
+UserSchema.index({ resetPasswordToken: 1, resetPasswordExpire: 1 });
 
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();

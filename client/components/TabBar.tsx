@@ -18,7 +18,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated';
-import * as Haptics from 'expo-haptics';
+import { hapticLight } from '../utils/haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../constants/colors';
 import { typography } from '../constants/typography';
@@ -61,7 +61,7 @@ const TabBar: React.FC<TabBarProps> = ({ tabs, activeTab, onTabPress }) => {
 
   const handlePress = useCallback(
     (name: string) => {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      hapticLight();
       onTabPress(name);
     },
     [onTabPress],
@@ -90,11 +90,11 @@ const TabBar: React.FC<TabBarProps> = ({ tabs, activeTab, onTabPress }) => {
             onPress={() => handlePress(tab.name)}
           >
             {/* Render icon — supports ReactNode, render-function, and component */}
-            {typeof tab.icon === 'function'
-              ? (tab.icon.prototype && tab.icon.prototype.isReactComponent) || tab.icon.length === 0 || (tab.icon as any).$$typeof
-                ? React.createElement(tab.icon as React.ComponentType<any>, { color, size: ICON_SIZE })
-                : (tab.icon as (color: string, size: number) => ReactNode)(color, ICON_SIZE)
-              : tab.icon}
+            {React.isValidElement(tab.icon)
+              ? tab.icon
+              : (typeof tab.icon === 'function' || (typeof tab.icon === 'object' && tab.icon !== null && '$$typeof' in (tab.icon as any)))
+              ? React.createElement(tab.icon as React.ComponentType<any>, { color, size: ICON_SIZE })
+              : null}
 
             <Text
               style={[

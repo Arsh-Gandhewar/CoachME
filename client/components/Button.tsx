@@ -17,7 +17,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated';
-import * as Haptics from 'expo-haptics';
+import { hapticLight } from '../utils/haptics';
 
 import { theme } from '../constants/colors';
 import { typography } from '../constants/typography';
@@ -98,7 +98,7 @@ const Button: React.FC<ButtonProps> = ({
 
   const handlePress = () => {
     if (disabled || loading) return;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    hapticLight();
     onPress();
   };
 
