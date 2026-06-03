@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   title: { ...typography.h1, color: theme.text.primary, marginBottom: spacing.md },
   searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: theme.bg.card, borderRadius: radius.lg, paddingHorizontal: spacing.md, borderWidth: 1, borderColor: theme.border.subtle, marginBottom: spacing.md },
   searchInput: { flex: 1, paddingVertical: spacing.md, color: theme.text.primary, ...typography.body, marginLeft: spacing.sm, ...Platform.select({ web: { outlineStyle: 'none' as any }, default: {} }) },
-  catScroll: { marginBottom: spacing.sm },
+  catScroll: { flexGrow: 0, marginBottom: spacing.sm },
   catContent: { paddingBottom: spacing.xs },
   sortRow: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md },
   resultCount: { ...typography.caption, color: theme.text.muted, marginRight: spacing.md },
