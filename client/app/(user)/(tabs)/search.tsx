@@ -102,7 +102,7 @@ export default function SearchScreen() {
       {/* Sort & Count */}
       <View style={styles.sortRow}>
         <Text style={styles.resultCount}>{trainers.length} trainers</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ alignItems: 'center' }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0, minHeight: 40 }} contentContainerStyle={{ alignItems: 'center' }}>
           {[{ k: '', l: 'Relevance' }, { k: 'price_low', l: '₹ Low' }, { k: 'price_high', l: '₹ High' }, { k: 'experience', l: 'Experience' }].map((s) => (
             <View key={s.k} style={{ marginLeft: spacing.xs }}>
               <Chip label={s.l} selected={sort === s.k} onPress={() => setSort(s.k)} size="sm" />
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   title: { ...typography.h1, color: theme.text.primary, marginBottom: spacing.md },
   searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: theme.bg.card, borderRadius: radius.lg, paddingHorizontal: spacing.md, borderWidth: 1, borderColor: theme.border.subtle, marginBottom: spacing.md },
   searchInput: { flex: 1, paddingVertical: spacing.md, color: theme.text.primary, ...typography.body, marginLeft: spacing.sm, ...Platform.select({ web: { outlineStyle: 'none' as any }, default: {} }) },
-  catScroll: { flexGrow: 0, marginBottom: spacing.sm },
+  catScroll: { flexGrow: 0, minHeight: 40, marginBottom: spacing.sm },
   catContent: { paddingBottom: spacing.xs },
   sortRow: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md },
   resultCount: { ...typography.caption, color: theme.text.muted, marginRight: spacing.md },
