@@ -1,23 +1,17 @@
 import { Platform } from 'react-native';
 
-let Haptics: any = null;
-
-try {
-  Haptics = require('expo-haptics');
-} catch {}
-
 export const hapticLight = () => {
+  if (Platform.OS === 'web') return;
   try {
-    if (Platform.OS !== 'web' && Haptics?.impactAsync) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
+    const Haptics = require('expo-haptics');
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
   } catch {}
 };
 
 export const hapticMedium = () => {
+  if (Platform.OS === 'web') return;
   try {
-    if (Platform.OS !== 'web' && Haptics?.impactAsync) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }
+    const Haptics = require('expo-haptics');
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
   } catch {}
 };
