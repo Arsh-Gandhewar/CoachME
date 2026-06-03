@@ -118,6 +118,7 @@ export default function SearchScreen() {
         <FlatList
           data={trainers} renderItem={renderItem} keyExtractor={(item) => item._id}
           initialNumToRender={10} maxToRenderPerBatch={10} windowSize={5} removeClippedSubviews={true}
+          showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.list}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.accent.purple} />}
           ListEmptyComponent={<EmptyState icon={<SearchIcon size={40} color={theme.text.muted} />} title="No trainers found" subtitle="Try a different search or category" />}
