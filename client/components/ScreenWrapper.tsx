@@ -53,7 +53,7 @@ const ScreenWrapper: React.FC<ScreenWrapperProps> = ({
     return (
       <View style={containerStyle}>
         <StatusBar style="light" />
-        <ScrollView
+        <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}
           style={styles.flex}
           contentContainerStyle={[contentStyle, styles.scrollContent, style]}
           showsVerticalScrollIndicator={false}

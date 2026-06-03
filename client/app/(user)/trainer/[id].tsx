@@ -97,7 +97,7 @@ export default function TrainerDetailScreen() {
         {/* Portfolio */}
         <Animated.View entering={FadeInDown.duration(400).delay(300)} style={styles.section}>
           <Text style={styles.sectionTitle}>Portfolio</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <ScrollView showsVerticalScrollIndicator={false} horizontal showsHorizontalScrollIndicator={false}>
             {(trainer.portfolioImages?.length ? trainer.portfolioImages : [
               'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=500&auto=format&fit=crop',
               'https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=500&auto=format&fit=crop',

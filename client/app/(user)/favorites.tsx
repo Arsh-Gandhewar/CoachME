@@ -57,7 +57,7 @@ export default function FavoritesScreen() {
       {loading ? (
         <View style={styles.list}><SkeletonLoader variant="list-item" count={5} /></View>
       ) : (
-        <FlatList
+        <FlatList showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}
           data={favorites}
           renderItem={renderItem}
           keyExtractor={(item) => item._id}

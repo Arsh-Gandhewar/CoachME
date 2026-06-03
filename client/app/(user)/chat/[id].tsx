@@ -20,7 +20,7 @@ export default function ChatDetailScreen() {
   const [inputText, setInputText] = useState('');
   const [otherParticipant, setOtherParticipant] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const flatListRef = useRef<FlatList>(null);
+  const flatListRef = useRef<FlatList showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>(null);
 
   useEffect(() => {
     (async () => {

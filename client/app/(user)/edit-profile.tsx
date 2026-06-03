@@ -125,7 +125,7 @@ export default function EditProfileScreen() {
           <Input label="Resume Link (PDF/Drive URL)" value={resume} onChangeText={setResume} placeholder="https://..." autoCapitalize="none" />
 
           <Text style={[styles.sectionTitle, { marginTop: spacing['2xl'] }]}>Portfolio</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <ScrollView showsVerticalScrollIndicator={false} horizontal showsHorizontalScrollIndicator={false}>
             {portfolioImages.map((img, idx) => (
               <View key={idx} style={styles.portfolioWrap}>
                 <Image source={{ uri: img }} style={styles.portfolioImg} />

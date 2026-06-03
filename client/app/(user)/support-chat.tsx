@@ -52,7 +52,7 @@ export default function SupportChatScreen() {
   return (
     <KeyboardAvoidingView style={[styles.container, { paddingTop: insets.top }]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <Header title="AI Support" onBack={() => router.canGoBack() ? router.back() : router.push('/(user)/support')} />
-      <FlatList ref={flatListRef} data={messages} keyExtractor={item => item.id} renderItem={renderMessage} contentContainerStyle={styles.chatContainer} style={{ flex: 1 }} />
+      <FlatList showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} ref={flatListRef} data={messages} keyExtractor={item => item.id} renderItem={renderMessage} contentContainerStyle={styles.chatContainer} style={{ flex: 1 }} />
       <View style={[styles.inputContainer, { paddingBottom: Math.max(insets.bottom, spacing.lg) }]}>
         <TextInput style={styles.input} placeholder="Type your message..." placeholderTextColor={theme.text.muted} value={input} onChangeText={setInput} onSubmitEditing={sendMessage} returnKeyType="send" />
         <TouchableOpacity style={[styles.sendBtn, (!input.trim() || loading) && { opacity: 0.5 }]} onPress={sendMessage} disabled={!input.trim() || loading}>

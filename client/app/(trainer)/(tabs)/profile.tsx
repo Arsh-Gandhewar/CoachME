@@ -63,7 +63,7 @@ export default function TrainerProfileScreen() {
       {trainer?.portfolioImages?.length > 0 && (
         <Animated.View entering={FadeInDown.duration(400).delay(350)} style={styles.section}>
           <Text style={styles.sectionTitle}>Portfolio</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
             {trainer.portfolioImages.map((img: string, i: number) => (
               <Image key={i} source={{ uri: img }} style={styles.portfolioImg} />
             ))}

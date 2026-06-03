@@ -59,7 +59,7 @@ export default function ChatListScreen() {
           <SkeletonLoader variant="list-item" count={5} />
         </View>
       ) : (
-        <FlatList
+        <FlatList showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}
           data={chats}
           renderItem={renderItem}
           initialNumToRender={12}

@@ -90,7 +90,7 @@ export default function SearchScreen() {
       </View>
 
       {/* Category Chips */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.catScroll} contentContainerStyle={styles.catContent}>
+      <ScrollView showsVerticalScrollIndicator={false} horizontal showsHorizontalScrollIndicator={false} style={styles.catScroll} contentContainerStyle={styles.catContent}>
         <Chip label="All" selected={!category} onPress={() => setCategory('')} size="sm" />
         {categories.map((c) => (
           <View key={c.slug} style={{ marginLeft: spacing.sm }}>
@@ -102,7 +102,7 @@ export default function SearchScreen() {
       {/* Sort & Count */}
       <View style={styles.sortRow}>
         <Text style={styles.resultCount}>{trainers.length} trainers</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0, minHeight: 40 }} contentContainerStyle={{ alignItems: 'center' }}>
+        <ScrollView showsVerticalScrollIndicator={false} horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0, minHeight: 40 }} contentContainerStyle={{ alignItems: 'center' }}>
           {[{ k: '', l: 'Relevance' }, { k: 'price_low', l: '₹ Low' }, { k: 'price_high', l: '₹ High' }, { k: 'experience', l: 'Experience' }].map((s) => (
             <View key={s.k} style={{ marginLeft: spacing.xs }}>
               <Chip label={s.l} selected={sort === s.k} onPress={() => setSort(s.k)} size="sm" />
@@ -115,7 +115,7 @@ export default function SearchScreen() {
       {loading && trainers.length === 0 ? (
         <View style={{ padding: spacing.lg }}><SkeletonLoader variant="list-item" count={5} /></View>
       ) : (
-        <FlatList
+        <FlatList showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}
           data={trainers} renderItem={renderItem} keyExtractor={(item) => item._id}
           initialNumToRender={10} maxToRenderPerBatch={10} windowSize={5} removeClippedSubviews={true}
           showsVerticalScrollIndicator={false}

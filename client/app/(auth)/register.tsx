@@ -227,7 +227,7 @@ export default function RegisterScreen() {
             </View>
 
             <Text style={styles.label}>Category</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: spacing.lg }}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} style={{ marginBottom: spacing.lg }}>
               {categories.map((c) => (
                 <View key={c.slug} style={{ marginRight: spacing.sm }}>
                   <Chip label={c.name} selected={category === c.slug} onPress={() => setCategory(c.slug)} />
@@ -277,7 +277,7 @@ export default function RegisterScreen() {
             {/* Portfolio */}
             <View style={{ height: spacing.lg }} />
             <Text style={styles.label}>Portfolio Gallery</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.portfolioScroll}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} style={styles.portfolioScroll}>
               {portfolioImages.map((img, i) => (
                 <Image key={i} source={{ uri: img }} style={styles.portfolioImg} />
               ))}

@@ -97,7 +97,7 @@ export default function TrainerDashboard() {
 
   return (
     <View style={styles.container}>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.accent.purple} />} contentContainerStyle={{ paddingBottom: spacing['6xl'] }}>
+      <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.accent.purple} />} contentContainerStyle={{ paddingBottom: spacing['6xl'] }}>
         {/* Header */}
         <Animated.View entering={FadeInDown.duration(400).delay(100)} style={styles.header}>
           <View style={{ flex: 1 }}>

@@ -105,7 +105,7 @@ export default function BookingsScreen() {
       {loading ? (
         <View style={{ padding: spacing.lg }}><SkeletonLoader variant="card" count={3} /></View>
       ) : (
-        <FlatList
+        <FlatList showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}
           data={filtered} renderItem={renderItem} keyExtractor={(item) => item._id}
           initialNumToRender={10} maxToRenderPerBatch={10} windowSize={5} removeClippedSubviews={true}
           contentContainerStyle={styles.list}

@@ -131,7 +131,7 @@ export default function BookingFlowScreen() {
         {step === 2 && (
           <Animated.View entering={FadeInDown.duration(400)}>
             <Text style={styles.stepTitle}>Select Date & Time</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dateScroll}>
+            <ScrollView showsVerticalScrollIndicator={false} horizontal showsHorizontalScrollIndicator={false} style={styles.dateScroll}>
               {dates.map((d) => (
                 <TouchableOpacity key={d} style={[styles.dateChip, selectedDate === d && styles.dateChipActive]} onPress={() => { setSelectedDate(d); setSelectedSlot(''); }} activeOpacity={0.7}>
                   <Text style={[styles.dateDay, selectedDate === d && styles.dateTextActive]}>{dayName(d)}</Text>

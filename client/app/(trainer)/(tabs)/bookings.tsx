@@ -88,7 +88,7 @@ export default function TrainerBookingsScreen() {
           <SkeletonLoader variant="card" count={3} />
         </View>
       ) : (
-        <FlatList
+        <FlatList showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}
           data={filtered}
           renderItem={renderItem}
           keyExtractor={(item) => item._id}

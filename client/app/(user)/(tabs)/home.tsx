@@ -154,7 +154,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.accent.purple} />} contentContainerStyle={styles.scrollContent}>
+    <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.accent.purple} />} contentContainerStyle={styles.scrollContent}>
       <View style={styles.contentWrapper}>
         {/* Hero */}
         <AnimatedRN.View entering={FadeInDown.duration(400).delay(100)} style={styles.heroSection}>
@@ -190,7 +190,7 @@ export default function HomeScreen() {
         {/* Platform Stats Carousel */}
         <AnimatedRN.View entering={FadeInDown.duration(400).delay(200)} style={styles.statsWrapper}>
           <View style={{ width: sliderWidth, overflow: 'hidden', borderRadius: radius.lg }}>
-            <ScrollView ref={scrollViewRef} horizontal showsHorizontalScrollIndicator={false} pagingEnabled scrollEnabled={!isWeb}>
+            <ScrollView showsVerticalScrollIndicator={false} ref={scrollViewRef} horizontal showsHorizontalScrollIndicator={false} pagingEnabled scrollEnabled={!isWeb}>
               {stats.map((stat, idx) => (
                 <View key={idx} style={[styles.statBox, { width: sliderWidth }]}>
                   {stat.icon}
@@ -216,7 +216,7 @@ export default function HomeScreen() {
               <ChevronRight size={16} color={theme.accent.purple} />
             </TouchableOpacity>
           </View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -20 }} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: spacing.lg }}>
+          <ScrollView showsVerticalScrollIndicator={false} horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -20 }} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: spacing.lg }}>
             {categories.map((cat: any) => (
               <TouchableOpacity key={cat._id} activeOpacity={0.8} onPress={() => router.push({ pathname: '/(user)/(tabs)/search', params: { category: cat.slug } })}>
                 <LinearGradient colors={catGradients[cat.slug] || ['#FF8A65', '#B388FF']} style={styles.categoryBox} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
