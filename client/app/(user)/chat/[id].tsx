@@ -20,7 +20,7 @@ export default function ChatDetailScreen() {
   const [inputText, setInputText] = useState('');
   const [otherParticipant, setOtherParticipant] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const flatListRef = useRef<FlatList showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>(null);
+  const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
     (async () => {
@@ -59,7 +59,7 @@ export default function ChatDetailScreen() {
   return (
     <KeyboardAvoidingView style={[styles.container, { paddingTop: insets.top }]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <Header title={otherParticipant?.name || otherParticipant?.fullName || 'Chat'} onBack={() => router.canGoBack() ? router.back() : router.push('/(user)/(tabs)/chat')} />
-      <FlatList
+      <FlatList showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}
         ref={flatListRef} data={messages} renderItem={renderMessage}
         keyExtractor={(item, index) => item._id || index.toString()}
         contentContainerStyle={styles.messageList}
