@@ -68,8 +68,8 @@ export const getFavorites = asyncHandler(async (req: AuthRequest, res: Response)
 export const createReview = asyncHandler(async (req: AuthRequest, res: Response) => {
   const { trainerId, rating, comment, bookingId } = req.body;
 
-  const existing = await Review.findOne({ userId: req.user._id, trainerId });
-  if (existing) throw ApiError.conflict('You have already reviewed this trainer');
+  const existing = await Review.findOne({ userId: req.user._id, bookingId });
+  if (existing) throw ApiError.conflict('You have already submitted a review for this session');
 
   const review = await Review.create({ userId: req.user._id, trainerId, rating, comment, bookingId });
   return ApiResponse.created(res, review, 'Review submitted');

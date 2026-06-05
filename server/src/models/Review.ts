@@ -21,7 +21,7 @@ const ReviewSchema = new Schema<IReview>(
 );
 
 ReviewSchema.index({ trainerId: 1, createdAt: -1 });
-ReviewSchema.index({ userId: 1, trainerId: 1 }, { unique: true });
+ReviewSchema.index({ bookingId: 1 }, { unique: true, partialFilterExpression: { bookingId: { $exists: true } } });
 
 // After saving a review, update trainer's avg rating and total reviews
 ReviewSchema.post('save', async function () {

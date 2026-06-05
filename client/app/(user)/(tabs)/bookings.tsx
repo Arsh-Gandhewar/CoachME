@@ -27,7 +27,7 @@ export default function BookingsScreen() {
   const [comment, setComment] = useState('');
   const [submittingReview, setSubmittingReview] = useState(false);
   const [cancelling, setCancelling] = useState<string | null>(null);
-  const [reviewedTrainerIds, setReviewedTrainerIds] = useState<Set<string>>(new Set());
+  const [reviewedBookingIds, setReviewedBookingIds] = useState<Set<string>>(new Set());
 
   const canCancel = (booking: Booking) => {
     if (!['pending', 'confirmed'].includes(booking.bookingStatus)) return false;
@@ -70,7 +70,7 @@ export default function BookingsScreen() {
       ]);
       setBookings(bookingsRes.data.data || []);
       if (reviewsRes?.data?.data) {
-        setReviewedTrainerIds(new Set(reviewsRes.data.data.map((r: any) => r.trainerId)));
+        setReviewedBookingIds(new Set(reviewsRes.data.data.map((r: any) => r.bookingId)));
       }
     } catch {}
     finally { setLoading(false); setRefreshing(false); }
@@ -127,14 +127,14 @@ export default function BookingsScreen() {
             <Text style={styles.detail}>{item.sessionType} • <Text style={{ color: theme.accent.purple, fontWeight: '600' }}>₹{item.price}</Text></Text>
           </View>
 
-          {item.bookingStatus === 'completed' && !reviewedTrainerIds.has(trainer?._id) && (
+          {item.bookingStatus === 'completed' && !reviewedBookingIds.has(item._id) && (
             <TouchableOpacity style={styles.reviewBtn} onPress={() => setReviewModal({ visible: true, trainerId: trainer._id, bookingId: item._id })}>
               <Star size={14} color={theme.status.warning} fill={theme.status.warning} />
               <Text style={styles.reviewBtnText}>Leave a Review</Text>
             </TouchableOpacity>
           )}
 
-          {item.bookingStatus === 'completed' && reviewedTrainerIds.has(trainer?._id) && (
+          {item.bookingStatus === 'completed' && reviewedBookingIds.has(item._id) && (
             <View style={styles.reviewedBadge}>
               <Star size={14} color={theme.status.success} fill={theme.status.success} />
               <Text style={styles.reviewedText}>Review Submitted ✓</Text>
@@ -163,7 +163,7 @@ export default function BookingsScreen() {
         </Card>
       </Animated.View>
     );
-  }, [cancelling, reviewedTrainerIds]);
+  }, [cancelling, reviewedBookingIds]);
 
   return (
     <ScreenWrapper scroll={false}>
