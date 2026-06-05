@@ -74,3 +74,8 @@ export const createReview = asyncHandler(async (req: AuthRequest, res: Response)
   const review = await Review.create({ userId: req.user._id, trainerId, rating, comment, bookingId });
   return ApiResponse.created(res, review, 'Review submitted');
 });
+
+export const getMyReviews = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const reviews = await Review.find({ userId: req.user._id }).select('trainerId bookingId');
+  return ApiResponse.success(res, reviews);
+});

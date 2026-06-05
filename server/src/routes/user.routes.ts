@@ -11,6 +11,7 @@ router.get('/profile', userController.getProfile);
 router.put('/profile', userController.updateProfile);
 router.post('/favorites/:trainerId', authorize('user', 'trainer'), userController.toggleFavorite);
 router.get('/favorites', authorize('user', 'trainer'), userController.getFavorites);
+router.get('/reviews', authorize('user'), userController.getMyReviews);
 router.post(
   '/reviews',
   authorize('user'),

@@ -27,6 +27,7 @@ export default function BookingsScreen() {
   const [comment, setComment] = useState('');
   const [submittingReview, setSubmittingReview] = useState(false);
   const [cancelling, setCancelling] = useState<string | null>(null);
+  const [reviewedTrainerIds, setReviewedTrainerIds] = useState<Set<string>>(new Set());
 
   const canCancel = (booking: Booking) => {
     if (!['pending', 'confirmed'].includes(booking.bookingStatus)) return false;
@@ -62,7 +63,16 @@ export default function BookingsScreen() {
   };
 
   const fetchBookings = async () => {
-    try { const res = await bookingAPI.getUserBookings(); setBookings(res.data.data || []); } catch {}
+    try {
+      const [bookingsRes, reviewsRes] = await Promise.all([
+        bookingAPI.getUserBookings(),
+        api.get('/users/reviews').catch(() => null),
+      ]);
+      setBookings(bookingsRes.data.data || []);
+      if (reviewsRes?.data?.data) {
+        setReviewedTrainerIds(new Set(reviewsRes.data.data.map((r: any) => r.trainerId)));
+      }
+    } catch {}
     finally { setLoading(false); setRefreshing(false); }
   };
 
@@ -88,6 +98,7 @@ export default function BookingsScreen() {
       else Alert.alert('Success', 'Review submitted! Thank you for your feedback.');
       setReviewModal({ visible: false, trainerId: '', bookingId: '' });
       setComment(''); setRating(5);
+      fetchBookings();
     } catch (err: any) {
       const msg = err.response?.data?.message || 'Failed to submit review';
       if (Platform.OS === 'web') window.alert(msg); else Alert.alert('Error', msg);
@@ -116,11 +127,18 @@ export default function BookingsScreen() {
             <Text style={styles.detail}>{item.sessionType} • <Text style={{ color: theme.accent.purple, fontWeight: '600' }}>₹{item.price}</Text></Text>
           </View>
 
-          {item.bookingStatus === 'completed' && (
+          {item.bookingStatus === 'completed' && !reviewedTrainerIds.has(trainer?._id) && (
             <TouchableOpacity style={styles.reviewBtn} onPress={() => setReviewModal({ visible: true, trainerId: trainer._id, bookingId: item._id })}>
               <Star size={14} color={theme.status.warning} fill={theme.status.warning} />
               <Text style={styles.reviewBtnText}>Leave a Review</Text>
             </TouchableOpacity>
+          )}
+
+          {item.bookingStatus === 'completed' && reviewedTrainerIds.has(trainer?._id) && (
+            <View style={styles.reviewedBadge}>
+              <Star size={14} color={theme.status.success} fill={theme.status.success} />
+              <Text style={styles.reviewedText}>Review Submitted ✓</Text>
+            </View>
           )}
 
           {['pending', 'confirmed'].includes(item.bookingStatus) && (
@@ -145,7 +163,7 @@ export default function BookingsScreen() {
         </Card>
       </Animated.View>
     );
-  }, [cancelling]);
+  }, [cancelling, reviewedTrainerIds]);
 
   return (
     <ScreenWrapper scroll={false}>
@@ -213,6 +231,8 @@ const styles = StyleSheet.create({
   cancelBtnText: { ...typography.bodySmall, color: theme.status.error, fontWeight: '600' },
   cancelDisabled: { marginTop: spacing.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, backgroundColor: `${theme.text.muted}10`, paddingVertical: spacing.sm, borderRadius: radius.md, opacity: 0.6 },
   cancelDisabledText: { ...typography.caption, color: theme.text.muted },
+  reviewedBadge: { marginTop: spacing.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, backgroundColor: `${theme.status.success}15`, paddingVertical: spacing.sm, borderRadius: radius.md },
+  reviewedText: { ...typography.bodySmall, color: theme.status.success, fontWeight: '600' },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center', padding: spacing.xl },
   modalContent: { width: '100%', maxWidth: 400, backgroundColor: theme.bg.card, borderRadius: radius.xl, padding: spacing['2xl'] },
   modalTitle: { ...typography.h2, color: theme.text.primary, textAlign: 'center', marginBottom: spacing.xl },
