@@ -121,3 +121,48 @@ export const rescheduleBooking = asyncHandler(async (req: AuthRequest, res: Resp
 
   return ApiResponse.success(res, booking, 'Booking rescheduled');
 });
+
+export const cancelBooking = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const booking = await Booking.findById(req.params.id);
+  if (!booking) throw ApiError.notFound('Booking not found');
+
+  // Ensure the user owns this booking
+  if (booking.userId.toString() !== req.user._id.toString()) {
+    throw ApiError.forbidden('You are not authorized to cancel this booking');
+  }
+
+  // Only pending or confirmed bookings can be cancelled
+  if (!['pending', 'confirmed'].includes(booking.bookingStatus)) {
+    throw ApiError.badRequest(`Cannot cancel a booking that is already ${booking.bookingStatus}`);
+  }
+
+  // Enforce 24-hour cancellation policy
+  const [hours, minutes] = booking.timeSlot.split(':').map(Number);
+  const sessionTime = new Date(booking.bookingDate);
+  sessionTime.setHours(hours, minutes, 0, 0);
+
+  const now = new Date();
+  const hoursUntilSession = (sessionTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+  if (hoursUntilSession < 24) {
+    throw ApiError.badRequest('Bookings can only be cancelled at least 24 hours before the session');
+  }
+
+  booking.bookingStatus = 'cancelled';
+  if (booking.paymentStatus === 'paid') {
+    booking.paymentStatus = 'refunded';
+  }
+  await booking.save();
+
+  // Notify the trainer
+  await Notification.create({
+    userId: booking.trainerId,
+    userModel: 'Trainer',
+    title: 'Booking Cancelled',
+    message: `A booking on ${new Date(booking.bookingDate).toLocaleDateString()} at ${booking.timeSlot} has been cancelled by the user`,
+    type: 'booking',
+    data: { bookingId: booking._id },
+  });
+
+  return ApiResponse.success(res, booking, 'Booking cancelled successfully');
+});

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, TextInput, Alert, Platform, RefreshControl } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { CalendarDays, Clock, Star } from 'lucide-react-native';
+import { CalendarDays, Clock, Star, XCircle } from 'lucide-react-native';
 import { bookingAPI } from '../../../services/endpoints';
 import { Booking } from '../../../types';
 import api from '../../../services/api';
@@ -26,6 +26,40 @@ export default function BookingsScreen() {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const [submittingReview, setSubmittingReview] = useState(false);
+  const [cancelling, setCancelling] = useState<string | null>(null);
+
+  const canCancel = (booking: Booking) => {
+    if (!['pending', 'confirmed'].includes(booking.bookingStatus)) return false;
+    const [hours, minutes] = booking.timeSlot.split(':').map(Number);
+    const sessionTime = new Date(booking.bookingDate);
+    sessionTime.setHours(hours, minutes, 0, 0);
+    const hoursUntil = (sessionTime.getTime() - Date.now()) / (1000 * 60 * 60);
+    return hoursUntil >= 24;
+  };
+
+  const handleCancel = (bookingId: string) => {
+    const doCancel = async () => {
+      setCancelling(bookingId);
+      try {
+        await bookingAPI.cancel(bookingId);
+        if (Platform.OS === 'web') window.alert('Booking cancelled successfully');
+        else Alert.alert('Success', 'Booking cancelled successfully');
+        fetchBookings();
+      } catch (err: any) {
+        const msg = err.response?.data?.message || 'Failed to cancel booking';
+        if (Platform.OS === 'web') window.alert(msg); else Alert.alert('Error', msg);
+      } finally { setCancelling(null); }
+    };
+
+    if (Platform.OS === 'web') {
+      if (window.confirm('Are you sure you want to cancel this booking?')) doCancel();
+    } else {
+      Alert.alert('Cancel Booking', 'Are you sure you want to cancel this booking?', [
+        { text: 'No', style: 'cancel' },
+        { text: 'Yes, Cancel', style: 'destructive', onPress: doCancel },
+      ]);
+    }
+  };
 
   const fetchBookings = async () => {
     try { const res = await bookingAPI.getUserBookings(); setBookings(res.data.data || []); } catch {}
@@ -87,6 +121,26 @@ export default function BookingsScreen() {
               <Star size={14} color={theme.status.warning} fill={theme.status.warning} />
               <Text style={styles.reviewBtnText}>Leave a Review</Text>
             </TouchableOpacity>
+          )}
+
+          {['pending', 'confirmed'].includes(item.bookingStatus) && (
+            canCancel(item) ? (
+              <TouchableOpacity
+                style={styles.cancelBtn}
+                onPress={() => handleCancel(item._id)}
+                disabled={cancelling === item._id}
+              >
+                <XCircle size={14} color={theme.status.error} />
+                <Text style={styles.cancelBtnText}>
+                  {cancelling === item._id ? 'Cancelling...' : 'Cancel Booking'}
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <View style={styles.cancelDisabled}>
+                <XCircle size={14} color={theme.text.muted} />
+                <Text style={styles.cancelDisabledText}>Cannot cancel within 24hrs</Text>
+              </View>
+            )
           )}
         </Card>
       </Animated.View>
@@ -155,6 +209,10 @@ const styles = StyleSheet.create({
   detail: { ...typography.bodySmall, color: theme.text.secondary },
   reviewBtn: { marginTop: spacing.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, backgroundColor: `${theme.status.warning}15`, borderWidth: 1, borderColor: theme.status.warning, paddingVertical: spacing.sm, borderRadius: radius.md },
   reviewBtnText: { ...typography.bodySmall, color: theme.status.warning, fontWeight: '600' },
+  cancelBtn: { marginTop: spacing.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, backgroundColor: `${theme.status.error}15`, borderWidth: 1, borderColor: theme.status.error, paddingVertical: spacing.sm, borderRadius: radius.md },
+  cancelBtnText: { ...typography.bodySmall, color: theme.status.error, fontWeight: '600' },
+  cancelDisabled: { marginTop: spacing.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, backgroundColor: `${theme.text.muted}10`, paddingVertical: spacing.sm, borderRadius: radius.md, opacity: 0.6 },
+  cancelDisabledText: { ...typography.caption, color: theme.text.muted },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center', padding: spacing.xl },
   modalContent: { width: '100%', maxWidth: 400, backgroundColor: theme.bg.card, borderRadius: radius.xl, padding: spacing['2xl'] },
   modalTitle: { ...typography.h2, color: theme.text.primary, textAlign: 'center', marginBottom: spacing.xl },

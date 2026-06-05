@@ -24,5 +24,6 @@ router.get('/', authorize('user'), bookingController.getUserBookings);
 router.get('/trainer', authorize('trainer'), bookingController.getTrainerBookings);
 router.patch('/:id/status', authorize('trainer'), validate([body('status').isIn(['confirmed', 'cancelled', 'completed'])]), bookingController.updateBookingStatus);
 router.patch('/:id/reschedule', validate([body('bookingDate').isISO8601(), body('timeSlot').notEmpty()]), bookingController.rescheduleBooking);
+router.patch('/:id/cancel', authorize('user'), bookingController.cancelBooking);
 
 export default router;

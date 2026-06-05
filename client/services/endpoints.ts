@@ -31,6 +31,7 @@ export const bookingAPI = {
   getTrainerBookings: () => api.get<ApiResponse<Booking[]>>('/bookings/trainer'),
   updateStatus: (id: string, status: string) => api.patch(`/bookings/${id}/status`, { status }),
   reschedule: (id: string, data: any) => api.patch(`/bookings/${id}/reschedule`, data),
+  cancel: (id: string) => api.patch(`/bookings/${id}/cancel`),
 };
 
 // User APIs
