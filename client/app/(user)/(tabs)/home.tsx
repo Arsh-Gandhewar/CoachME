@@ -117,7 +117,8 @@ export default function HomeScreen() {
       if (bookingsRes?.data?.data) {
         const bookings = bookingsRes.data.data;
         completedCount = bookings.filter((b: any) => b.bookingStatus === 'completed').length;
-        const upcoming = bookings.filter((b: any) => b.bookingStatus === 'confirmed' && new Date(b.bookingDate) >= new Date()).sort((a: any, b: any) => new Date(a.bookingDate).getTime() - new Date(b.bookingDate).getTime())[0];
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const upcoming = bookings.filter((b: any) => ['pending', 'confirmed'].includes(b.bookingStatus) && new Date(b.bookingDate) >= today).sort((a: any, b: any) => new Date(a.bookingDate).getTime() - new Date(b.bookingDate).getTime())[0];
         if (upcoming) upcomingTime = new Date(upcoming.bookingDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' ' + upcoming.timeSlot;
       }
       setUserStats({ completedSessions: completedCount, upcomingSessionTime: upcomingTime, totalFavorites: favRes?.data?.data?.length || 0 });

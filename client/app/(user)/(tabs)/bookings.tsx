@@ -145,7 +145,7 @@ export default function BookingsScreen() {
         </Card>
       </Animated.View>
     );
-  }, []);
+  }, [cancelling]);
 
   return (
     <ScreenWrapper scroll={false}>
