@@ -27,4 +27,8 @@ const PaymentSchema = new Schema<IPayment>(
   { timestamps: true }
 );
 
+PaymentSchema.index({ bookingId: 1 });
+PaymentSchema.index({ userId: 1, createdAt: -1 });
+PaymentSchema.index({ trainerId: 1, createdAt: -1 });
+
 export default mongoose.model<IPayment>('Payment', PaymentSchema);

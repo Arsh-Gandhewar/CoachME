@@ -87,12 +87,13 @@ export const verifySubscription = asyncHandler(async (req: AuthRequest, res: Res
 
   const body = razorpayPaymentId + "|" + razorpaySubscriptionId;
   const expectedSignature = crypto
-    .createHmac("sha256", env.RAZORPAY_KEY_SECRET || 'fallback')
+    .createHmac("sha256", env.RAZORPAY_KEY_SECRET)
     .update(body.toString())
     .digest("hex");
 
-  // Bypass signature check for mock keys
-  if (env.RAZORPAY_KEY_ID !== 'rzp_test_SsFnemBCyZjsKV' && expectedSignature !== razorpaySignature) {
+  // Always verify signature in production; skip only in development with test keys
+  const isTestKey = env.RAZORPAY_KEY_ID.startsWith('rzp_test_');
+  if (!(env.NODE_ENV !== 'production' && isTestKey) && expectedSignature !== razorpaySignature) {
     throw ApiError.badRequest('Invalid signature passed');
   }
 

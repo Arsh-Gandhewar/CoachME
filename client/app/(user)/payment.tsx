@@ -7,6 +7,7 @@ import { paymentAPI } from '../../services/endpoints';
 import { useAuthStore } from '../../store/authStore';
 import Constants from 'expo-constants';
 import { theme } from '../../constants/colors';
+import { RAZORPAY_KEY } from '../../constants/config';
 import { typography } from '../../constants/typography';
 import { spacing, radius } from '../../constants/spacing';
 import ScreenWrapper from '../../components/ScreenWrapper';
@@ -45,7 +46,7 @@ export default function PaymentScreen() {
       const { orderId, customerId } = res.data.data;
       const options = {
         description: 'Card Vault Verification', image: 'https://i.imgur.com/3g7nmJC.png', currency: 'INR',
-        key: Constants.expoConfig?.extra?.razorpayKeyId || 'rzp_test_SsFnemBCyZjsKV', amount: '100', name: 'CoachME',
+        key: RAZORPAY_KEY, amount: '100', name: 'CoachME',
         order_id: orderId, customer_id: customerId,
         prefill: { email: (user as any)?.email || '', contact: (user as any)?.mobile || '9999999999', name: (user as any)?.name || (user as any)?.fullName || '' },
         theme: { color: '#7C4DFF' }

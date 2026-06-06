@@ -1,26 +1,52 @@
 import { Server } from 'socket.io';
 import { Server as HttpServer } from 'http';
+import jwt from 'jsonwebtoken';
 import Chat from '../models/Chat';
 import logger from '../utils/logger';
+import { env } from '../config/env';
 
 export const initializeSocket = (httpServer: HttpServer) => {
+  const allowedOrigins = env.NODE_ENV === 'production'
+    ? ['https://coachme.app', 'https://www.coachme.app']
+    : '*';
+
   const io = new Server(httpServer, {
-    cors: { origin: '*', methods: ['GET', 'POST'] },
+    cors: { origin: allowedOrigins as any, methods: ['GET', 'POST'] },
+  });
+
+  // Authenticate socket connections with JWT
+  io.use((socket, next) => {
+    const token = socket.handshake.auth?.token || socket.handshake.query?.token;
+    if (!token) {
+      return next(new Error('Authentication required'));
+    }
+    try {
+      const decoded = jwt.verify(token as string, env.JWT_SECRET) as any;
+      (socket as any).userId = decoded.id;
+      next();
+    } catch (err) {
+      return next(new Error('Invalid or expired token'));
+    }
   });
 
   io.on('connection', (socket) => {
-    logger.debug(`🔌 Socket connected: ${socket.id}`);
+    const userId = (socket as any).userId;
+    logger.debug(`🔌 Socket connected: ${socket.id} (user: ${userId})`);
 
-    socket.on('join', (userId: string) => {
-      socket.join(userId);
-      logger.debug(`👤 User ${userId} joined room`);
-    });
+    // Auto-join user's own room based on authenticated userId
+    socket.join(userId);
 
     socket.on('join_chat', (chatId: string) => {
       socket.join(`chat_${chatId}`);
     });
 
     socket.on('send_message', async (data: { senderId: string; receiverId: string; text: string; chatId?: string }) => {
+      // Ensure the sender matches the authenticated user
+      if (data.senderId !== userId) {
+        socket.emit('error', { message: 'Unauthorized: sender mismatch' });
+        return;
+      }
+
       try {
         let chat;
         if (data.chatId) {

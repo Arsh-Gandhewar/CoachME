@@ -1,15 +1,22 @@
 import { io, Socket } from 'socket.io-client';
 import { API_BASE_URL } from '../constants/config';
+import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
+
+const getToken = async (): Promise<string | null> => {
+  if (Platform.OS === 'web') return localStorage.getItem('accessToken');
+  return SecureStore.getItemAsync('accessToken');
+};
 
 class SocketService {
   private socket: Socket | null = null;
 
-  connect(userId: string) {
+  async connect(userId: string) {
     const baseUrl = API_BASE_URL.replace('/api', '');
-    this.socket = io(baseUrl, { transports: ['websocket'] });
-
-    this.socket.on('connect', () => {
-      this.socket?.emit('join', userId);
+    const token = await getToken();
+    this.socket = io(baseUrl, {
+      transports: ['websocket'],
+      auth: { token },
     });
 
     return this.socket;

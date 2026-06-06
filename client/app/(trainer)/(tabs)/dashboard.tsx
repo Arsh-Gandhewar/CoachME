@@ -6,6 +6,7 @@ import { useAuthStore } from '../../../store/authStore';
 import { bookingAPI, subscriptionAPI, authAPI, chatAPI } from '../../../services/endpoints';
 import Constants from 'expo-constants';
 import { theme } from '../../../constants/colors';
+import { RAZORPAY_KEY } from '../../../constants/config';
 import { typography } from '../../../constants/typography';
 import { spacing, radius } from '../../../constants/spacing';
 import ScreenWrapper from '../../../components/ScreenWrapper';
@@ -54,7 +55,7 @@ export default function TrainerDashboard() {
       }
       const options = {
         description: 'CoachME Premium Visibility', image: 'https://i.imgur.com/3g7nmJC.png', currency: 'INR',
-        key: Constants.expoConfig?.extra?.razorpayKeyId || 'rzp_test_SsFnemBCyZjsKV', name: 'CoachME', subscription_id: subscriptionId,
+        key: RAZORPAY_KEY, name: 'CoachME', subscription_id: subscriptionId,
         prefill: { email: (user as any)?.email || '', contact: (user as any)?.mobile || '9999999999', name: (user as any)?.name || (user as any)?.fullName || '' },
         theme: { color: '#7C4DFF' }
       };
